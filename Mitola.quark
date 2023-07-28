@@ -1,0 +1,9 @@
+(
+  name: "Mitola",
+  summary: "Microtonal counterpart to Panola"
+  version: "0.0.1",
+  schelp: "Mitola.schelp",
+  license: "GPL",
+  dependencies: ["scparco"],
+  copyright: "Stefaan Himpe, 2023"
+)

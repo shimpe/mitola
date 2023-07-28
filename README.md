@@ -1,2 +1,3 @@
-# mitola
-supercollider quark for microtonal music composition; microtonal counterpart to panola
+# mitola 
+MIcro TOnal LAnguage for supercollider; microtonal counterpart to Panola
+ 
