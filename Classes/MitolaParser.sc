@@ -1,7 +1,7 @@
 /*
 [general]
 title = "MitolaParser"
-summary = "a parser for mitola scores"
+summary = "a parser for mitola scores - not for end users, use Mitola instead."
 categories = "Microtonal utils"
 related = "Classes/ScalaParser, Classes/Mitola"
 description = '''
@@ -55,7 +55,7 @@ MitolaParser : Parser {
 	[method.parseFile]
 	description = "parses a Mitola score from file; upon failure displays an error msg and returns nil"
 	[method.parseFile.args]
-	mitolastring = "a filename of a file containing a valid mitola score"
+	filename = "a filename of a file containing a valid mitola score"
 	[method.parseFile.returns]
 	what='''
 	if successful, parse returns the parse tree
@@ -222,7 +222,7 @@ MitolaParser : Parser {
 	/*
 	[classmethod.pr_noteModifier]
 	description = "internal method that creates a Parser that can parse a pitch modifier in any format (ratio, primevector or cents)"
-	[classmethod.pr_npteModifier.returns]
+	[classmethod.pr_noteModifier.returns]
 	what = "a Parser that parses a pitch modifier and marks up the result; pitch modifiers are optional"
 	*/
 	*pr_noteModifier {
@@ -265,7 +265,7 @@ MitolaParser : Parser {
 	}
 
 	/*
-	[classmethod.pr_noteAndModAndOCt]
+	[classmethod.pr_noteAndModAndOct]
 	description = "internal method that creates a Parser that can parse a degree followed by an (optional) pitch modifier or a rest and an (optional) repeat interval (think: octave)"
 	[classmethod.pr_noteAndModAndOct.returns]
 	what = "a Parser"
@@ -504,4 +504,336 @@ MitolaParser : Parser {
 			parseRes.flatten(1);
 		})
 	}
+/*
+[examples]
+what = '''
+(
+var score = "1 |: 4 |: 6 7{+50.0} :|*2 :|*3 8{-20.0}>}";
+var result = MitolaParser.pr_mixedNotelist.run(score);
+// should be true:
+result.result == [
+			( 'info': (
+				'props': [  ],
+				'note': (
+					'pitch': (
+						'what': 'note',
+						'repeatinterval':
+						'previous', 'notename': 0,
+						'notemodifier': (
+							'kind': 'natural',
+							'direction' : 'none',
+							'what': 'notemodifier' )),
+					'duration': (
+						'dur': 'previous',
+						'durmultiplier': 'previous',
+						'durdivider': 'previous',
+						'durdots': 'previous' ))),
+			'what': 'singlenote' ),
+			( 'info': (
+				'props': [  ],
+				'note': (
+					'pitch': (
+						'what': 'note',
+						'repeatinterval': 'previous',
+						'notename': 3,
+						'notemodifier': (
+							'kind': 'natural',
+							'direction' : 'none',
+							'what': 'notemodifier' )),
+					'duration': (
+						'dur': 'previous',
+						'durmultiplier': 'previous',
+						'durdivider': 'previous',
+						'durdots': 'previous' ))),
+			'what': 'singlenote' ),
+			( 'info': (
+				'props': [  ],
+				'note': (
+					'pitch': (
+						'what': 'note',
+						'repeatinterval': 'previous',
+						'notename': 5,
+						'notemodifier': (
+							'kind': 'natural',
+							'direction' : 'none',
+							'what': 'notemodifier' )),
+					'duration': (
+						'dur': 'previous',
+						'durmultiplier':
+						'previous',
+						'durdivider':
+						'previous',
+						'durdots': 'previous' ))),
+			'what': 'singlenote'),
+			( 'info':
+				( 'props': [  ],
+					'note': (
+						'pitch': (
+							'what': 'note',
+							'repeatinterval': 'previous',
+							'notename': 6, 'notemodifier': (
+								'kind': 'cents',
+								'what': 'notemodifier',
+								'value': (
+									'numerator': 50.0,
+									'kind': 'cents',
+									'what': 'pitch',
+									'denominator': 1 ),
+								'direction': 'raise' )),
+						'duration': (
+							'dur': 'previous',
+							'durmultiplier': 'previous',
+							'durdivider': 'previous',
+							'durdots': 'previous' ))),
+				'what': 'singlenote'),
+			( 'info': (
+				'props': [  ],
+				'note': (
+					'pitch': (
+						'what': 'note',
+						'repeatinterval': 'previous',
+						'notename': 5,
+						'notemodifier': (
+							'kind': 'natural',
+							'direction' : 'none',
+							'what': 'notemodifier' )),
+					'duration': (
+						'dur': 'previous',
+						'durmultiplier': 'previous',
+						'durdivider': 'previous',
+						'durdots': 'previous' ))),
+			'what': 'singlenote' ),
+			( 'info': (
+				'props': [  ],
+				'note': (
+					'pitch': (
+						'what': 'note',
+						'repeatinterval': 'previous',
+						'notename': 6,
+						'notemodifier': (
+							'kind': 'cents',
+							'what': 'notemodifier',
+							'value': (
+								'numerator': 50.0,
+								'kind': 'cents',
+								'what': 'pitch',
+								'denominator': 1 ),
+							'direction': 'raise' )),
+					'duration': (
+						'dur': 'previous',
+						'durmultiplier': 'previous',
+						'durdivider': 'previous',
+						'durdots': 'previous' ))),
+			'what': 'singlenote'),
+			( 'info': (
+				'props': [  ],
+				'note': (
+					'pitch': (
+						'what': 'note',
+						'repeatinterval': 'previous',
+						'notename': 3, 'notemodifier': (
+							'kind': 'natural',
+							'direction' : 'none',
+							'what': 'notemodifier' )),
+					'duration': (
+						'dur': 'previous',
+						'durmultiplier': 'previous',
+						'durdivider': 'previous',
+						'durdots': 'previous' ))),
+			'what': 'singlenote' ),
+			( 'info': ( 'props': [  ],
+				'note': (
+					'pitch': (
+						'what': 'note',
+						'repeatinterval': 'previous',
+						'notename': 5,
+						'notemodifier': (
+							'kind': 'natural',
+							'direction' : 'none',
+							'what': 'notemodifier' )),
+					'duration': (
+						'dur': 'previous',
+						'durmultiplier': 'previous',
+						'durdivider': 'previous',
+						'durdots': 'previous' ))),
+			'what': 'singlenote' ),
+			( 'info': (
+				'props': [  ],
+				'note': (
+					'pitch': (
+						'what': 'note',
+						'repeatinterval': 'previous',
+						'notename': 6, 'notemodifier': (
+							'kind': 'cents',
+							'what': 'notemodifier',
+							'value': (
+								'numerator': 50.0,
+								'kind': 'cents',
+								'what': 'pitch',
+								'denominator': 1 ),
+							'direction': 'raise' ) ),
+					'duration': (
+						'dur': 'previous',
+						'durmultiplier': 'previous',
+						'durdivider': 'previous',
+						'durdots': 'previous' ))),
+			'what': 'singlenote' ),
+			( 'info': (
+				'props': [  ],
+				'note': ( 'pitch': (
+					'what': 'note',
+					'repeatinterval': 'previous',
+					'notename': 5,
+					'notemodifier': (
+						'kind': 'natural',
+						'direction' : 'none',
+						'what': 'notemodifier' )),
+				'duration': (
+					'dur': 'previous',
+					'durmultiplier':
+					'previous',
+					'durdivider':
+					'previous',
+					'durdots': 'previous' ))),
+			'what': 'singlenote'),
+			( 'info': (
+				'props': [  ],
+				'note': (
+					'pitch': (
+						'what': 'note',
+						'repeatinterval': 'previous',
+						'notename': 6, 'notemodifier': (
+							'kind': 'cents',
+							'what': 'notemodifier',
+							'value': (
+								'numerator': 50.0,
+								'kind': 'cents',
+								'what': 'pitch',
+								'denominator': 1 ),
+							'direction': 'raise' )),
+					'duration': (
+						'dur': 'previous',
+						'durmultiplier': 'previous',
+						'durdivider': 'previous',
+						'durdots': 'previous' ))),
+			'what': 'singlenote'),
+			( 'info': (
+				'props': [  ],
+				'note': (
+					'pitch': (
+						'what': 'note',
+						'repeatinterval': 'previous',
+						'notename': 3,
+						'notemodifier': (
+							'kind': 'natural',
+							'direction' : 'none',
+							'what': 'notemodifier' )),
+					'duration': (
+						'dur': 'previous',
+						'durmultiplier': 'previous',
+						'durdivider': 'previous',
+						'durdots': 'previous' ))),
+			'what': 'singlenote' ),
+			( 'info': (
+				'props': [  ],
+				'note': (
+					'pitch': (
+						'what': 'note',
+						'repeatinterval': 'previous',
+						'notename': 5,
+						'notemodifier': (
+							'kind': 'natural',
+							'direction' : 'none',
+							'what': 'notemodifier' )),
+					'duration': (
+						'dur': 'previous',
+						'durmultiplier': 'previous',
+						'durdivider': 'previous',
+						'durdots': 'previous' ))),
+			'what': 'singlenote' ),
+			( 'info': (
+				'props': [  ],
+				'note': (
+					'pitch': (
+						'what': 'note',
+						'repeatinterval': 'previous',
+						'notename': 6,
+						'notemodifier': (
+							'kind': 'cents',
+							'what': 'notemodifier',
+							'value': (
+								'numerator': 50.0,
+								'kind': 'cents',
+								'what': 'pitch',
+								'denominator': 1 ),
+							'direction': 'raise' )),
+					'duration': (
+						'dur': 'previous',
+						'durmultiplier': 'previous',
+						'durdivider': 'previous',
+						'durdots': 'previous' ))),
+			'what': 'singlenote' ),
+			( 'info': (
+				'props': [  ],
+				'note': (
+					'pitch': (
+						'what': 'note',
+						'repeatinterval': 'previous',
+						'notename': 5,
+						'notemodifier': (
+							'kind': 'natural',
+							'direction' : 'none',
+							'what': 'notemodifier' )),
+					'duration': (
+						'dur': 'previous',
+						'durmultiplier': 'previous',
+						'durdivider': 'previous',
+						'durdots': 'previous' ))),
+			'what': 'singlenote' ),
+			( 'info': (
+				'props': [  ],
+				'note': (
+					'pitch': (
+						'what': 'note',
+						'repeatinterval': 'previous',
+						'notename': 6,
+						'notemodifier': (
+							'kind': 'cents',
+							'what': 'notemodifier',
+							'value': (
+								'numerator': 50.0,
+								'kind': 'cents',
+								'what': 'pitch',
+								'denominator': 1 ),
+							'direction': 'raise' )),
+					'duration': (
+						'dur': 'previous',
+						'durmultiplier': 'previous',
+						'durdivider': 'previous',
+						'durdots': 'previous' ))),
+			'what': 'singlenote' ),
+			( 'info': (
+				'props': [  ],
+				'note': (
+					'pitch': (
+						'what': 'note',
+						'repeatinterval': 'previous',
+						'notename': 7, 'notemodifier': (
+							'kind': 'cents',
+							'what': 'notemodifier',
+							'value': (
+								'numerator': 20.0,
+								'kind': 'cents',
+								'what': 'pitch',
+								'denominator': 1 ),
+							'direction': 'lower' )),
+					'duration': (
+						'dur': 'previous',
+						'durmultiplier': 'previous',
+						'durdivider': 'previous',
+						'durdots': 'previous' ))),
+			'what': 'singlenote' ) ];
+)
+'''
+*/
 }
