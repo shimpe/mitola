@@ -1,17 +1,88 @@
+/*
+[general]
+title = "Mitola"
+summary = "a class to render MIcroTOnal LAnguage scores"
+categories = "Microtonal utils"
+related = "Classes/ScalaParser, Classes/MitolaParser, Classes/RootFrequencyCalculator"
+description = '''
+Mitola provides notation and utilities to write microtonal music in supercollider using a text based notation.
+Mitola is modeled after its sister quark Panola, which provides text based notation for "conventional" music.
+Mitola shares many ideas and syntax with Panola, but differs in some aspects where I thought Panola could be improved, or where things cannot be reused as-is.
+
+A Mitola score consists of a list of notes and/or chords. Mitola does not use note names.
+Instead it uses integer scale degrees 1,2,...N, where N is determined by the tuning in use.
+Suppose you have a 12EDO tuning, then N can be at most 12.
+
+Degrees can be modified with modifiers (in conventional music these would be sharps and flats). Modifiers in Mitola can be specified in two ways. First way: absolute modification by a number of cents. E.g. 1{+100.0} modifies degree 1 by adding 100.0 cents. Note that you must include a decimal point for the number to be interpreted as cents. Similarly 4{-53.0} would lower the pitch represented by degree 4 by 53.0 cents. The second way is to specify a ratio. E.g. 5{+2/3} will modify the pitch so that it sounds 2/3 between degree 5 and degree 6. Ratios with an abs value larger than 1 are reduced: 5{-4/3} is interpreted as 4{-1/3}. This is important to understand the behavior in case of tunings with different gaps between the different degrees. An alternative way to specify ratios is using prime vector notation. In prime vector notation, a ratio is defined as a multiplication of prime factors. The exponents of the prime factors are between | and >. So this is a valid note: 3{+|1/12>}. It will raise degree 3 with 2^(1/12).
+
+In addition to modifiers, degrees also have an equivalence interval (aka equave). In traditional notation, this would be called an octave. The equivalence interval is indicated using square brackets. E.g. 1[4] is degree one in the fourth equave. If you do not specify an equave for a degree, the previous one is reused.
+
+To indicate rhythm, a note can be decorated with an underscore (_) followed by a number, e.g. 1_4 indicates degree one as a quarter note, whereas 1_8 is the first degree as an eighth note. If you do not specify a duration value, the last specified one is reused.
+
+The duration value optionally can be extended with one or more dots. Similar to traditional notation, 1_4 lasts one quarter note; 1_4. lasts 1+0.5 quarter notes (= 3 eighths) and 1_4.. lasts 1+0.5+0.25 quarter notes (=7 sixteenths).
+
+In addition to the dots, one can also (optionally) specificy a multiplier and a divider. These can be used to define tuplets. E.g. "1[4]_8*2/3 4 7" consists of 3 degrees in the fourth equave forming a triplet of eighth notes.
+
+Notes can also optionally be decorated with properties (anything you like really). These properties by default are included in the supercollider patterns that are derived from the score, where they can be used to drive synth arguments or control behavior of the patterns. The properties can be animated between notes (see example code below).
+
+Notes can be grouped in angular brackets < > to make chords. Limitation: the properties of the first note iin the chord are used for the complete chord. "< 1[4]_8 4 1{+25.0}[5]>" is a chord consisting of degrees 1[4] 4[4] and 1{+25.0}[5].
+
+Lastly, notes can be put between repeat brackets and the number of repeats can be indicated, e.g.
+|: 1[4]_8 2 3 :|*5 repeats notes 1[4]_8 2 3 five times.
+
+To convert Mitola scores to frequencies it is necessary to know in which tuning the score has to be interpreted. Tuning is indicated in the form of a scala definition and a root frequency. In order to pin a given degree in your scala definition to a fixed frequency (e.g. ensure that A4 is 440Hz in a 12EDO tuning), a suitable root_frequency can be calculated using the RootFrequencyCalculator class.
+
+From a Mitola score, one can get extract all kinds of information in the form of supercollider patterns.
+See example code.
+'''
+*/
+
 Mitola {
+	/*
+	[method.notation]
+	description='''
+	the notation as passed into the Mitola class constructor
+	[method.notation.returns]
+	what="a string"
+	'''
+	*/
 	var <>notation;
+	/*
+	[method.mitola_parser]
+	description='''
+	A Parser for Mitola strings; initialized in the init method
+	[method.mitola_parser.returns]
+	what="a Parser"
+	'''
+	*/
 	var <>mitola_parser;
+	/*
+	[method.scala_calculator]
+	description='''
+	A calculator object for doing tuning calculations based on scala information
+	[method.scala_calculator.returns]
+	what="a ScalaCalculator"
+	'''
+	*/
 	var <>scala_calculator;
+
+	/*
+	[method.mitola_parse_result]
+	description='''
+	The parse tree that results from parsing the Mitola string
+	[method.mitola_parse_result.returns]
+	what="a parse tree"
+	'''
+	*/
 	var <>mitola_parse_result;
 
 	/*
 	[method.gNOTEREPEATINTERVAL_DEFAULT]
 	description='''
-	the default repeat interval of a note (in many scales this would be called the "octave"). in case no repeat interval was ever specified in one of the previous notes
-	(typically "4")
+	the default equivalence interval of a note (think "octave" in traditional music), in case no equivalence interval was ever specified in one of the previous notes (typically "4")
 	'''
 	[method.gNOTEREPEATINTERVAL_DEFAULT.returns]
-	what = "a string"
+	what = "an Integer"
 	*/
 	var <>gNOTEREPEATINTERVAL_DEFAULT;
 	/*
@@ -20,7 +91,7 @@ Mitola {
 	the default duration of a note in beats, in case no duration was ever specified in one of the previous notes (typically "4")
 	'''
 	[method.gDURATION_DEFAULT.returns]
-	what = "a string"
+	what = "an Integer"
 	*/
 	var <>gDURATION_DEFAULT;
 	/*
@@ -38,7 +109,7 @@ Mitola {
 	default duration multiplier of a note (typically "1")
 	'''
 	[method.gMULTIPLIER_DEFAULT.returns]
-	what = "a string"
+	what = "an Integer"
 	*/
 	var <>gMULTIPLIER_DEFAULT;
 	/*
@@ -56,16 +127,16 @@ Mitola {
 	default volume of a note, between 0 and 1 (typically "0.5")
 	'''
 	[method.gVOLUME_DEFAULT.returns]
-	what = "a string"
+	what = "a Float"
 	*/
 	var <>gVOLUME_DEFAULT;
 	/*
 	[method.gLEGATO_DEFAULT]
 	description='''
-	default playdur (indication for legato/staccato) of a note, between 0 and 1 (typically "0.9")
+	default legato (indication for legato/staccato) of a note, between 0 and 1 (typically "0.9")
 	'''
 	[method.gLEGATO_DEFAULT.returns]
-	what = "a string"
+	what = "a Float"
 	*/
 	var <>gLEGATO_DEFAULT;
 	/*
@@ -74,7 +145,7 @@ Mitola {
 	default lag of a note (typically "0")
 	'''
 	[method.gLAG_DEFAULT.returns]
-	what = "a string"
+	what = "a Float"
 	*/
 	var <>gLAG_DEFAULT;
 	/*
@@ -83,7 +154,7 @@ Mitola {
 	default number of dots after a note (typically an empty string) - like in traditional notation a dot adds half of the duration to the specified duration. Multiple dots are supported too.
 	'''
 	[method.gDOTS_DEFAULT.returns]
-	what = "a string"
+	what = "an Integer"
 	*/
 	var <>gDOTS_DEFAULT;
 	/*
@@ -92,49 +163,123 @@ Mitola {
 	default tempo (typically 80 bpm) - note that tempo is a special key in that it influences the tempo of the complete system (so all other voices running in parallel are affected too). For this reason, when deriving supercollider patterns from panola strings, the inclusion of the tempo-key is made optional.
 	'''
 	[method.gTEMPO_DEFAULT.returns]
-	what = "a string"
+	what = "a Float"
 	*/
 	var <>gTEMPO_DEFAULT;
 	/*
 	[method.customProperties]
 	description='''
-	a lookup table containing all properties specified in the panola input string
+	a lookup table containing all properties specified in the Mitola input string
 	'''
 	[method.customProperties.returns]
 	what = "a Dictionary"
 	*/
 	var <>customProperties;
 
+	/*
+	[method.previous_duration]
+	description='''
+	a variable maitaining the last specified duration, in case a note has not duration specified, in which the previous should be used
+	'''
+	[method.previous_duration.returns]
+	what = "a Float"
+	*/
 	var<>previous_duration;
+	/*
+	[method.previous_dots]
+	description='''
+	a variable maitaining the last specified number of dots, in case a note has no duration specified, in which the previous should be used
+	'''
+	[method.previous_dots.returns]
+	what = "a Float"
+	*/
 	var<>previous_dots;
+	/*
+	[method.previous_multiplier]
+	description='''
+	a variable maitaining the last specified multiplier, in case a note has no duration specified, in which the previous should be used
+	'''
+	[method.previous_multiplier.returns]
+	what = "a Float"
+	*/
 	var<>previous_multiplier;
+	/*
+	[method.previous_divider]
+	description='''
+	a variable maitaining the last specified divider, in case a note has no duration specified, in which the previous should be used
+	'''
+	[method.previous_divider.returns]
+	what = "a Float"
+	*/
 	var<>previous_divider;
 
+	/*
+	[classmethod.new]
+	description='''
+	new creates a new Mitola object
+	'''
+	[classmethod.new.args]
+	notation = "Mitola string containing score"
+	scala_contents = "string containing scala definition (you have to specify either this or scala_filename)"
+	scala_filename = "string containing path to scala definition file (you have to specify either this or a scala_contents string)"
+	note_repeatinterval_default= "default equave for a note if none was ever specified"
+	dur_default = "default duration for note if none was ever specified"
+	modifier_default = "default note modifier if none was ever specified"
+	mult_default = "default duration multiplier if none was ever specified"
+	div_default = "default duration divider if none was ever specified"
+	amp_default = "default amp if none was every specifiefd"
+	legato_default = "default legato if none was ever specified"
+	lag_default = "default note lag if none was every specified"
+	tempo_default = "default tempo if none was every specified (note: to extract tempo fro the score needs to be explicitly requested)"
+	[classmethod.new.returns]
+	what="new Mitola object"
+	*/
 	*new {
 		|  notation=nil, scala_contents=nil, scala_filename=nil,
 		note_repeatinterval_default=4, dur_default=4, modifier_default="",
-		mult_default=1, div_default=1, vol_default=0.5,
-		playdur_default=0.9, lag_default=0, tempo_default=80 |
+		mult_default=1, div_default=1, amp_default=0.5,
+		legato_default=0.9, lag_default=0, tempo_default=80 |
 
 		^super.new.init(notation, scala_contents, scala_filename,
 			note_repeatinterval_default=4, dur_default=4, modifier_default="",
-			mult_default=1, div_default=1, vol_default=0.5,
-			playdur_default=0.9, lag_default=0, tempo_default=80);
+			mult_default=1, div_default=1, amp_default=0.5,
+			legato_default=0.9, lag_default=0, tempo_default=80);
 	}
 
+	/*
+	[method.init]
+	description='''
+	new creates a new Mitola object
+	'''
+	[method.init.args]
+	notation = "Mitola string containing score"
+	scala_contents = "string containing scala definition (you have to specify either this or scala_filename)"
+	scala_filename = "string containing path to scala definition file (you have to specify either this or a scala_contents string)"
+	note_repeatinterval_default= "default equave for a note if none was ever specified"
+	dur_default = "default duration for note if none was ever specified"
+	modifier_default = "default note modifier if none was ever specified"
+	mult_default = "default duration multiplier if none was ever specified"
+	div_default = "default duration divider if none was ever specified"
+	amp_default = "default amp if none was every specifiefd"
+	legato_default = "default legato if none was ever specified"
+	lag_default = "default note lag if none was every specified"
+	tempo_default = "default tempo if none was every specified (note: to extract tempo fro the score needs to be explicitly requested)"
+	[method.init.returns]
+	what="new Mitola object"
+	*/
 	init {
 		| notation, scala_contents, scala_filename,
 		note_repeatinterval_default, dur_default, modifier_default,
-		mult_default, div_default, vol_default,
-		playdur_default, lag_default, tempo_default |
+		mult_default, div_default, amp_default,
+		legato_default, lag_default, tempo_default |
 
 		this.gNOTEREPEATINTERVAL_DEFAULT = note_repeatinterval_default;
 		this.gDURATION_DEFAULT = dur_default;
 		this.gMODIFIER_DEFAULT = modifier_default;
 		this.gMULTIPLIER_DEFAULT = mult_default;
 		this.gDIVIDER_DEFAULT = div_default;
-		this.gVOLUME_DEFAULT = vol_default;
-		this.gLEGATO_DEFAULT = playdur_default;
+		this.gVOLUME_DEFAULT = amp_default;
+		this.gLEGATO_DEFAULT = legato_default;
 		this.gLAG_DEFAULT = lag_default;
 		this.gTEMPO_DEFAULT = tempo_default;
 
@@ -165,6 +310,22 @@ Mitola {
 		};
 	}
 
+	/*
+	[method.frequency_pattern]
+	description='''
+	Extracts from the Mitola score only the frequency information in the form of a supercollider pattern that generates the frequencies.
+	To make this possible a root_frequency needs to be passed in (and a valid scala definition must have been parsed).
+
+	To calculate a root frequency that pins a given note in your scale to a desired frequency
+	(e.g. to ensure that in 12EDO, A4 maps to 440Hz, you can use the RootFrequencyCalculator class.
+
+	If you call .asStream.all on the result of this method, you get the frequencies from the score as a list of numbers.
+	'''
+	[method.frequency_pattern.args]
+	root_frequency = "base frequency required to interpret scala information as frequencies"
+	[method.frequency_pattern.returns]
+	what="a supercollider pattern generating the frequencies in the score"
+	*/
 	frequency_pattern {
 		| root_frequency |
 		var freq_list = this.mitola_parse_result.collect({
@@ -185,6 +346,22 @@ Mitola {
 		^Pseq(freq_list, 1);
 	}
 
+	/*
+	[method.midi_note_pattern]
+	description='''
+	Extracts from the Mitola score only the frequency information in the form of a supercollider pattern that generates fractional midi note numbers as they would appear if the tuning was 12EDO.
+	To make this possible a root_frequency needs to be passed in (and a valid scala definition must have been parsed).
+
+	To calculate a root frequency that pins a given note in your scale to a desired frequency
+	(e.g. to ensure that in 12EDO, A4 maps to 440Hz, you can use the RootFrequencyCalculator class.
+
+	If you call .asStream.all on the result of this method, you get the frequencies from the score as a list of numbers.
+	'''
+	[method.midi_note_pattern.args]
+	root_frequency = "base frequency required to interpret scala information as frequencies"
+	[method.midi_note_pattern.returns]
+	what="a supercollider pattern generating the 12EDO midi note numbers in the score"
+	*/
 	midi_note_pattern {
 		| root_frequency |
 		// frequencies recalculated to fractional midi notes in 12EDO tuning... ignore if this confuses you
@@ -207,9 +384,9 @@ Mitola {
 	}
 
 	/*
-	[method.durationPattern]
-	description = "extracts from the current panola string a Pseq pattern containing only the midi note durations in the form of numbers corresponding to the durations in beats of the notes in the panola string"
-	[method.durationPattern.returns]
+	[method.duration_pattern]
+	description = "extracts from the current Mitola string a Pseq pattern containing only the midi note durations in the form of numbers corresponding to the durations in beats of the notes in the Mitola string"
+	[method.duration_pattern.returns]
 	what = "a pattern (Pseq)"
 	*/
 	duration_pattern {
@@ -251,31 +428,82 @@ Mitola {
 		^Pseq(durlist, 1);
 	}
 
+	/*
+	[method.total_duration]
+	description = "calculates the total duration in beats of this Mitola string"
+	[method.total_duration.returns]
+	what = "a Float"
+	*/
 	total_duration {
 		^this.duration_pattern.asStream.all.sum;
 	}
 
+	/*
+	[method.amplitude_pattern]
+	description = "calculates a pattern realizing the amplitudes in the Mitola score"
+	[method.amplitude_pattern.returns]
+	what = "a pattern"
+	*/
 	amplitude_pattern {
 		^this.pr_animated_pattern("amp", \staticproperty, this.gVOLUME_DEFAULT);
 	}
 
+	/*
+	[method.lag_pattern]
+	description = "calculates a pattern realizing the lag values in the Mitola score"
+	[method.lag_pattern.returns]
+	what = "a pattern"
+	*/
 	lag_pattern {
 		^this.pr_animated_pattern("lag", \staticproperty, this.gLAG_DEFAULT);
 	}
 
+	/*
+	[method.legato_pattern]
+	description = "calculates a pattern realizing the lag values in the Mitola score"
+	[method.legato_pattern.returns]
+	what = "a pattern"
+	*/
 	legato_pattern {
 		^this.pr_animated_pattern("legato", \staticproperty, this.gLEGATO_DEFAULT);
 	}
 
+	/*
+	[method.tempo_pattern]
+	description = "calculates a pattern realizing the tempo values in the Mitola score; the tempo values are divided by 60 so they can be passed to a tempo clock"
+	[method.tempo_pattern.returns]
+	what = "a pattern"
+	*/
 	tempo_pattern {
 		^(this.pr_animated_pattern("tempo", \staticproperty, this.gTEMPO_DEFAULT)/60.0);
 	}
 
+	/*
+	[method.custom_property_pattern]
+	description = "calculates a pattern realizing the tempo values in the Mitola score; the tempo values are divided by 60 so they can be passed to a tempo clock"
+	[method.custom_property_pattern.args]
+	custom_string = "name of the property to extract from the score"
+	default_value  = "default value for the property if it has never been specified before"
+	[method.custom_property_pattern.returns]
+	what = "a pattern"
+	*/
 	custom_property_pattern {
 		| custom_string, default_value=0 |
 		^(this.pr_animated_pattern(custom_string, \staticproperty, default_value));
 	}
 
+	/*
+	[method.as_pbind]
+	description = "calculates a pattern containing all desired properties in the score"
+	[method.as_pbind.args]
+	instrument= "instrument that will play the pattern; should be a symbol that is used as name in a SynthDef (default=\\default)"
+	root_frequency= "root frequency, required to map scala degrees to actual frequencies. Use RootFrequencyCalculator if you want to pin a given note to a desired frequency"
+	include_custom_properties= "boolean, indicating if the pbind should just contain a few standard properties, or all properties specified in teh score"
+	custom_property_defaults="Dictionary (may be nil) to define default values for custom properties"
+	include_tempo="boolean to indicate if tempo should be part of extracted pattern (default: false). By extracting tempo from the pattern, you lose the ability to play the pattern against a different TempoClock."
+	[method.as_pbind.returns]
+	what = "a pattern"
+	*/
 	as_pbind {
 		|instrument=\default, root_frequency=nil, include_custom_properties=true, custom_property_defaults=nil, include_tempo=false|
 		if (root_frequency.isNil) {
@@ -340,11 +568,6 @@ Mitola {
 					scale = 1/60.0;
 				};
 				mapped_props = mapped_props.add([pbindkey, this.custom_property_pattern(stringproperty, default_val)*scale]);
-
-
-				stringproperty.debug("prop");
-				(this.custom_property_pattern(stringproperty, default_val)*scale).asStream.all.postcs;
-
 			});
 			mapped_props = mapped_props.flatten;
 			resulting_pattern = Pbind(
@@ -358,6 +581,14 @@ Mitola {
 		}
 	}
 
+	/*
+	[method.pr_extract_all_properties]
+	description='''
+	internal method to extract a list of all properties that occur in a score
+	'''
+	[method.pr_extract_all_properties.returns]
+	what = "a list of properties (may contain duplicates)"
+	*/
 	pr_extract_all_properties {
 		var props = this.mitola_parse_result.collect({
 			| el |
@@ -370,6 +601,14 @@ Mitola {
 		^props;
 	}
 
+	/*
+	[method.pr_extract_all_property_name_sym]
+	description='''
+	internal method to extract a Dictionary of (propertyname -> propertyname.asSymbol)
+	'''
+	[method.pr_extract_all_property_name_sym.returns]
+	what = "a Dictionary"
+	*/
 	pr_extract_all_property_name_sym {
 		var custom_properties = Dictionary.newFrom([
 			"amp", \amp,
@@ -386,9 +625,9 @@ Mitola {
 	}
 
 	/*
-	[method.pr_animatedPattern]
-	description = "internal method to return a pattern generating the values of a panola property, also taking into account the defined automations - this is a generic method that is used by practically all other pattern extraction functions"
-	[method.pr_animatedPattern.returns]
+	[method.pr_animated_pattern]
+	description = "internal method to return a pattern generating the values of a Mitola property, also taking into account the defined automations - this is a generic method that is used by practically all other pattern extraction functions"
+	[method.pr_animated_pattern.returns]
 	what = "a pattern (Pseq)"
 	*/
 	pr_animated_pattern {
@@ -457,3 +696,213 @@ Mitola {
 	}
 
 }
+
+/*
+[examples]
+what = '''
+// Mitola is a way to extract Pbind keys from a concise specification for microtonal music.
+// First things first. To install Mitola (you need to do this only once) we need two quarks:
+
+Quarks.install("https://github.com/shimpe/scparco"); // parser combinator library
+Quarks.install("https://github.com/shimpe/mitola"); // mitola implementation
+
+// Let's start with the "Hello world" of Mitola: a simple scale.
+// In microtonal music, we need to define the scale degrees first. I'm here inlining the scala contents,
+// but you can also load them from file using parseFile.
+(
+s.waitForBoot({
+	var tuning = [
+		"! 12edo.scl",
+		"!",
+		"12 edo",
+		" 12",
+		"!",
+		" | 1/12 >",
+		" | 2/12 >",
+		" | 3/12 >",
+		" | 4/12 >",
+		" | 5/12 >",
+		" | 6/12 >",
+		" | 7/12 >",
+		" | 8/12 >",
+		" | 9/12 >",
+		" | 10/12 >",
+		" | 11/12 >",
+		" 2/1"
+	].join("\n");
+	var score = Mitola("1[4]_16@amp[0.6] 2 3 4 5 6 7 8 9 10 11 12 1[5]", scala_contents: tuning);
+	// find out which root frequency to use to get degree 10 in octave 4 (A4) to map to 440Hz.
+	var r = RootFrequencyCalculator(tuning);
+	var root_freq = r.get_root_frequency("10[4]", 440);
+	var player = score.as_pbind(root_frequency:root_freq).play; // listen to the score with the default instrument
+});
+)
+
+// another example of playing two lines simultaneously in 7EDO tuning
+// (note: nothing prevents you from writing the second line in a different tuning of course...)
+(
+s.waitForBoot({
+	var tuning = [
+		"! 7edo.scl",
+		"!",
+		"7 edo",
+		" 7",
+		"!",
+		" | 1/7 >",
+		" | 2/7 >",
+		" | 3/7 >",
+		" | 4/7 >",
+		" | 5/7 >",
+		" | 6/7 >",
+		" 2/1"
+	].join("\n");
+	var score = Mitola("1[4]_16@amp[0.6] 2 3_32 4 5_16 6 7 1[5]_4", scala_contents: tuning);
+	var score2 = Mitola("1[3]_16@amp[0.6] 5 1 5 1 5 1 5 1", scala_contents:tuning);
+	// find out which root frequency to use to get degree 4 in octave 4 to map to 432Hz.
+	var r = RootFrequencyCalculator(tuning);
+	var root_freq = r.get_root_frequency("4[4]", 432);
+	var player = Ppar([
+		score.as_pbind(root_frequency:root_freq),
+		score2.as_pbind(root_frequency:root_freq)
+	]).play; // listen to score and score2 simultaneously with the default instrument
+});
+)
+
+// if you define synths in supercollider, you can use them instead of the default instrument to play
+(
+s.waitForBoot({
+	var tuning = [
+		"! 7edo.scl",
+		"!",
+		"7 edo",
+		" 7",
+		"!",
+		" | 1/7 >",
+		" | 2/7 >",
+		" | 3/7 >",
+		" | 4/7 >",
+		" | 5/7 >",
+		" | 6/7 >",
+		" 2/1"
+	].join("\n");
+	var score = Mitola("1[4]_16@amp[0.6] 2 3_32 4 5_16 6 7 1[5]_4", scala_contents: tuning);
+	var score2 = Mitola("1[3]_16@amp[0.6] 5 1 5 1 5 1 5 1", scala_contents:tuning);
+	// find out which root frequency to use to get degree 4 in octave 4 to map to 432Hz.
+	var r = RootFrequencyCalculator(tuning);
+	var root_freq = r.get_root_frequency("4[4]", 432);
+	var pattern = Ppar([
+		score.as_pbind(\sawSynth, root_frequency:root_freq),
+		score2.as_pbind(\sawSynth, root_frequency:root_freq)
+	]);
+	var player;
+
+	SynthDef(\sawSynth, { arg freq = 440, amp = 0.1, att = 0.1, rel = 2, lofreq = 1000, hifreq = 3000, pan = 0;
+		var env, snd;
+		env = Env.perc(
+			attackTime: att,
+			releaseTime: rel,
+			level: amp
+		).kr(doneAction: 2);
+		snd = Saw.ar(freq: freq * [0.99, 1, 1.001, 1.008], mul: env);
+		snd = LPF.ar(
+			in: snd,
+			freq: LFNoise2.kr(1).range(lofreq, hifreq)
+		);
+		snd = Mix.ar(snd);
+		snd = Pan2.ar(snd, pan);
+		Out.ar(0, snd);
+		// Basic saw synth
+		//By Bruno Ruviaro
+		//http://sccode.org/1-54H
+	}).add;
+
+	s.sync;
+
+	player = pattern.play;
+});
+)
+
+// some other Mitola syntax
+(
+var degree = "1"; // a degree without modifier in default equave, default duration, no properties attached
+var degree_modified = "1{+50.0}"; // degree 1 augmented with 50.0 cents
+var degree_modified2 = "2{-1/3}"; // degree 2 lowered by 1/3 of the gap between degree 2 and degree 1
+var degree_modified3 = "4{+4/3}"; // note 4/3 = 3/3 + 1/3 -> degree 5 augmented by 1/3 of the gap between 5 and 6
+var degree_equave = "2[5]"; // degree 2 in the 5th equivalence interval (equave, think "octave" in trad. notation)
+var degree_mod_equave = "2{+56.0}[3]"; // degree 2 in 3rd equave, augmented by 56.0 cents
+var degree_duration = "2_4"; // degree 2 as a quarter note
+var degree_duration2 = "2[3]_16"; // degree 2 in third equave as a sixteenth note
+var degree_duration3 = "2[3]_16."; // degree 2 in third equave as a dotted sixteenth note
+var degree_duration4 = "2[3]_16*2/3"; // degree 2 in third equave as sixteenth*2/3 note (sixteenth triplet)
+var degree_duration = "1_8 3 5_16 7 3_8"; // rhythmic values are reused until a new one is specified: here 1,3 are eighth notes; 5,7 are 16th notes and 3 is again an eighth note
+var rest = "r_4"; // quarter rest
+var rest2 = "r_32"; // 32nd rest
+var chord = "< 1[4]_4 5 1[5] >"; // chord made of notes 1[4], 5 and 1[5] lasting one quarter note -> properties of first note are used for the chord
+var repeats = " |: 1 2 3 4 :|*3"; // notes 1,2,3 and 4 played 3 times in a row
+var props = "1@amp[0.3]@legato{0.1} 2 3 4@amp[0.5] 5 6@amp[0.6]@legato{0.9}"; // notes 1,2,3 have amp=0.3; note 4,5 have amp=0.5 and note 6 has amp=0.6. Square brackets keep value constant until new value is specified.
+var props2 = "1@amp[0.3]@legato{0.1} 2 3 4@amp[0.5] 5 6@amp[0.6]@legato{0.9}"; // note 1 has property legato=0.1 which gradually increases to note 6 with legato 0.9. Curly brackets linearly animate property values.
+
+//Properties added in the score appear as keys in the supercollider pattern that is extracted from the score so you can use them for anything you'd like by postprocessing the pattern extracted from the score with a Pbindf.
+
+)
+
+// using properties, we can now even change synth parameters
+// Wrapping property values in {} animates them in the notes between, so here we make a crescendo in the melody
+// between amp=0.2 and amp=0.6. To understand better what happens: "amp" appears in the score as a property, and in the SynthDef as an argument. This shared name is how the score is linked to the SynthDef.
+// If you wrap the property values in [], the values remain static, so in the accompaniment, the amplitude stays
+// at 0.3, until the last note where it becomes 0.6.
+(
+s.waitForBoot({
+	var tuning = [
+		"! 7edo.scl",
+		"!",
+		"7 edo",
+		" 7",
+		"!",
+		" | 1/7 >",
+		" | 2/7 >",
+		" | 3/7 >",
+		" | 4/7 >",
+		" | 5/7 >",
+		" | 6/7 >",
+		" 2/1"
+	].join("\n");
+    var score = Mitola("1[4]_16@amp{0.2} 2 3_32 4 5_16 6 7 1[5]_4@amp{0.6}", scala_contents: tuning);
+var score2 = Mitola("1[3]_16@amp[0.3] 5 1 5 1 5 1 5 1@amp[0.6]", scala_contents:tuning);
+	// find out which root frequency to use to get degree 4 in octave 4 to map to 432Hz.
+	var r = RootFrequencyCalculator(tuning);
+	var root_freq = r.get_root_frequency("4[4]", 432);
+	var pattern = Ppar([
+		score.as_pbind(\sawSynth, root_frequency:root_freq),
+		score2.as_pbind(\sawSynth, root_frequency:root_freq)
+	]);
+	var player;
+
+	SynthDef(\sawSynth, { arg freq = 440, amp = 0.1, att = 0.1, rel = 2, lofreq = 1000, hifreq = 3000, pan = 0;
+		var env, snd;
+		env = Env.perc(
+			attackTime: att,
+			releaseTime: rel,
+			level: amp
+		).kr(doneAction: 2);
+		snd = Saw.ar(freq: freq * [0.99, 1, 1.001, 1.008], mul: env);
+		snd = LPF.ar(
+			in: snd,
+			freq: LFNoise2.kr(1).range(lofreq, hifreq)
+		);
+		snd = Mix.ar(snd);
+		snd = Pan2.ar(snd, pan);
+		Out.ar(0, snd);
+		// Basic saw synth
+		//By Bruno Ruviaro
+		//http://sccode.org/1-54H
+	}).add;
+
+	s.sync;
+
+	player = pattern.play;
+});
+)
+
+'''
+*/
