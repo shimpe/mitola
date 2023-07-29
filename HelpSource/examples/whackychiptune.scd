@@ -169,7 +169,7 @@ s.waitForBoot({
 
 	patterns[\m7_8] = seq.(
 		Dictionary[
-			Mitola("1[4]_64@amp{0.5}@legato{0.2}@attack{0.05}@width{0.1} 8 9 3 1[5]_64 8 9 3 1[3]_64 8 9 3 1[6]_64@width{0.5} 8 9 3 1[5]_64 8 9 3 1[3]_64 8 9 3@width{0.1} 1[3]_64 8 9 3 1[4]_64 8 9 3@amp{0.1}@legato{1.0}@attack{0.01}@width{0.5}", tuning) -> \pulse,
+			Mitola("1[4]_64@pan{-0.9}@amp{0.5}@legato{0.2}@attack{0.05}@width{0.1} 8 9 3 1[5]_64 8 9 3 1[3]_64 8 9 3 1[6]_64@width{0.5} 8 9 3 1[5]_64 8 9 3 1[3]_64 8 9 3@width{0.1} 1[3]_64 8 9 3 1[4]_64 8 9 3@amp{0.1}@legato{1.0}@attack{0.01}@width{0.5}@pan{+0.9}", tuning) -> \pulse,
 			Mitola("1[4]_8 4 1_16 2 4 5", tuning) -> \triangle],
 		root_frequency,
 		2);
