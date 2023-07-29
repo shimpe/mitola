@@ -1,5 +1,5 @@
 (
-// example recording on https://voca.ro/1be3vPzTFfqP
+// example recording on https://voca.ro/1kuYHlqSwGDz
 s.waitForBoot({
 	var patterns = ();
 	var drumpatterns = ();
