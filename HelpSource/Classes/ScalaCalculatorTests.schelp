@@ -1,0 +1,17 @@
+TITLE:: ScalaCalculatorTests
+summary:: tests for the MitolaParser class
+categories:: Microtonal utils
+related:: Classes/ScalaParser, Classes/Mitola
+
+DESCRIPTION::
+unit tests
+
+
+
+
+
+EXAMPLES::
+
+code::
+(FIXME add some example code)
+::

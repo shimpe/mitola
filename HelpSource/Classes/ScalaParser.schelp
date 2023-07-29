@@ -1,0 +1,127 @@
+TITLE:: ScalaParser
+summary:: a parser for scala files and strings
+categories:: Microtonal utils
+related:: Classes/ScalaCalculator, Classes/Mitola
+
+DESCRIPTION::
+ScalaParser implements a parser for the contents of a scala file
+
+
+
+CLASSMETHODS::
+
+METHOD:: new
+	new creates a new ScalaParser
+	
+
+returns:: a ScalaParser
+METHOD:: parse
+	parse takes a scala string (= contents of scala file) and parses it to parse tree
+	
+
+ARGUMENT:: scalastring
+a string containing a scala specification
+
+returns:: 	if parsing fails: prints a message and returns nil
+	if parsing succeeds: returns the parse tree
+	
+METHOD:: parse_file
+	parse takes a scala filename and parses its contents to a parse tree
+	
+
+ARGUMENT:: filename
+a string containing a path to a scala file
+
+returns:: 	if loading/parsing fails: prints a message and returns nil
+	if parsing succeeds: returns the parse tree
+	
+METHOD:: pr_restofline
+	makes a Parser that eats the rest of a line (but not the newline)
+	
+
+returns:: a Parser
+METHOD:: pr_nopoint
+	makes a Parser that fails if the next token is a point
+	
+
+returns:: a Parser
+METHOD:: pr_comment
+	makes a Parser that matches a comment in a scala file (not the newline)
+	
+
+returns:: a Parser
+METHOD:: pr_commentLine
+	makes a Parser that matches a comment in a scala file (including the newline)
+	
+
+returns:: a Parser
+METHOD:: pr_pitchRatio
+	makes a Parser that matches a pitch line specified as a ratio Integer/Integer. No sign is allowed.
+	
+
+returns:: a Parser
+METHOD:: pr_pitchPrimeVector
+	makes a Parser that matches a pitch line specified in prime vector notation | exp1 exp2 ... >.
+	
+
+returns:: a Parser
+METHOD:: pr_pitchCents
+	makes a Parser that matches a pitch line specified in cents. Such line MUST include a decimal point, otherwise it's interpreted as a ratio.
+	
+
+returns:: a Parser
+METHOD:: pr_pitchParser
+	makes a Parser that matches a pitch line specified in one of the valid formats: cents, ratio or prime vector.
+	
+
+returns:: a Parser
+METHOD:: pr_scalaParser
+	makes a Parser that matches the contents of a scala file
+	
+
+returns:: a Parser
+
+INSTANCEMETHODS::
+
+METHOD:: init
+	init initializes a new ScalaParser
+	
+
+returns:: a ScalaParser ready to do some parsing
+
+EXAMPLES::
+
+code::
+(
+var state;
+var p = ScalaParser.pr_scalaParser;
+
+var scala_txt = [
+	"! meanquar.scl",
+	"!",
+	"1/4-comma meantone scale. Pietro Aarons temperament (1523)",
+	" 12",
+	"!",
+	" 76.04900",
+	" 193.15686",
+	" 310.26471",
+	" 5/4",
+	" 503.42157",
+	" 579.47057",
+	" 696.57843",
+	" 25/16",
+	" 889.73529",
+	" 1006.84314",
+	" 1082.89214",
+	" 2/1"
+].join("\n");
+
+state = p.run(scala_txt);
+state.isError.debug("isError"); // expect: false
+state.result[\description].debug("description"); // 1/4-comma meantone scale. Pietro Aarons temperament (1523)
+state.result[\equivalenceinterval].debug("equave"); // ('what': 'equivalenceinterval', 'numerator': 2, 'denominator': 1)
+state.result[\degrees].size.debug("size"); //12
+state.result[\degrees][0].debug("first pitch"); // ('kind': 'cents', 'what': 'pitch', 'numerator': 0, 'denominator': 1)
+)
+
+::

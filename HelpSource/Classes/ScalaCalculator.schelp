@@ -1,0 +1,178 @@
+TITLE:: ScalaCalculator
+summary:: a calculator for interpreting mitola degrees in scala definitions
+categories:: Microtonal utils
+related:: Classes/ScalaParser, Classes/Mitola
+
+DESCRIPTION::
+ScalaCalculator implements calculations required to translate mitola degrees and pitch modifiers into frequencies
+
+
+
+CLASSMETHODS::
+
+METHOD:: prime_factors
+	A table of prime factors, used to interpret scala's prime vector notation for ratios
+	
+
+returns:: a list of primes
+METHOD:: new
+New creates a new ScalaCalculator
+
+returns:: a new ScalaCalculator
+METHOD:: initClass
+initializes the prime factor table (which is shared by all ScalaCalculator instances)
+
+returns:: the initialized table of primes
+METHOD:: pr_ratio_to_cents
+converts between ratio and cents representation; cents make it easy to calculate in pitch space, whereas ratios are easier to use in frequency space
+
+ARGUMENT:: ratio
+the ratio to convert (a float)
+
+returns:: a Float
+METHOD:: pr_cents_to_ratio
+converts between ratio and cents representation; cents make it easy to calculate in pitch space, whereas ratios are easier to use in frequency space
+
+ARGUMENT:: cents
+the number of cents to convert to a ratio (a float)
+
+returns:: a Float
+
+INSTANCEMETHODS::
+
+METHOD:: scala_parse_result
+	a variable to store the result of parsing the scala definition
+	
+
+returns:: a list of primes
+METHOD:: previous_equivalence_interval
+	a variable to remember the previously used note equivalence interval so it can be reused if set to \previous
+	equivalence interval corresponds to what in conventional music notation would be called an octave
+	
+
+returns:: a equivalence interval value
+METHOD:: init
+initializes the ScalaCalculator class
+
+returns:: an initialized ScalaCalculator
+METHOD:: parse
+parses a string containing a scala definition
+
+returns:: the parse tree representing the information in the scala string
+METHOD:: parse_file
+parses a file containing a scala definition
+
+ARGUMENT:: filename
+the file name containing a scala definition to be parsed
+
+returns:: the parse tree representing the information in the scala file
+METHOD:: note_to_freq
+parses a file containing a scala definition
+
+ARGUMENT:: mitola_note_string
+a mitola string containing a single note (degree) - may optionally be decorated with modifiers, equivalenceinterval, duration, properties
+
+ARGUMENT:: root_frequency
+the base frequency, i.e. the frequency for degree 1[0] in the given scala definition. For calculating such frequency, you can use the RootFrequenceCalculator class.
+
+returns:: the frequency of the given mitola degree, given the current scala definition and root frequency
+METHOD:: no_of_degrees
+returns the number of degrees that are defined in the scala definition
+
+returns:: an integer
+METHOD:: max_degree
+returns the maximum degree number for the given scala definition. Note that this method replies a 0-based answer, whereas the mitola degrees are specified using 1-based degree numbers. So if max_degree return 3, the valid mitola degrees are 1,2,3 and 4.
+
+returns:: an integer
+METHOD:: pr_degree_to_cents
+	pr_degree_to_cents is an internal method that converts a mitola degree (integer) into a number of cents, given the current scala definition - it does not care about pitch modifiers
+	
+
+ARGUMENT:: degree
+an integer representing a 0-based mitola degree
+
+ARGUMENT:: note_equivalence_interval
+an integer representing the note equivalence interval (equivalent of 'octave' in traditional notation)
+
+returns:: a Float
+METHOD:: pr_previous_degree
+	an internal method that converts a given degree and equivalence_interval to the previous degree and equivalence_interval in the given scala definition, taking care of wrapping.
+	
+
+ARGUMENT:: degree
+an integer representing a 0-based mitola degree
+
+ARGUMENT:: equivalence_interval
+an integer representing the note equivalence interval (equivalent of 'octave' in traditional notation)
+
+returns:: a Float
+METHOD:: pr_next_degree
+	an internal method that converts a given degree and equivalence_interval to the next degree and equivalence_interval in the given scala definition, taking care of wrapping.
+	
+
+ARGUMENT:: degree
+an integer representing a 0-based mitola degree
+
+ARGUMENT:: equivalence_interval
+an integer representing the note equivalence interval (equivalent of 'octave' in traditional notation)
+
+returns:: a Float
+METHOD:: pr_info_note_pitch_modifier_parse_tree_to_cents
+	function that calculates the influence of the pitch modifier on the frequency. Modifiers specified in cents are applied as absolute modifiers. Modifiers specified as ratios are interpreted as relative degree modifiers, e.g. {+3/2} is interpreted as 2/2+1/2, i.e. raising to the next degree (+2/2=+1) and then raising to halfway between the 2nd next and 3rd next degree (+1/2). This distinction is important to understand the behavior in case of scales with different gaps between the pitches.
+	
+
+ARGUMENT:: degree
+an integer representing a 0-based mitola degree
+
+ARGUMENT:: equivalence_interval
+an integer representing the note equivalence interval (equivalent of 'octave' in traditional notation)
+
+ARGUMENT:: info_note_pitch_modifier
+parse tree of the note modifier part of the mitola specification
+
+returns:: a Float
+METHOD:: pr_note_pitch_parse_tree_to_freq
+	takes a part of a mitola parse tree representing a single note's pitch information and converts it to a frequency value, given the current scala definition and a root frequency.
+	
+
+ARGUMENT:: info_note_pitch_parse_tree
+parse tree
+
+ARGUMENT:: root_frequency
+root frequency
+
+returns:: a Float
+
+EXAMPLES::
+
+code::
+(
+var scala = [
+	"! 12edo.scl",
+	"!",
+	"12 edo",
+	" 12",
+	"!",
+	" | 1/12 >",
+	" | 2/12 >",
+	" | 3/12 >",
+	" | 4/12 >",
+	" | 5/12 >",
+	" | 6/12 >",
+	" | 7/12 >",
+	" | 8/12 >",
+	" | 9/12 >",
+	" | 10/12 >",
+	" | 11/12 >",
+	" 2/1"
+].join("\n");
+var calc = ScalaCalculator();
+calc.parse(scala);
+calc.no_of_degrees.debug("no of degrees"); // expected: 12
+calc.max_degree.debug("max degree"); // expected: 11
+calc.note_to_freq("1[0]", 27.5).debug("frequency of note 1[0] if root_freq=27.5"); // expected: 27.5
+calc.note_to_freq("1[1]", 27.5).debug("frequency of note 1[1] if root_freq=27.5"); // expected: 55
+calc.note_to_freq("1{+100.0}[1]", 27.5).debug("frequency of note 1{+100.0}[1] if root_freq=27.5"); // expected: 58.27
+)
+
+::
