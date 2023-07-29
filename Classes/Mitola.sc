@@ -302,7 +302,7 @@ Mitola {
 		} {
 			if (scala_filename.notNil) {
 				this.scala_calculator = ScalaCalculator();
-				this.scala_calculator.parseFile(scala_filename);
+				this.scala_calculator.parse_file(scala_filename);
 			} {
 				"Error. Pass either a scala string or a scala file name into the constructor.".postln;
 				^nil;
@@ -708,7 +708,7 @@ Quarks.install("https://github.com/shimpe/mitola"); // mitola implementation
 
 // Let's start with the "Hello world" of Mitola: a simple scale.
 // In microtonal music, we need to define the scale degrees first. I'm here inlining the scala contents,
-// but you can also load them from file using parseFile.
+// but you can also load them from file using parse_file.
 (
 s.waitForBoot({
 	var tuning = [
