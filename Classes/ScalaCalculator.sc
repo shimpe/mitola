@@ -1,13 +1,60 @@
+/*
+[general]
+title = "ScalaCalculator"
+summary = "a calculator for interpreting mitola degrees in scala definitions"
+categories = "Microtonal utils"
+related = "Classes/ScalaParser, Classes/Mitola"
+description = '''
+ScalaCalculator implements calculations required to translate mitola degrees and pitch modifiers into frequencies
+'''
+*/
 ScalaCalculator {
+	/*
+	[classmethod.prime_factors]
+	description='''
+	A table of prime factors, used to interpret scala's prime vector notation for ratios
+	'''
+	[classmethod.prime_factors.returns]
+	what="a list of primes"
+	*/
 	classvar prime_factors;
 
+	/*
+	[method.scala_parse_result]
+	description='''
+	a variable to store the result of parsing the scala definition
+	'''
+	[method.scala_parse_result.returns]
+	what="a list of primes"
+	*/
 	var <>scala_parse_result;
+	/*
+	[method.previous_repeat_interval]
+	description='''
+	a variable to remember the previously used note repeat interval so it can be reused if set to \previous
+	repeat interval corresponds to what in conventional music notation would be called an octave
+	'''
+	[method.previous_repeat_interval.returns]
+	what= "a repeat interval value"
+	*/
 	var <>previous_repeat_interval;
 
+	/*
+	[classmethod.new]
+	description = "New creates a new ScalaCalculator"
+	[classmethod.new.returns]
+	what = "a new ScalaCalculator"
+	*/
 	*new {
 		^super.new.init();
 	}
 
+	/*
+	[classmethod.initClass]
+	description = "initializes the prime factor table (which is shared by all ScalaCalculator instances)"
+	[classmethod.initClass.returns]
+	what = "the initialized table of primes"
+	*/
 	*initClass {
 		prime_factors = [ // 1000 prime factors ought to be enough for everyone :-)
 			2,3,5,7,11,13,17,19,23,29,31,37,41,43,47,53,59,61,67,71,73,79,83,89,97,101,103,107,
@@ -69,10 +116,24 @@ ScalaCalculator {
 			7841,7853,7867,7873,7877,7879,7883,7901,7907,7919];
 	}
 
+	/*
+	[method.init]
+	description = "initializes the ScalaCalculator class"
+	[method.init.returns]
+	what = "an initialized ScalaCalculator"
+	*/
 	init {
 		this.previous_repeat_interval = 4; // a default value
 	}
 
+	/*
+	[method.parse]
+	description = "parses a string containing a scala definition"
+	[mathod.parse.args]
+	scala_contents = "a string containing a valid scala definition"
+	[method.parse.returns]
+	what = "the parse tree representing the information in the scala string"
+	*/
 	parse {
 		| scala_contents |
 		this.scala_parse_result = ScalaParser.parse(scala_contents);
@@ -82,6 +143,14 @@ ScalaCalculator {
 		^this.scala_parse_result;
 	}
 
+	/*
+	[method.parseFile]
+	description = "parses a file containing a scala definition"
+	[method.parseFile.args]
+	filename = "the file name containing a scala definition to be parsed"
+	[method.parseFile.returns]
+	what = "the parse tree representing the information in the scala file"
+	*/
 	parseFile {
 		| filename |
 		var contents = FileReader.read(filename);
@@ -93,6 +162,15 @@ ScalaCalculator {
 		^this.scala_parse_result;
 	}
 
+	/*
+	[method.note_to_freq]
+	description = "parses a file containing a scala definition"
+	[method.note_to_freq.args]
+	mitola_note_string = "a mitola string containing a single note (degree) - may optionally be decorated with modifiers, repeatinterval, duration, properties"
+	root_frequency = "the base frequency, i.e. the frequency for degree 1[0] in the given scala definition. For calculating such frequency, you can use the RootFrequenceCalculator class."
+	[method.note_to_freq.returns]
+	what = "the frequency of the given mitola degree, given the current scala definition and root frequency"
+	*/
 	note_to_freq {
 		| mitola_note_string, root_frequency=nil |
 		var state = MitolaParser.pr_noteAndModAndOctAndDurAndProp.run(mitola_note_string);
@@ -103,25 +181,64 @@ ScalaCalculator {
 		^this.pr_note_pitch_parse_tree_to_freq(state.result[\info][\note][\pitch], root_frequency);
 	}
 
+	/*
+	[method.no_of_degrees]
+	description = "returns the number of degrees that are defined in the scala definition"
+	[method.no_of_degrees.returns]
+	what = "an integer"
+	*/
 	no_of_degrees {
 		^this.scala_parse_result.[\degrees].size;
 	}
 
+	/*
+	[method.max_degree]
+	description = "returns the maximum degree number for the given scala definition. Note that this method replies a 0-based answer, whereas the mitola degrees are specified using 1-based degree numbers. So if max_degree return 3, the valid mitola degrees are 1,2,3 and 4."
+	[method.max_degree.returns]
+	what = "an integer"
+	*/
 	max_degree {
 		^(this.scala_parse_result.[\degrees].size - 1);
 	}
 
+	/*
+	[classmethod.pr_ratio_to_cents]
+	description = "converts between ratio and cents representation; cents make it easy to calculate in pitch space, whereas ratios are easier to use in frequency space"
+	[classmethod.pr_ratio_to_cents.args]
+	ratio = "the ratio to convert (a float)"
+	[classmethod.pr_ratio_to_cents.returns]
+	what = "a Float"
+	*/
 	*pr_ratio_to_cents {
 		| ratio |
 		var cents = 1200*(ratio.log2);
 		^cents;
 	}
 
+	/*
+	[classmethod.pr_cents_to_ratio]
+	description = "converts between ratio and cents representation; cents make it easy to calculate in pitch space, whereas ratios are easier to use in frequency space"
+	[classmethod.pr_cents_to_ratio.args]
+	cents = "the number of cents to convert to a ratio (a float)"
+	[classmethod.pr_cents_to_ratio.returns]
+	what = "a Float"
+	*/
 	*pr_cents_to_ratio {
 		| cents |
 		^2.pow(cents/1200);
 	}
 
+	/*
+	[method.pr_degree_to_cents]
+	description='''
+	pr_degree_to_cents is an internal method that converts a mitola degree (integer) into a number of cents, given the current scala definition - it does not care about pitch modifiers
+	'''
+	[method.pr_degree_to_cents.args]
+	degree = "an integer representing a 0-based mitola degree"
+	note_repeat_interval = "an integer representing the note repeat interval (equivalent of 'octave' in traditional notation)"
+	[method.pr_degree_to_cents.returns]
+	what= "a Float"
+	*/
 	pr_degree_to_cents {
 		| degree, note_repeat_interval |
 		var scala_info = this.scala_parse_result[\degrees][degree]; // ('kind': 'cents', 'what': 'pitch', 'numerator': 0,'denominator': 1)
@@ -169,6 +286,18 @@ ScalaCalculator {
 		^cents;
 	}
 
+
+	/*
+	[method.pr_previous_degree]
+	description='''
+	an internal method that converts a given degree and repeat_interval to the previous degree and repeat_interval in the given scala definition, taking care of wrapping.
+	'''
+	[method.pr_previous_degree.args]
+	degree = "an integer representing a 0-based mitola degree"
+	repeat_interval = "an integer representing the note repeat interval (equivalent of 'octave' in traditional notation)"
+	[method.pr_previous_degree.returns]
+	what= "a Float"
+	*/
 	pr_previous_degree {
 		| degree, repeat_interval |
 		var next_degree = degree - 1;
@@ -179,6 +308,18 @@ ScalaCalculator {
 		^(\degree: next_degree, \repeatinterval: repeat_interval);
 	}
 
+
+	/*
+	[method.pr_next_degree]
+	description='''
+	an internal method that converts a given degree and repeat_interval to the next degree and repeat_interval in the given scala definition, taking care of wrapping.
+	'''
+	[method.pr_next_degree.args]
+	degree = "an integer representing a 0-based mitola degree"
+	repeat_interval = "an integer representing the note repeat interval (equivalent of 'octave' in traditional notation)"
+	[method.pr_next_degree.returns]
+	what= "a Float"
+	*/
 	pr_next_degree {
 		| degree, repeat_interval |
 		var next_degree = degree + 1;
@@ -189,6 +330,18 @@ ScalaCalculator {
 		^(\degree: next_degree, \repeatinterval: repeat_interval);
 	}
 
+	/*
+	[method.pr_info_note_pitch_modifier_parse_tree_to_cents]
+	description='''
+	function that calculates the influence of the pitch modifier on the frequency. Modifiers specified in cents are applied as absolute modifiers. Modifiers specified as ratios are interpreted as relative degree modifiers, e.g. {+3/2} is interpreted as 2/2+1/2, i.e. raising to the next degree (+2/2=+1) and then raising to halfway between the 2nd next and 3rd next degree (+1/2). This distinction is important to understand the behavior in case of scales with different gaps between the pitches.
+	'''
+	[method.pr_info_note_pitch_modifier_parse_tree_to_cents.args]
+	degree = "an integer representing a 0-based mitola degree"
+	repeat_interval = "an integer representing the note repeat interval (equivalent of 'octave' in traditional notation)"
+	info_note_pitch_modifier = "parse tree of the note modifier part of the mitola specification"
+	[method.pr_info_note_pitch_modifier_parse_tree_to_cents.returns]
+	what= "a Float"
+	*/
 	pr_info_note_pitch_modifier_parse_tree_to_cents {
 		| degree, repeat_interval, info_note_pitch_modifier |
 		/* Example
@@ -336,6 +489,18 @@ ScalaCalculator {
 		^cents;
 	}
 
+
+	/*
+	[method.pr_note_pitch_parse_tree_to_freq]
+	description='''
+	takes a part of a mitola parse tree representing a single note's pitch information and converts it to a frequency value, given the current scala definition and a root frequency.
+	'''
+	[method.pr_note_pitch_parse_tree_to_freq.args]
+	info_note_pitch_parse_tree = "parse tree"
+	root_frequency = "root frequency"
+	[method.pr_note_pitch_parse_tree_to_freq.returns]
+	what= "a Float"
+	*/
 	pr_note_pitch_parse_tree_to_freq {
 		| info_note_pitch_parse_tree, root_frequency=nil |
 		/* example:
