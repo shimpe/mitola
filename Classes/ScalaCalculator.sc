@@ -344,7 +344,7 @@ ScalaCalculator {
 	*/
 	pr_info_note_pitch_modifier_parse_tree_to_cents {
 		| degree, repeat_interval, info_note_pitch_modifier |
-		/* Example
+		/* Example:
 		(
 		'kind': 'cents',
 		'what': 'notemodifier',
@@ -549,3 +549,37 @@ ScalaCalculator {
 		^(root_frequency * ratio);
 	}
 }
+
+/*
+[examples]
+what = '''
+(
+var scala = [
+	"! 12edo.scl",
+	"!",
+	"12 edo",
+	" 12",
+	"!",
+	" | 1/12 >",
+	" | 2/12 >",
+	" | 3/12 >",
+	" | 4/12 >",
+	" | 5/12 >",
+	" | 6/12 >",
+	" | 7/12 >",
+	" | 8/12 >",
+	" | 9/12 >",
+	" | 10/12 >",
+	" | 11/12 >",
+	" 2/1"
+].join("\n");
+var calc = ScalaCalculator();
+calc.parse(scala);
+calc.no_of_degrees.debug("no of degrees"); // expected: 12
+calc.max_degree.debug("max degree"); // expected: 11
+calc.note_to_freq("1[0]", 27.5).debug("frequency of note 1[0] if root_freq=27.5"); // expected: 27.5
+calc.note_to_freq("1[1]", 27.5).debug("frequency of note 1[1] if root_freq=27.5"); // expected: 55
+calc.note_to_freq("1{+100.0}[1]", 27.5).debug("frequency of note 1{+100.0}[1] if root_freq=27.5"); // expected: 58.27
+)
+'''
+*/
