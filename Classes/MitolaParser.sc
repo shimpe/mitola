@@ -22,7 +22,7 @@ MitolaParser : Parser {
 	/*
 	[method.init]
 	description = "initializes a new MitolaParser"
-	[classmethod.init.returns]
+	[method.init.returns]
 	what = "an initialized MitolaParser object"
 	*/
 	init {
@@ -35,8 +35,10 @@ MitolaParser : Parser {
 	[method.parse.args]
 	mitolastring = "a string containing a valid mitola score"
 	[method.parse.returns]
+	what = '''
 	if successful, parse returns the parse tree
 	if unsuccessful, a message is printed and nil is returned
+	'''
 	*/
 	parse {
 		| mitolastring |
@@ -55,8 +57,10 @@ MitolaParser : Parser {
 	[method.parseFile.args]
 	mitolastring = "a filename of a file containing a valid mitola score"
 	[method.parseFile.returns]
+	what='''
 	if successful, parse returns the parse tree
 	if unsuccessful, a message is printed and nil is returned
+	'''
 	*/
 	parseFile {
 		| filename |
@@ -204,7 +208,7 @@ MitolaParser : Parser {
 	/*
 	[classmethod.pr_pitchParser]
 	description = "internal method that creates a Parser that can parse the pitch part of a pitch modifier in any format (ratio, primevector or cents)"
-	[classmethod.pr_pitchCents.returns]
+	[classmethod.pr_pitchParser.returns]
 	what = "a Parser that parses a pitch modifier in any format (ratio, primevector or cents) and marks up the result"
 	*/
 	*pr_pitchParser {
@@ -373,9 +377,9 @@ MitolaParser : Parser {
 	}
 
 	/*
-	[classmethod.pr_propertyNameParser]
-	description = "internal method that creates a Parser that matches list of propertynames and values as attached to a mitola degree"
-	[classmethod.pr_propertyNameParser.returns]
+	[classmethod.pr_propertiesParser]
+	description = "internal method that creates a Parser that matches list of property names and values as attached to a mitola degree"
+	[classmethod.pr_propertiesParser.returns]
 	what = "a Parser"
 	*/
 	*pr_propertiesParser {
@@ -399,7 +403,7 @@ MitolaParser : Parser {
 	/*
 	[classmethod.pr_noteAndModAndOctAndDurAndProp]
 	description = "internal method that creates a Parser that matches a mitola degree with all possible markup (modifiers, repeatinterval durations, properties)"
-	[classmethod.pr_propertyNameParser.returns]
+	[classmethod.pr_noteAndModAndOctAndDurAndProp.returns]
 	what = "a Parser"
 	*/
 	*pr_noteAndModAndOctAndDurAndProp {
