@@ -144,14 +144,14 @@ ScalaCalculator {
 	}
 
 	/*
-	[method.parseFile]
+	[method.parse_file]
 	description = "parses a file containing a scala definition"
-	[method.parseFile.args]
+	[method.parse_file.args]
 	filename = "the file name containing a scala definition to be parsed"
-	[method.parseFile.returns]
+	[method.parse_file.returns]
 	what = "the parse tree representing the information in the scala file"
 	*/
-	parseFile {
+	parse_file {
 		| filename |
 		var contents = FileReader.read(filename);
 		if (contents.notNil) {

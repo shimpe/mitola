@@ -58,19 +58,19 @@ ScalaParser {
 	}
 
 	/*
-	[classmethod.parseFile]
+	[classmethod.parse_file]
 	description='''
 	parse takes a scala filename and parses its contents to a parse tree
 	'''
-	[classmethod.parseFile.args]
+	[classmethod.parse_file.args]
 	filename = "a string containing a path to a scala file"
-	[classmethod.parseFile.returns]
+	[classmethod.parse_file.returns]
 	what = '''
 	if loading/parsing fails: prints a message and returns nil
 	if parsing succeeds: returns the parse tree
 	'''
 	*/
-	*parseFile {
+	*parse_file {
 		| filename |
 		var contents = FileReader.read(filename);
 		if (contents.notNil) {

@@ -52,17 +52,17 @@ MitolaParser : Parser {
 	}
 
 	/*
-	[method.parseFile]
+	[method.parse_file]
 	description = "parses a Mitola score from file; upon failure displays an error msg and returns nil"
-	[method.parseFile.args]
+	[method.parse_file.args]
 	filename = "a filename of a file containing a valid mitola score"
-	[method.parseFile.returns]
+	[method.parse_file.returns]
 	what='''
 	if successful, parse returns the parse tree
 	if unsuccessful, a message is printed and nil is returned
 	'''
 	*/
-	parseFile {
+	parse_file {
 		| filename |
 		var contents = FileReader.read(filename);
 		if (contents.notNil) {

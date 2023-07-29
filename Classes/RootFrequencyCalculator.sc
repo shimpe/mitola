@@ -60,7 +60,7 @@ RootFrequencyCalculator {
 			this.parse(scala_contents);
 		} {
 			if (scala_filename.notNil) {
-				this.parseFile(scala_filename);
+				this.parse_file(scala_filename);
 			}
 		}
 		^this;
@@ -82,14 +82,14 @@ RootFrequencyCalculator {
 	}
 
 	/*
-	[method.parseFile]
+	[method.parse_file]
 	description = "parses a scala definition specified in a file"
-	[method.parseFile.args]
+	[method.parse_file.args]
 	filename = "a filename containing a valid scala definition"
-	[method.parseFile.returns]
+	[method.parse_file.returns]
 	what = "a ScalaCalculator initialized with the information from the file"
 	*/
-	parseFile {
+	parse_file {
 		| filename |
 		var contents = FileReader.read(filename);
 		if (contents.notNil) {
