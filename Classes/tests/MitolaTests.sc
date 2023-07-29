@@ -27,9 +27,9 @@ MitolaTests : UnitTest {
 			" | 11/12 >",
 			" 2/1"
 		].join("\n");
-		var m = Mitola("1[4]_8@vol[0.3]@legao{0.1} <2@vol[0.7] 3> 1[5]_2@legato[0.9]", scala_contents: scala_text);
+		var m = Mitola("1[4]_8@vol[0.3]@legato{0.1} <2@vol[0.7] 3> 1[5]_2@legato[0.9]", scala_contents: scala_text);
 		var r = RootFrequencyCalculator();
-		var root_freq, freqs, durs, vol_props, freq_props;
+		var root_freq, freqs, durs, vol_props, rez_props, legato_props;
 		r.parse(scala_text);
 		// in C 12edo (= c chromatic), degree 10 in octave 4 (i.e. A4) should map to 440Hz
 		root_freq = r.get_root_frequency("10[4]", 440);
@@ -44,7 +44,10 @@ MitolaTests : UnitTest {
 		vol_props = m.pr_animated_pattern("vol").asStream.all;
 		this.assertArrayFloatEquals(vol_props, [0.3, 0.7, 0.7], "vol_props", 0.005);
 
-		freq_props = m.pr_animated_pattern("freq").asStream.all;
-		this.assertArrayFloatEquals(freq_props, [0.1, 0.5, 0.9], "freq_props", 0.005);
+		rez_props = m.pr_animated_pattern("rez").asStream.all; // default values since not present in pattern
+		this.assertArrayFloatEquals(rez_props, [0.5, 0.5, 0.5], "rez_props", 0.005);
+
+		legato_props = m.pr_animated_pattern("legato").asStream.all;
+		this.assertArrayFloatEquals(legato_props, [0.1, 0.5, 0.9], "legato_props", 0.005);
 	}
 }

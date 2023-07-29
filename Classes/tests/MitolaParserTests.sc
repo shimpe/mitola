@@ -425,7 +425,7 @@ MitolaParserTests : UnitTest {
 			'what': 'singlenote' )],
 		"result10_result");
 
-		text[\11] = "(8[4] 4{+6/83}_2@vol{123})*3";
+		text[\11] = "|: 8[4] 4{+6/83}_2@vol{123} :|*3";
 		result[\11] = MitolaParser.pr_repeatedNotelist.run(text[\11]);
 		this.assertEquals(result[\11].result, [
 			( 'info': (
@@ -538,7 +538,7 @@ MitolaParserTests : UnitTest {
 			'what': 'singlenote' )],
 		"result11_result");
 
-		text[\12] = "1 (4 (6 7{+50.0})*2 )*3 8{-20.0}>}";
+		text[\12] = "1 |: 4 |: 6 7{+50.0} :|*2 :|*3 8{-20.0}>}";
 		result[\12] = MitolaParser.pr_mixedNotelist.run(text[\12]);
 		this.assertEquals(result[\12].result, [
 			( 'info': (
