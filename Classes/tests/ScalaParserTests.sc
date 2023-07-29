@@ -181,7 +181,7 @@ ScalaParserTests : UnitTest {
 		state = p.run(scala_txt);
 		this.assertEquals(state.isError, false);
 		this.assert(state.result[\description].compare("1/4-comma meantone scale. Pietro Aaron's temperament (1523)") == 0, "result_description");
-		this.assertEquals(state.result[\repeatinterval], ('what': 'intervalrepeat', 'numerator': 2, 'denominator': 1), "result_repeatinterval");
+		this.assertEquals(state.result[\equivalenceinterval], ('what': 'equivalenceinterval', 'numerator': 2, 'denominator': 1), "result_equivalenceinterval");
 		this.assertEquals(state.result[\degrees].size, 12, "result_noofdegrees");
 		this.assertEquals(state.result[\degrees][0], ('kind': 'cents', 'what': 'pitch', 'numerator': 0, 'denominator': 1), "result_deg0");
 		this.assertEquals(state.result[\degrees][1], ('numerator': 76.049, 'kind': 'cents', 'what': 'pitch', 'denominator': 1), "result_deg1");
@@ -199,7 +199,7 @@ ScalaParserTests : UnitTest {
 		result2 = ScalaParser.parse(scala_txt);
 		this.assertEquals(result2.isNil, false);
 		this.assert(result2[\description].compare("1/4-comma meantone scale. Pietro Aaron's temperament (1523)") == 0, "2_result_description");
-		this.assertEquals(result2[\repeatinterval], ('what': 'intervalrepeat', 'numerator': 2, 'denominator': 1), "2_result_repeatinterval");
+		this.assertEquals(result2[\equivalenceinterval], ('what': 'equivalenceinterval', 'numerator': 2, 'denominator': 1), "2_result_equivalenceinterval");
 		this.assertEquals(result2[\degrees].size, 12, "result_noofdegrees");
 		this.assertEquals(result2[\degrees][0], ('kind': 'cents', 'what': 'pitch', 'numerator': 0, 'denominator': 1), "2_result_deg0");
 		this.assertEquals(result2[\degrees][1], ('numerator': 76.049, 'kind': 'cents', 'what': 'pitch', 'denominator': 1), "2_result_deg1");

@@ -29,15 +29,15 @@ ScalaCalculator {
 	*/
 	var <>scala_parse_result;
 	/*
-	[method.previous_repeat_interval]
+	[method.previous_equivalence_interval]
 	description='''
-	a variable to remember the previously used note repeat interval so it can be reused if set to \previous
-	repeat interval corresponds to what in conventional music notation would be called an octave
+	a variable to remember the previously used note equivalence interval so it can be reused if set to \previous
+	equivalence interval corresponds to what in conventional music notation would be called an octave
 	'''
-	[method.previous_repeat_interval.returns]
-	what= "a repeat interval value"
+	[method.previous_equivalence_interval.returns]
+	what= "a equivalence interval value"
 	*/
-	var <>previous_repeat_interval;
+	var <>previous_equivalence_interval;
 
 	/*
 	[classmethod.new]
@@ -123,7 +123,7 @@ ScalaCalculator {
 	what = "an initialized ScalaCalculator"
 	*/
 	init {
-		this.previous_repeat_interval = 4; // a default value
+		this.previous_equivalence_interval = 4; // a default value
 	}
 
 	/*
@@ -166,7 +166,7 @@ ScalaCalculator {
 	[method.note_to_freq]
 	description = "parses a file containing a scala definition"
 	[method.note_to_freq.args]
-	mitola_note_string = "a mitola string containing a single note (degree) - may optionally be decorated with modifiers, repeatinterval, duration, properties"
+	mitola_note_string = "a mitola string containing a single note (degree) - may optionally be decorated with modifiers, equivalenceinterval, duration, properties"
 	root_frequency = "the base frequency, i.e. the frequency for degree 1[0] in the given scala definition. For calculating such frequency, you can use the RootFrequenceCalculator class."
 	[method.note_to_freq.returns]
 	what = "the frequency of the given mitola degree, given the current scala definition and root frequency"
@@ -235,15 +235,15 @@ ScalaCalculator {
 	'''
 	[method.pr_degree_to_cents.args]
 	degree = "an integer representing a 0-based mitola degree"
-	note_repeat_interval = "an integer representing the note repeat interval (equivalent of 'octave' in traditional notation)"
+	note_equivalence_interval = "an integer representing the note equivalence interval (equivalent of 'octave' in traditional notation)"
 	[method.pr_degree_to_cents.returns]
 	what= "a Float"
 	*/
 	pr_degree_to_cents {
-		| degree, note_repeat_interval |
+		| degree, note_equivalence_interval |
 		var scala_info = this.scala_parse_result[\degrees][degree]; // ('kind': 'cents', 'what': 'pitch', 'numerator': 0,'denominator': 1)
 		var cents = 0;
-		var scale_repeat_interval_factor;
+		var scale_equivalence_interval_factor;
 
 		if (scala_info[\kind] == \cents) {
 			cents = scala_info[\numerator]
@@ -281,8 +281,8 @@ ScalaCalculator {
 				}
 			}
 		};
-		scale_repeat_interval_factor = this.scala_parse_result[\repeatinterval][\numerator] / this.scala_parse_result[\repeatinterval][\denominator];
-		cents = cents + (note_repeat_interval*ScalaCalculator.pr_ratio_to_cents(scale_repeat_interval_factor));
+		scale_equivalence_interval_factor = this.scala_parse_result[\equivalenceinterval][\numerator] / this.scala_parse_result[\equivalenceinterval][\denominator];
+		cents = cents + (note_equivalence_interval*ScalaCalculator.pr_ratio_to_cents(scale_equivalence_interval_factor));
 		^cents;
 	}
 
@@ -290,44 +290,44 @@ ScalaCalculator {
 	/*
 	[method.pr_previous_degree]
 	description='''
-	an internal method that converts a given degree and repeat_interval to the previous degree and repeat_interval in the given scala definition, taking care of wrapping.
+	an internal method that converts a given degree and equivalence_interval to the previous degree and equivalence_interval in the given scala definition, taking care of wrapping.
 	'''
 	[method.pr_previous_degree.args]
 	degree = "an integer representing a 0-based mitola degree"
-	repeat_interval = "an integer representing the note repeat interval (equivalent of 'octave' in traditional notation)"
+	equivalence_interval = "an integer representing the note equivalence interval (equivalent of 'octave' in traditional notation)"
 	[method.pr_previous_degree.returns]
 	what= "a Float"
 	*/
 	pr_previous_degree {
-		| degree, repeat_interval |
+		| degree, equivalence_interval |
 		var next_degree = degree - 1;
 		if (next_degree < 0) { // wrap
 			next_degree = this.max_degree;
-			repeat_interval = repeat_interval - 1;
+			equivalence_interval = equivalence_interval - 1;
 		};
-		^(\degree: next_degree, \repeatinterval: repeat_interval);
+		^(\degree: next_degree, \equivalenceinterval: equivalence_interval);
 	}
 
 
 	/*
 	[method.pr_next_degree]
 	description='''
-	an internal method that converts a given degree and repeat_interval to the next degree and repeat_interval in the given scala definition, taking care of wrapping.
+	an internal method that converts a given degree and equivalence_interval to the next degree and equivalence_interval in the given scala definition, taking care of wrapping.
 	'''
 	[method.pr_next_degree.args]
 	degree = "an integer representing a 0-based mitola degree"
-	repeat_interval = "an integer representing the note repeat interval (equivalent of 'octave' in traditional notation)"
+	equivalence_interval = "an integer representing the note equivalence interval (equivalent of 'octave' in traditional notation)"
 	[method.pr_next_degree.returns]
 	what= "a Float"
 	*/
 	pr_next_degree {
-		| degree, repeat_interval |
+		| degree, equivalence_interval |
 		var next_degree = degree + 1;
 		if (next_degree > this.max_degree) { // wrap
 			next_degree = 0;
-			repeat_interval = repeat_interval + 1;
+			equivalence_interval = equivalence_interval + 1;
 		};
-		^(\degree: next_degree, \repeatinterval: repeat_interval);
+		^(\degree: next_degree, \equivalenceinterval: equivalence_interval);
 	}
 
 	/*
@@ -337,13 +337,13 @@ ScalaCalculator {
 	'''
 	[method.pr_info_note_pitch_modifier_parse_tree_to_cents.args]
 	degree = "an integer representing a 0-based mitola degree"
-	repeat_interval = "an integer representing the note repeat interval (equivalent of 'octave' in traditional notation)"
+	equivalence_interval = "an integer representing the note equivalence interval (equivalent of 'octave' in traditional notation)"
 	info_note_pitch_modifier = "parse tree of the note modifier part of the mitola specification"
 	[method.pr_info_note_pitch_modifier_parse_tree_to_cents.returns]
 	what= "a Float"
 	*/
 	pr_info_note_pitch_modifier_parse_tree_to_cents {
-		| degree, repeat_interval, info_note_pitch_modifier |
+		| degree, equivalence_interval, info_note_pitch_modifier |
 		/* Example:
 		(
 		'kind': 'cents',
@@ -378,40 +378,40 @@ ScalaCalculator {
 					if (info_note_pitch_modifier[\direction] == \lower) {
 						var previous_cents, diff, current_cents;
 						var ratio = info_note_pitch_modifier[\value][\numerator]/info_note_pitch_modifier[\value][\denominator];
-						var previous_degree = this.pr_previous_degree(degree, repeat_interval);
+						var previous_degree = this.pr_previous_degree(degree, equivalence_interval);
 						var cents_compensation = 0;
 						while({ratio > 1}) {
-							var current_cents = this.pr_degree_to_cents(degree, repeat_interval);
-							var previous_cents = this.pr_degree_to_cents(previous_degree[\degree], previous_degree[\repeatinterval]);
+							var current_cents = this.pr_degree_to_cents(degree, equivalence_interval);
+							var previous_cents = this.pr_degree_to_cents(previous_degree[\degree], previous_degree[\equivalenceinterval]);
 							cents_compensation = cents_compensation + (previous_cents - current_cents);
 							ratio = ratio - 1;
 
 							degree = previous_degree[\degree];
-							repeat_interval = previous_degree[\repeatinterval];
-							previous_degree = this.pr_previous_degree(degree, repeat_interval);
+							equivalence_interval = previous_degree[\equivalenceinterval];
+							previous_degree = this.pr_previous_degree(degree, equivalence_interval);
 						};
-						current_cents = this.pr_degree_to_cents(degree, repeat_interval);
-						previous_cents = this.pr_degree_to_cents(previous_degree[\degree], previous_degree[\repeatinterval]);
+						current_cents = this.pr_degree_to_cents(degree, equivalence_interval);
+						previous_cents = this.pr_degree_to_cents(previous_degree[\degree], previous_degree[\equivalenceinterval]);
 						diff = current_cents - previous_cents;
 						cents = cents_compensation + (diff * ratio).neg;
 					} {
 						if (info_note_pitch_modifier[\direction] == \raise) {
 							var next_cents, diff, current_cents;
-							var next_degree = this.pr_next_degree(degree, repeat_interval);
+							var next_degree = this.pr_next_degree(degree, equivalence_interval);
 							var ratio = info_note_pitch_modifier[\value][\numerator]/info_note_pitch_modifier[\value][\denominator];
 							var cents_compensation = 0;
-							this.pr_degree_to_cents(degree, repeat_interval);
+							this.pr_degree_to_cents(degree, equivalence_interval);
 							while({ratio > 1}) {
-								var current_cents = this.pr_degree_to_cents(degree, repeat_interval);
-								var next_cents = this.pr_degree_to_cents(next_degree[\degree], next_degree[\repeatinterval]);
+								var current_cents = this.pr_degree_to_cents(degree, equivalence_interval);
+								var next_cents = this.pr_degree_to_cents(next_degree[\degree], next_degree[\equivalenceinterval]);
 								cents_compensation = cents_compensation + (next_cents - current_cents);
 								ratio = ratio - 1;
 								degree = next_degree[\degree];
-								repeat_interval = next_degree[\repeatinterval];
-								next_degree = this.pr_next_degree(degree, repeat_interval);
+								equivalence_interval = next_degree[\equivalenceinterval];
+								next_degree = this.pr_next_degree(degree, equivalence_interval);
 							};
-							current_cents = this.pr_degree_to_cents(degree, repeat_interval);
-							next_cents = this.pr_degree_to_cents(next_degree[\degree], next_degree[\repeatinterval]);
+							current_cents = this.pr_degree_to_cents(degree, equivalence_interval);
+							next_cents = this.pr_degree_to_cents(next_degree[\degree], next_degree[\equivalenceinterval]);
 							diff = next_cents - current_cents;
 							cents = cents_compensation + (diff * ratio);
 						}
@@ -442,39 +442,39 @@ ScalaCalculator {
 						});
 						if (info_note_pitch_modifier[\direction] == \lower) {
 							var previous_cents, diff, current_cents;
-							var previous_degree = this.pr_previous_degree(degree, repeat_interval);
+							var previous_degree = this.pr_previous_degree(degree, equivalence_interval);
 							var ratio = overall_num/overall_den;
 							var cents_compensation = 0;
 							while({ratio > 1}) {
-								var current_cents = this.pr_degree_to_cents(degree, repeat_interval);
-								var previous_cents = this.pre_degree_to_cents(previous_degree[\degree], previous_degree[\repeatinterval]);
+								var current_cents = this.pr_degree_to_cents(degree, equivalence_interval);
+								var previous_cents = this.pre_degree_to_cents(previous_degree[\degree], previous_degree[\equivalenceinterval]);
 								cents_compensation = cents_compensation + (previous_cents - current_cents);
 								ratio = ratio - 1;
 								degree = previous_degree[\degree];
-								repeat_interval = previous_degree[\repeatinterval];
-								previous_degree = this.pr_previous_degree(degree, repeat_interval);
+								equivalence_interval = previous_degree[\equivalenceinterval];
+								previous_degree = this.pr_previous_degree(degree, equivalence_interval);
 							};
-							current_cents = this.pr_degree_to_cents(degree, repeat_interval);
-							previous_cents = this.pr_degree_to_cents(previous_degree[\degree], previous_degree[\repeatinterval]);
+							current_cents = this.pr_degree_to_cents(degree, equivalence_interval);
+							previous_cents = this.pr_degree_to_cents(previous_degree[\degree], previous_degree[\equivalenceinterval]);
 							diff = current_cents - previous_cents;
 							cents = cents_compensation + (diff * ratio).neg;
 						} {
 							if (info_note_pitch_modifier[\direction] == \raise) {
 								var next_cents, diff, current_cents;
-								var next_degree = this.pr_next_degree(degree, repeat_interval);
+								var next_degree = this.pr_next_degree(degree, equivalence_interval);
 								var ratio = overall_num/overall_den;
 								var cents_compensation = 0;
 								while({ratio > 1}) {
-									var current_cents = this.pr_degree_to_cents(degree, repeat_interval);
-									var next_cents = this.pr_degree_to_cents(next_degree[\degree], next_degree[\repeatinterval]);
+									var current_cents = this.pr_degree_to_cents(degree, equivalence_interval);
+									var next_cents = this.pr_degree_to_cents(next_degree[\degree], next_degree[\equivalenceinterval]);
 									cents_compensation = cents_compensation + (next_cents - current_cents);
 									ratio = ratio - 1;
 									degree = next_degree[\degree];
-									repeat_interval = next_degree[\repeatinterval];
-									next_degree = this.pr_next_degree(degree, repeat_interval);
+									equivalence_interval = next_degree[\equivalenceinterval];
+									next_degree = this.pr_next_degree(degree, equivalence_interval);
 								};
-								current_cents = this.pr_degree_to_cents(degree, repeat_interval);
-								next_cents = this.pr_degree_to_cents(next_degree[\degree], next_degree[\repeatinterval]);
+								current_cents = this.pr_degree_to_cents(degree, equivalence_interval);
+								next_cents = this.pr_degree_to_cents(next_degree[\degree], next_degree[\equivalenceinterval]);
 								diff = next_cents - current_cents;
 								cents = cents_compensation + (diff * ratio);
 							}
@@ -506,7 +506,7 @@ ScalaCalculator {
 		/* example:
 		(
 		'what': 'note',
-		'repeatinterval': 'previous',
+		'equivalenceinterval': 'previous',
 		'notename': 4,
 		'notemodifier': (
 		'kind': 'cents',
@@ -520,14 +520,14 @@ ScalaCalculator {
 		'direction': 'lower' ))
 		*/
 		var degree;
-		var repeatinterval;
+		var equivalenceinterval;
 		var cents, ratio;
 		if (this.scala_parse_result.isNil) {
 			"Error. Need to parse scala definition before conversion.".postln;
 			^0;
 		};
 		if (root_frequency.isNil) {
-			"Error. Need to pass the root frequency, i.e. the frequency of note 1[0] (first degree in repeat interval 0).".postln;
+			"Error. Need to pass the root frequency, i.e. the frequency of note 1[0] (first degree in equivalence interval 0).".postln;
 			^0;
 		};
 		if (info_note_pitch_parse_tree[\what] == \rest){
@@ -538,13 +538,13 @@ ScalaCalculator {
 			("Warning: degree" + (degree+1) + "is higher than number of degrees (" ++ this.no_of_degrees ++ ") defined in scala definition. Degree will be clipped to" + this.max_degree).postln;
 			degree = this.max_degree;
 		};
-		repeatinterval = info_note_pitch_parse_tree[\repeatinterval];
-		if (repeatinterval == \previous) {
-			repeatinterval = this.previous_repeat_interval; // reuse previous value
+		equivalenceinterval = info_note_pitch_parse_tree[\equivalenceinterval];
+		if (equivalenceinterval == \previous) {
+			equivalenceinterval = this.previous_equivalence_interval; // reuse previous value
 		} {
-			this.previous_repeat_interval = repeatinterval; // update with current value
+			this.previous_equivalence_interval = equivalenceinterval; // update with current value
 		};
-		cents = this.pr_degree_to_cents(degree, repeatinterval) + this.pr_info_note_pitch_modifier_parse_tree_to_cents(degree, repeatinterval, info_note_pitch_parse_tree[\notemodifier]);
+		cents = this.pr_degree_to_cents(degree, equivalenceinterval) + this.pr_info_note_pitch_modifier_parse_tree_to_cents(degree, equivalenceinterval, info_note_pitch_parse_tree[\notemodifier]);
 		ratio = ScalaCalculator.pr_cents_to_ratio(cents);
 		^(root_frequency * ratio);
 	}

@@ -104,7 +104,7 @@ RootFrequencyCalculator {
 	[method.pr_bisect]
 	description = "internal method performing an iterative search for a root_frequency that pins a given degree to a given frequency"
 	[method.pr_bisect.args]
-	mitola_note_string = "string containing a valid mitola note (= degree decorated with optional modifier, repeat interval, duration, properties)"
+	mitola_note_string = "string containing a valid mitola note (= degree decorated with optional modifier, equivalence interval, duration, properties)"
 	desired_frequency = "the frequency that should be assigned to the mitola_note_string"
 	freq_lowerbound = "current lower bound for frequency"
 	freq_upperbound = "current upper bound for frequency"
@@ -137,7 +137,7 @@ RootFrequencyCalculator {
 	[method.get_root_frequency]
 	description = "main method of this class: calculates a root frequency so that the mitola_note_string passed in is mapped to desired_frequency. This can be used to ensure that e.g. A4 = degree 10 in a C chromatic scale = 10[4] in mitola notation maps to 440Hz"
 	[method.get_root_frequency.args]
-	mitola_note_string = "string containing a valid mitola note (= degree decorated with optional modifier, repeat interval, duration, properties)"
+	mitola_note_string = "string containing a valid mitola note (= degree decorated with optional modifier, equivalence interval, duration, properties)"
 	desired_frequency = "the frequency that should be assigned to the mitola_note_string"
 	[method.get_root_frequency.returns]
 	what = "a Float (root frequency)"

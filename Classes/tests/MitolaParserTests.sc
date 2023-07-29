@@ -112,7 +112,7 @@ MitolaParserTests : UnitTest {
 		result[\13] = MitolaParser.pr_noteAndModAndOct.run(text[\1]);
 		this.assertEquals(result[\13].result, (
 			'what': 'note',
-			'repeatinterval': 4,
+			'equivalenceinterval': 4,
 			'notename': 0,
 			'notemodifier': (
 				'kind': 'cents',
@@ -130,7 +130,7 @@ MitolaParserTests : UnitTest {
 		result[\41] = MitolaParser.pr_noteAndModAndOct.run(text[\4]);
 		this.assertEquals(result[\41].result, (
 			'what': 'note',
-			'repeatinterval': 'previous',
+			'equivalenceinterval': 'previous',
 			'notename': 2,
 			'notemodifier': (
 				'kind': 'ratio',
@@ -147,7 +147,7 @@ MitolaParserTests : UnitTest {
 		result[\51] = MitolaParser.pr_noteAndModAndOctAndDur.run(text[\5]);
 		this.assertEquals(result[\51].result[\pitch], (
 			'what': 'note',
-			'repeatinterval': 'previous',
+			'equivalenceinterval': 'previous',
 			'notename': 4,
 			'notemodifier': (
 				'kind': 'cents',
@@ -188,7 +188,7 @@ MitolaParserTests : UnitTest {
 				'note': (
 					'pitch': (
 						'what': 'note',
-						'repeatinterval': 5,
+						'equivalenceinterval': 5,
 						'notename': 17,
 						'notemodifier': (
 							'kind': 'cents',
@@ -212,7 +212,7 @@ MitolaParserTests : UnitTest {
 				'note': (
 					'pitch': (
 						'what': 'note',
-						'repeatinterval': 2,
+						'equivalenceinterval': 2,
 						'notename': 4,
 						'notemodifier': (
 							'kind': 'ratio',
@@ -239,7 +239,7 @@ MitolaParserTests : UnitTest {
 				'note': (
 					'pitch': (
 						'what': 'note',
-						'repeatinterval': 'previous',
+						'equivalenceinterval': 'previous',
 						'notename': 8,
 						'notemodifier': (
 							'kind': 'natural',
@@ -264,7 +264,7 @@ MitolaParserTests : UnitTest {
 					'note': (
 						'pitch': (
 							'what': 'note',
-							'repeatinterval': 4,
+							'equivalenceinterval': 4,
 							'notename': 8,
 							'notemodifier': (
 								'kind': 'natural',
@@ -281,7 +281,7 @@ MitolaParserTests : UnitTest {
 					'note': (
 						'pitch': (
 							'what': 'note',
-							'repeatinterval': 5,
+							'equivalenceinterval': 5,
 							'notename': 7,
 							'notemodifier': (
 								'kind': 'natural',
@@ -297,7 +297,7 @@ MitolaParserTests : UnitTest {
 					'props': [  ],
 					'note': ( 'pitch':
 						( 'what': 'note',
-							'repeatinterval': 'previous',
+							'equivalenceinterval': 'previous',
 							'notename': 2, 'notemodifier': (
 								'kind': 'natural',
 								'direction' : 'none',
@@ -318,7 +318,7 @@ MitolaParserTests : UnitTest {
 				'note': (
 					'pitch': (
 						'what': 'note',
-						'repeatinterval': 4,
+						'equivalenceinterval': 4,
 						'notename': 5,
 						'notemodifier': (
 							'kind': 'natural',
@@ -336,7 +336,7 @@ MitolaParserTests : UnitTest {
 				'note': (
 					'pitch': (
 						'what': 'note',
-						'repeatinterval': 3,
+						'equivalenceinterval': 3,
 						'notename': 4,
 						'notemodifier': (
 							'kind': 'cents',
@@ -360,7 +360,7 @@ MitolaParserTests : UnitTest {
 						'note': (
 							'pitch': (
 								'what': 'note',
-								'repeatinterval': 2,
+								'equivalenceinterval': 2,
 								'notename': 7,
 								'notemodifier': (
 									'kind': 'natural',
@@ -377,7 +377,7 @@ MitolaParserTests : UnitTest {
 						'note': (
 							'pitch': (
 								'what': 'note',
-								'repeatinterval': 'previous',
+								'equivalenceinterval': 'previous',
 								'notename': 1,
 								'notemodifier': (
 									'kind': 'natural',
@@ -394,7 +394,7 @@ MitolaParserTests : UnitTest {
 						'note': (
 							'pitch': (
 								'what': 'note',
-								'repeatinterval': 'previous',
+								'equivalenceinterval': 'previous',
 								'notename': 6,
 								'notemodifier': (
 									'kind': 'natural',
@@ -411,7 +411,7 @@ MitolaParserTests : UnitTest {
 				'note': (
 					'pitch': (
 						'what': 'note',
-						'repeatinterval': 5,
+						'equivalenceinterval': 5,
 						'notename': 8,
 						'notemodifier': (
 							'kind': 'natural',
@@ -433,7 +433,7 @@ MitolaParserTests : UnitTest {
 				'note': (
 					'pitch': (
 						'what': 'note',
-						'repeatinterval': 4,
+						'equivalenceinterval': 4,
 						'notename': 7,
 						'notemodifier': (
 							'kind': 'natural',
@@ -451,7 +451,7 @@ MitolaParserTests : UnitTest {
 				'note': (
 					'pitch': (
 						'what': 'note',
-						'repeatinterval':
+						'equivalenceinterval':
 						'previous',
 						'notename': 3,
 						'notemodifier': (
@@ -470,7 +470,7 @@ MitolaParserTests : UnitTest {
 				'note': (
 					'pitch': (
 						'what': 'note',
-						'repeatinterval': 4,
+						'equivalenceinterval': 4,
 						'notename': 7,
 						'notemodifier': (
 							'kind': 'natural',
@@ -488,7 +488,7 @@ MitolaParserTests : UnitTest {
 				'note': (
 					'pitch': (
 						'what': 'note',
-						'repeatinterval': 'previous',
+						'equivalenceinterval': 'previous',
 						'notename': 3,
 						'notemodifier': (
 							'kind': 'ratio',
@@ -506,7 +506,7 @@ MitolaParserTests : UnitTest {
 				'note': (
 					'pitch': (
 						'what': 'note',
-						'repeatinterval': 4,
+						'equivalenceinterval': 4,
 						'notename': 7,
 						'notemodifier': (
 							'kind': 'natural',
@@ -524,7 +524,7 @@ MitolaParserTests : UnitTest {
 				'note': (
 					'pitch': (
 						'what': 'note',
-						'repeatinterval': 'previous',
+						'equivalenceinterval': 'previous',
 						'notename': 3,
 						'notemodifier': (
 							'kind': 'ratio',
@@ -546,7 +546,7 @@ MitolaParserTests : UnitTest {
 				'note': (
 					'pitch': (
 						'what': 'note',
-						'repeatinterval':
+						'equivalenceinterval':
 						'previous', 'notename': 0,
 						'notemodifier': (
 							'kind': 'natural',
@@ -563,7 +563,7 @@ MitolaParserTests : UnitTest {
 				'note': (
 					'pitch': (
 						'what': 'note',
-						'repeatinterval': 'previous',
+						'equivalenceinterval': 'previous',
 						'notename': 3,
 						'notemodifier': (
 							'kind': 'natural',
@@ -580,7 +580,7 @@ MitolaParserTests : UnitTest {
 				'note': (
 					'pitch': (
 						'what': 'note',
-						'repeatinterval': 'previous',
+						'equivalenceinterval': 'previous',
 						'notename': 5,
 						'notemodifier': (
 							'kind': 'natural',
@@ -599,7 +599,7 @@ MitolaParserTests : UnitTest {
 					'note': (
 						'pitch': (
 							'what': 'note',
-							'repeatinterval': 'previous',
+							'equivalenceinterval': 'previous',
 							'notename': 6, 'notemodifier': (
 								'kind': 'cents',
 								'what': 'notemodifier',
@@ -620,7 +620,7 @@ MitolaParserTests : UnitTest {
 				'note': (
 					'pitch': (
 						'what': 'note',
-						'repeatinterval': 'previous',
+						'equivalenceinterval': 'previous',
 						'notename': 5,
 						'notemodifier': (
 							'kind': 'natural',
@@ -637,7 +637,7 @@ MitolaParserTests : UnitTest {
 				'note': (
 					'pitch': (
 						'what': 'note',
-						'repeatinterval': 'previous',
+						'equivalenceinterval': 'previous',
 						'notename': 6,
 						'notemodifier': (
 							'kind': 'cents',
@@ -659,7 +659,7 @@ MitolaParserTests : UnitTest {
 				'note': (
 					'pitch': (
 						'what': 'note',
-						'repeatinterval': 'previous',
+						'equivalenceinterval': 'previous',
 						'notename': 3, 'notemodifier': (
 							'kind': 'natural',
 							'direction' : 'none',
@@ -674,7 +674,7 @@ MitolaParserTests : UnitTest {
 				'note': (
 					'pitch': (
 						'what': 'note',
-						'repeatinterval': 'previous',
+						'equivalenceinterval': 'previous',
 						'notename': 5,
 						'notemodifier': (
 							'kind': 'natural',
@@ -691,7 +691,7 @@ MitolaParserTests : UnitTest {
 				'note': (
 					'pitch': (
 						'what': 'note',
-						'repeatinterval': 'previous',
+						'equivalenceinterval': 'previous',
 						'notename': 6, 'notemodifier': (
 							'kind': 'cents',
 							'what': 'notemodifier',
@@ -711,7 +711,7 @@ MitolaParserTests : UnitTest {
 				'props': [  ],
 				'note': ( 'pitch': (
 					'what': 'note',
-					'repeatinterval': 'previous',
+					'equivalenceinterval': 'previous',
 					'notename': 5,
 					'notemodifier': (
 						'kind': 'natural',
@@ -730,7 +730,7 @@ MitolaParserTests : UnitTest {
 				'note': (
 					'pitch': (
 						'what': 'note',
-						'repeatinterval': 'previous',
+						'equivalenceinterval': 'previous',
 						'notename': 6, 'notemodifier': (
 							'kind': 'cents',
 							'what': 'notemodifier',
@@ -751,7 +751,7 @@ MitolaParserTests : UnitTest {
 				'note': (
 					'pitch': (
 						'what': 'note',
-						'repeatinterval': 'previous',
+						'equivalenceinterval': 'previous',
 						'notename': 3,
 						'notemodifier': (
 							'kind': 'natural',
@@ -768,7 +768,7 @@ MitolaParserTests : UnitTest {
 				'note': (
 					'pitch': (
 						'what': 'note',
-						'repeatinterval': 'previous',
+						'equivalenceinterval': 'previous',
 						'notename': 5,
 						'notemodifier': (
 							'kind': 'natural',
@@ -785,7 +785,7 @@ MitolaParserTests : UnitTest {
 				'note': (
 					'pitch': (
 						'what': 'note',
-						'repeatinterval': 'previous',
+						'equivalenceinterval': 'previous',
 						'notename': 6,
 						'notemodifier': (
 							'kind': 'cents',
@@ -807,7 +807,7 @@ MitolaParserTests : UnitTest {
 				'note': (
 					'pitch': (
 						'what': 'note',
-						'repeatinterval': 'previous',
+						'equivalenceinterval': 'previous',
 						'notename': 5,
 						'notemodifier': (
 							'kind': 'natural',
@@ -824,7 +824,7 @@ MitolaParserTests : UnitTest {
 				'note': (
 					'pitch': (
 						'what': 'note',
-						'repeatinterval': 'previous',
+						'equivalenceinterval': 'previous',
 						'notename': 6,
 						'notemodifier': (
 							'kind': 'cents',
@@ -846,7 +846,7 @@ MitolaParserTests : UnitTest {
 				'note': (
 					'pitch': (
 						'what': 'note',
-						'repeatinterval': 'previous',
+						'equivalenceinterval': 'previous',
 						'notename': 7, 'notemodifier': (
 							'kind': 'cents',
 							'what': 'notemodifier',

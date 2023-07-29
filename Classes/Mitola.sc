@@ -77,14 +77,14 @@ Mitola {
 	var <>mitola_parse_result;
 
 	/*
-	[method.gNOTEREPEATINTERVAL_DEFAULT]
+	[method.gNOTEequivalenceinterval_DEFAULT]
 	description='''
 	the default equivalence interval of a note (think "octave" in traditional music), in case no equivalence interval was ever specified in one of the previous notes (typically "4")
 	'''
-	[method.gNOTEREPEATINTERVAL_DEFAULT.returns]
+	[method.gNOTEequivalenceinterval_DEFAULT.returns]
 	what = "an Integer"
 	*/
-	var <>gNOTEREPEATINTERVAL_DEFAULT;
+	var <>gNOTEequivalenceinterval_DEFAULT;
 	/*
 	[method.gDURATION_DEFAULT]
 	description='''
@@ -222,7 +222,7 @@ Mitola {
 	notation = "Mitola string containing score"
 	scala_contents = "string containing scala definition (you have to specify either this or scala_filename)"
 	scala_filename = "string containing path to scala definition file (you have to specify either this or a scala_contents string)"
-	note_repeatinterval_default= "default equave for a note if none was ever specified"
+	note_equivalenceinterval_default= "default equave for a note if none was ever specified"
 	dur_default = "default duration for note if none was ever specified"
 	modifier_default = "default note modifier if none was ever specified"
 	mult_default = "default duration multiplier if none was ever specified"
@@ -236,12 +236,12 @@ Mitola {
 	*/
 	*new {
 		|  notation=nil, scala_contents=nil, scala_filename=nil,
-		note_repeatinterval_default=4, dur_default=4, modifier_default="",
+		note_equivalenceinterval_default=4, dur_default=4, modifier_default="",
 		mult_default=1, div_default=1, amp_default=0.5,
 		legato_default=0.9, lag_default=0, tempo_default=80 |
 
 		^super.new.init(notation, scala_contents, scala_filename,
-			note_repeatinterval_default=4, dur_default=4, modifier_default="",
+			note_equivalenceinterval_default=4, dur_default=4, modifier_default="",
 			mult_default=1, div_default=1, amp_default=0.5,
 			legato_default=0.9, lag_default=0, tempo_default=80);
 	}
@@ -255,7 +255,7 @@ Mitola {
 	notation = "Mitola string containing score"
 	scala_contents = "string containing scala definition (you have to specify either this or scala_filename)"
 	scala_filename = "string containing path to scala definition file (you have to specify either this or a scala_contents string)"
-	note_repeatinterval_default= "default equave for a note if none was ever specified"
+	note_equivalenceinterval_default= "default equave for a note if none was ever specified"
 	dur_default = "default duration for note if none was ever specified"
 	modifier_default = "default note modifier if none was ever specified"
 	mult_default = "default duration multiplier if none was ever specified"
@@ -269,11 +269,11 @@ Mitola {
 	*/
 	init {
 		| notation, scala_contents, scala_filename,
-		note_repeatinterval_default, dur_default, modifier_default,
+		note_equivalenceinterval_default, dur_default, modifier_default,
 		mult_default, div_default, amp_default,
 		legato_default, lag_default, tempo_default |
 
-		this.gNOTEREPEATINTERVAL_DEFAULT = note_repeatinterval_default;
+		this.gNOTEequivalenceinterval_DEFAULT = note_equivalenceinterval_default;
 		this.gDURATION_DEFAULT = dur_default;
 		this.gMODIFIER_DEFAULT = modifier_default;
 		this.gMULTIPLIER_DEFAULT = mult_default;

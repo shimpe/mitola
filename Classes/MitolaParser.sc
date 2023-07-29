@@ -266,18 +266,18 @@ MitolaParser : Parser {
 
 	/*
 	[classmethod.pr_noteAndModAndOct]
-	description = "internal method that creates a Parser that can parse a degree followed by an (optional) pitch modifier or a rest and an (optional) repeat interval (think: octave)"
+	description = "internal method that creates a Parser that can parse a degree followed by an (optional) pitch modifier or a rest and an (optional) equivalence interval (think: octave)"
 	[classmethod.pr_noteAndModAndOct.returns]
 	what = "a Parser"
 	*/
 	*pr_noteAndModAndOct {
 		^Choice([
-			SequenceOf([this.pr_noteParser, this.pr_noteModifier, this.pr_repeatIntervalParser]).map({
+			SequenceOf([this.pr_noteParser, this.pr_noteModifier, this.pr_equivalenceintervalParser]).map({
 				|result|
 				(\what: \note,
 					\notename: result[0][\value],
 					\notemodifier: result[1],
-					\repeatinterval: result[2][\value])
+					\equivalenceinterval: result[2][\value])
 			}),
 			this.pr_restParser
 		]);
@@ -294,23 +294,23 @@ MitolaParser : Parser {
 	}
 
 	/*
-	[classmethod.pr_repeatIntervalParser]
-	description = "internal method that creates a Parser that matches a repeat interval (think: octave) between square brackets"
-	[classmethod.pr_repeatIntervalParser.returns]
+	[classmethod.pr_equivalenceintervalParser]
+	description = "internal method that creates a Parser that matches a equivalence interval (think: octave) between square brackets"
+	[classmethod.pr_equivalenceintervalParser.returns]
 	what = "a Parser"
 	*/
-	*pr_repeatIntervalParser {
+	*pr_equivalenceintervalParser {
 		^Optional(
 			this.pr_betweenSquareBrackets.(ParserFactory.makeDigits).map({
 				|result|
-				(\what: \repeatinterval, \value: result.asInteger)
+				(\what: \equivalenceinterval, \value: result.asInteger)
 			})
-		).map({|result| result ? (\what: \repeatinterval, \value: \previous) }); // map missing repeat interval to \previous
+		).map({|result| result ? (\what: \equivalenceinterval, \value: \previous) }); // map missing equivalence interval to \previous
 	}
 
 	/*
 	[classmethod.pr_noteAndModAndOctAndDur]
-	description = "internal method that creates a Parser that matches a degree followed by pitch modifier, repeatinterval (think: octave) and duration, or a rest and duration"
+	description = "internal method that creates a Parser that matches a degree followed by pitch modifier, equivalenceinterval (think: octave) and duration, or a rest and duration"
 	[classmethod.pr_noteAndModAndOctAndDur.returns]
 	what = "a Parser"
 	*/
@@ -402,7 +402,7 @@ MitolaParser : Parser {
 
 	/*
 	[classmethod.pr_noteAndModAndOctAndDurAndProp]
-	description = "internal method that creates a Parser that matches a mitola degree with all possible markup (modifiers, repeatinterval durations, properties)"
+	description = "internal method that creates a Parser that matches a mitola degree with all possible markup (modifiers, equivalenceinterval durations, properties)"
 	[classmethod.pr_noteAndModAndOctAndDurAndProp.returns]
 	what = "a Parser"
 	*/
@@ -517,7 +517,7 @@ result.result == [
 				'note': (
 					'pitch': (
 						'what': 'note',
-						'repeatinterval':
+						'equivalenceinterval':
 						'previous', 'notename': 0,
 						'notemodifier': (
 							'kind': 'natural',
@@ -534,7 +534,7 @@ result.result == [
 				'note': (
 					'pitch': (
 						'what': 'note',
-						'repeatinterval': 'previous',
+						'equivalenceinterval': 'previous',
 						'notename': 3,
 						'notemodifier': (
 							'kind': 'natural',
@@ -551,7 +551,7 @@ result.result == [
 				'note': (
 					'pitch': (
 						'what': 'note',
-						'repeatinterval': 'previous',
+						'equivalenceinterval': 'previous',
 						'notename': 5,
 						'notemodifier': (
 							'kind': 'natural',
@@ -570,7 +570,7 @@ result.result == [
 					'note': (
 						'pitch': (
 							'what': 'note',
-							'repeatinterval': 'previous',
+							'equivalenceinterval': 'previous',
 							'notename': 6, 'notemodifier': (
 								'kind': 'cents',
 								'what': 'notemodifier',
@@ -591,7 +591,7 @@ result.result == [
 				'note': (
 					'pitch': (
 						'what': 'note',
-						'repeatinterval': 'previous',
+						'equivalenceinterval': 'previous',
 						'notename': 5,
 						'notemodifier': (
 							'kind': 'natural',
@@ -608,7 +608,7 @@ result.result == [
 				'note': (
 					'pitch': (
 						'what': 'note',
-						'repeatinterval': 'previous',
+						'equivalenceinterval': 'previous',
 						'notename': 6,
 						'notemodifier': (
 							'kind': 'cents',
@@ -630,7 +630,7 @@ result.result == [
 				'note': (
 					'pitch': (
 						'what': 'note',
-						'repeatinterval': 'previous',
+						'equivalenceinterval': 'previous',
 						'notename': 3, 'notemodifier': (
 							'kind': 'natural',
 							'direction' : 'none',
@@ -645,7 +645,7 @@ result.result == [
 				'note': (
 					'pitch': (
 						'what': 'note',
-						'repeatinterval': 'previous',
+						'equivalenceinterval': 'previous',
 						'notename': 5,
 						'notemodifier': (
 							'kind': 'natural',
@@ -662,7 +662,7 @@ result.result == [
 				'note': (
 					'pitch': (
 						'what': 'note',
-						'repeatinterval': 'previous',
+						'equivalenceinterval': 'previous',
 						'notename': 6, 'notemodifier': (
 							'kind': 'cents',
 							'what': 'notemodifier',
@@ -682,7 +682,7 @@ result.result == [
 				'props': [  ],
 				'note': ( 'pitch': (
 					'what': 'note',
-					'repeatinterval': 'previous',
+					'equivalenceinterval': 'previous',
 					'notename': 5,
 					'notemodifier': (
 						'kind': 'natural',
@@ -701,7 +701,7 @@ result.result == [
 				'note': (
 					'pitch': (
 						'what': 'note',
-						'repeatinterval': 'previous',
+						'equivalenceinterval': 'previous',
 						'notename': 6, 'notemodifier': (
 							'kind': 'cents',
 							'what': 'notemodifier',
@@ -722,7 +722,7 @@ result.result == [
 				'note': (
 					'pitch': (
 						'what': 'note',
-						'repeatinterval': 'previous',
+						'equivalenceinterval': 'previous',
 						'notename': 3,
 						'notemodifier': (
 							'kind': 'natural',
@@ -739,7 +739,7 @@ result.result == [
 				'note': (
 					'pitch': (
 						'what': 'note',
-						'repeatinterval': 'previous',
+						'equivalenceinterval': 'previous',
 						'notename': 5,
 						'notemodifier': (
 							'kind': 'natural',
@@ -756,7 +756,7 @@ result.result == [
 				'note': (
 					'pitch': (
 						'what': 'note',
-						'repeatinterval': 'previous',
+						'equivalenceinterval': 'previous',
 						'notename': 6,
 						'notemodifier': (
 							'kind': 'cents',
@@ -778,7 +778,7 @@ result.result == [
 				'note': (
 					'pitch': (
 						'what': 'note',
-						'repeatinterval': 'previous',
+						'equivalenceinterval': 'previous',
 						'notename': 5,
 						'notemodifier': (
 							'kind': 'natural',
@@ -795,7 +795,7 @@ result.result == [
 				'note': (
 					'pitch': (
 						'what': 'note',
-						'repeatinterval': 'previous',
+						'equivalenceinterval': 'previous',
 						'notename': 6,
 						'notemodifier': (
 							'kind': 'cents',
@@ -817,7 +817,7 @@ result.result == [
 				'note': (
 					'pitch': (
 						'what': 'note',
-						'repeatinterval': 'previous',
+						'equivalenceinterval': 'previous',
 						'notename': 7, 'notemodifier': (
 							'kind': 'cents',
 							'what': 'notemodifier',

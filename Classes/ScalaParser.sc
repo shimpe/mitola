@@ -274,11 +274,11 @@ ScalaParser {
 				};
 				SequenceOf(lst_of_parser);
 			}),
-			this.pr_pitchRatio.map({ |result| (\what: \intervalrepeat, \numerator: result[\numerator], \denominator: result[\denominator])})
+			this.pr_pitchRatio.map({ |result| (\what: \equivalenceinterval, \numerator: result[\numerator], \denominator: result[\denominator])})
 		]).map({ | result |
 			(\description: result[0][\value],
 				\degrees: result[1],
-				\repeatinterval: result[2])
+				\equivalenceinterval: result[2])
 		});
 	}
 }
@@ -313,7 +313,7 @@ var scala_txt = [
 state = p.run(scala_txt);
 state.isError.debug("isError"); // expect: false
 state.result[\description].debug("description"); // 1/4-comma meantone scale. Pietro Aarons temperament (1523)
-state.result[\repeatinterval].debug("equave"); // ('what': 'intervalrepeat', 'numerator': 2, 'denominator': 1)
+state.result[\equivalenceinterval].debug("equave"); // ('what': 'equivalenceinterval', 'numerator': 2, 'denominator': 1)
 state.result[\degrees].size.debug("size"); //12
 state.result[\degrees][0].debug("first pitch"); // ('kind': 'cents', 'what': 'pitch', 'numerator': 0, 'denominator': 1)
 )
