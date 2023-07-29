@@ -1,12 +1,43 @@
+/*
+[general]
+title = "MitolaParser"
+summary = "a parser for mitola scores"
+categories = "Microtonal utils"
+related = "Classes/ScalaParser, Classes/Mitola"
+description = '''
+Mitola parser can parse a string or a file containing a valid Mitola score and convert it to a parse tree.
+'''
+*/
 MitolaParser : Parser {
+	/*
+	[classmethod.new]
+	description = "New creates a new MitolaParser"
+	[classmethod.new.returns]
+	what = "a new MitolaParser"
+	*/
 	*new {
 		^super.new.init();
 	}
 
+	/*
+	[method.init]
+	description = "initializes a new MitolaParser"
+	[classmethod.init.returns]
+	what = "an initialized MitolaParser object"
+	*/
 	init {
 
 	}
 
+	/*
+	[method.parse]
+	description = "parses a Mitola score; upon failure displays an error msg and returns nil"
+	[method.parse.args]
+	mitolastring = "a string containing a valid mitola score"
+	[method.parse.returns]
+	if successful, parse returns the parse tree
+	if unsuccessful, a message is printed and nil is returned
+	*/
 	parse {
 		| mitolastring |
 		var state = MitolaParser.pr_mixedNotelist.run(mitolastring);
@@ -18,6 +49,15 @@ MitolaParser : Parser {
 		}
 	}
 
+	/*
+	[method.parseFile]
+	description = "parses a Mitola score from file; upon failure displays an error msg and returns nil"
+	[method.parseFile.args]
+	mitolastring = "a filename of a file containing a valid mitola score"
+	[method.parseFile.returns]
+	if successful, parse returns the parse tree
+	if unsuccessful, a message is printed and nil is returned
+	*/
 	parseFile {
 		| filename |
 		var contents = FileReader.read(filename);
@@ -29,10 +69,22 @@ MitolaParser : Parser {
 		};
 	}
 
+	/*
+	[classmethod.pr_noteParser]
+	description = "internal method that creates a parser that can parse a single mitola degree and markup the result"
+	[classmethod.pr_noteParser.returns]
+	what = "a Parser"
+	*/
 	*pr_noteParser {
 		^ParserFactory.makePositiveIntegerParser.map({|result| (\what: \notename, \value: result-1) }); // use one-based counting
 	}
 
+	/*
+	[classmethod.pr_plusminParser]
+	description = "internal method that creates a parser that can parse a +/- sign as part of a pitch modifier (similar to a flat or sharp in traditional notation) and markup the result"
+	[classmethod.pr_plusminParser.returns]
+	what = "a Parser"
+	*/
 	*pr_plusminParser {
 		^Choice([
 			StrParser("+").map({|result| (\notemodifier:\raise) }),
@@ -40,10 +92,22 @@ MitolaParser : Parser {
 		]);
 	}
 
+	/*
+	[classmethod.pr_betweenCurlyBrackets]
+	description = "internal method that creates a function that can create a parser to parse 'something' between curly brackets"
+	[classmethod.pr_betweenCurlyBrackets.returns]
+	what = "a function expecting a Parser for 'something' as argument, to create a Parser that parses 'something' between curly brackets"
+	*/
 	*pr_betweenCurlyBrackets {
 		^ParserFactory.makeBetween(StrParser("{"), SequenceOf([ParserFactory.makeWs, StrParser("}")]));
 	}
 
+	/*
+	[classmethod.pr_pitchRatio]
+	description = "internal method that creates a Parser to parse a pitch modifier numerical value specified as a ratio and markup the result"
+	[classmethod.pr_pitchRatio.returns]
+	what = "a Parser parsing a pitch modifier numerical value ratio [Integer]/[Integer]"
+	*/
 	*pr_pitchRatio {
 		^SequenceOf([
 			ParserFactory.makeWs,
@@ -65,10 +129,28 @@ MitolaParser : Parser {
 		});
 	}
 
+	/*
+	[classmethod.pr_nopoint]
+	description = "internal method that creates a Parser that fails if the next token is a point"
+	[classmethod.pr_nopoint.returns]
+	what = "a Parser that fails if the next token is a point"
+	*/
 	*pr_nopoint {
 		^NegativeLookAhead(StrParser("."));
 	}
 
+	/*
+	[classmethod.pr_pitchPrimeVector]
+	description = "internal method that creates a Parser that parses a pitch modifier numerical value specified as a prime vector"
+	[classmethod.pr_pitchPrimeVector.returns]
+	what = '''
+	a Parser that matches a pitch modifier numerical value specified as a prime vector, i.e. | exp1 exp2 ... expN >
+	The exp things are positive/negative integers or ratios which indicate prime factor exponents, e.g.
+	| 1/2 > is 2^(1/2) and | -1/2 2/3 > is 2^(-1/2)*3^(2/3).
+
+	The result is marked up.
+	'''
+	*/
 	*pr_pitchPrimeVector {
 		var ratio = SequenceOf([
 			ParserFactory.makeWs,
@@ -100,6 +182,13 @@ MitolaParser : Parser {
 		]).map({|result| result[2] });
 	}
 
+
+	/*
+	[classmethod.pr_pitchCents]
+	description = "internal method that creates a Parser that can parse a pitch modifier numerical value specified in cents"
+	[classmethod.pr_pitchCents.returns]
+	what = "a Parser that parses a pitch modifier numerical value specified in cents and marks up the result"
+	*/
 	*pr_pitchCents {
 		var ws = ParserFactory.makeWs;
 		var d = ParserFactory.makePositiveFloatParser;
@@ -112,6 +201,12 @@ MitolaParser : Parser {
 		});
 	}
 
+	/*
+	[classmethod.pr_pitchParser]
+	description = "internal method that creates a Parser that can parse the pitch part of a pitch modifier in any format (ratio, primevector or cents)"
+	[classmethod.pr_pitchCents.returns]
+	what = "a Parser that parses a pitch modifier in any format (ratio, primevector or cents) and marks up the result"
+	*/
 	*pr_pitchParser {
 		^Choice([
 			this.pr_pitchPrimeVector.map(MapFactory.keyvalue(\primevector)),
@@ -120,6 +215,12 @@ MitolaParser : Parser {
 		]);
 	}
 
+	/*
+	[classmethod.pr_noteModifier]
+	description = "internal method that creates a Parser that can parse a pitch modifier in any format (ratio, primevector or cents)"
+	[classmethod.pr_npteModifier.returns]
+	what = "a Parser that parses a pitch modifier and marks up the result; pitch modifiers are optional"
+	*/
 	*pr_noteModifier {
 		^Optional(
 			this.pr_betweenCurlyBrackets.(
@@ -136,10 +237,22 @@ MitolaParser : Parser {
 		).map({|result| result ? (\what : \notemodifier, \kind : \natural, \direction: \none) });
 	}
 
+	/*
+	[classmethod.pr_restParser]
+	description = "internal method that creates a Parser that can parse a rest in a Mitola string"
+	[classmethod.pr_restParser.returns]
+	what = "a Parser that parses a rest and marks up the result"
+	*/
 	*pr_restParser {
 		^RegexParser("[rR]").map({|result| (\what: \rest) });
 	}
 
+	/*
+	[classmethod.pr_noteAndMod]
+	description = "internal method that creates a Parser that can parse a degree followed by an (optional) pitch modifier or a rest"
+	[classmethod.pr_noteAndMod.returns]
+	what = "a Parser that parses a mitola degree followed by an (optional) pitch modifier or a rest"
+	*/
 	*pr_noteAndMod {
 		^Choice([
 			SequenceOf([this.pr_noteParser, this.pr_noteModifier]),
@@ -147,6 +260,12 @@ MitolaParser : Parser {
 		]);
 	}
 
+	/*
+	[classmethod.pr_noteAndModAndOCt]
+	description = "internal method that creates a Parser that can parse a degree followed by an (optional) pitch modifier or a rest and an (optional) repeat interval (think: octave)"
+	[classmethod.pr_noteAndModAndOct.returns]
+	what = "a Parser"
+	*/
 	*pr_noteAndModAndOct {
 		^Choice([
 			SequenceOf([this.pr_noteParser, this.pr_noteModifier, this.pr_repeatIntervalParser]).map({
@@ -160,10 +279,22 @@ MitolaParser : Parser {
 		]);
 	}
 
+	/*
+	[classmethod.pr_betweenSquareBrackets]
+	description = "internal method that creates a function that can create a Parser when called with a Parser for 'something'. The Parser thus created will parse 'something' between square brackets."
+	[classmethod.pr_betweenSquareBrackets.returns]
+	what = "a Parser"
+	*/
 	*pr_betweenSquareBrackets {
 		^ParserFactory.makeBetween(StrParser("["), StrParser("]"));
 	}
 
+	/*
+	[classmethod.pr_repeatIntervalParser]
+	description = "internal method that creates a Parser that matches a repeat interval (think: octave) between square brackets"
+	[classmethod.pr_repeatIntervalParser.returns]
+	what = "a Parser"
+	*/
 	*pr_repeatIntervalParser {
 		^Optional(
 			this.pr_betweenSquareBrackets.(ParserFactory.makeDigits).map({
@@ -173,6 +304,12 @@ MitolaParser : Parser {
 		).map({|result| result ? (\what: \repeatinterval, \value: \previous) }); // map missing repeat interval to \previous
 	}
 
+	/*
+	[classmethod.pr_noteAndModAndOctAndDur]
+	description = "internal method that creates a Parser that matches a degree followed by pitch modifier, repeatinterval (think: octave) and duration, or a rest and duration"
+	[classmethod.pr_noteAndModAndOctAndDur.returns]
+	what = "a Parser"
+	*/
 	*pr_noteAndModAndOctAndDur {
 		^SequenceOf([
 			this.pr_noteAndModAndOct,
@@ -180,6 +317,12 @@ MitolaParser : Parser {
 		]).map({|result| (\pitch : result[0], \duration: result[1] ) })
 	}
 
+	/*
+	[classmethod.pr_durationParser]
+	description = "internal method that creates a Parser that matches duration specification (i.e. a length and modifiers like dots, muiltiplier and divider)"
+	[classmethod.pr_durationParser.returns]
+	what = "a Parser"
+	*/
 	*pr_durationParser {
 		^Optional(SequenceOf([
 			StrParser("_"),
@@ -219,10 +362,22 @@ MitolaParser : Parser {
 		});
 	}
 
+	/*
+	[classmethod.pr_propertyNameParser]
+	description = "internal method that creates a Parser that matches a property name. Properties can be attached to Mitola degrees and end up as keys in the pbind."
+	[classmethod.pr_propertyNameParser.returns]
+	what = "a Parser"
+	*/
 	*pr_propertyNameParser {
 		^RegexParser("@[a-zA-z][a-zA-Z0-9]*").map({|result| (\what: \propertyname, \value: result.drop(1))});
 	}
 
+	/*
+	[classmethod.pr_propertyNameParser]
+	description = "internal method that creates a Parser that matches list of propertynames and values as attached to a mitola degree"
+	[classmethod.pr_propertyNameParser.returns]
+	what = "a Parser"
+	*/
 	*pr_propertiesParser {
 		^Many(
 			Choice([
@@ -241,12 +396,24 @@ MitolaParser : Parser {
 		]));
 	}
 
+	/*
+	[classmethod.pr_noteAndModAndOctAndDurAndProp]
+	description = "internal method that creates a Parser that matches a mitola degree with all possible markup (modifiers, repeatinterval durations, properties)"
+	[classmethod.pr_propertyNameParser.returns]
+	what = "a Parser"
+	*/
 	*pr_noteAndModAndOctAndDurAndProp {
 		^SequenceOf([
 			this.pr_noteAndModAndOctAndDur,
 			this.pr_propertiesParser]).map({|result| (\what: \singlenote, \info : ( \note : result[0], \props : result[1] ) ); });
 	}
 
+	/*
+	[classmethod.pr_chordParser]
+	description = "internal method that creates a Parser that matches a group of degrees grouped into a chord."
+	[classmethod.pr_chordParser.returns]
+	what = "a Parser"
+	*/
 	*pr_chordParser {
 		^this.pr_betweenChordBrackets.(
 			ManyOne(
@@ -257,12 +424,24 @@ MitolaParser : Parser {
 		)).map({|result| (\what: \chord, \notes : result) });
 	}
 
+	/*
+	[classmethod.pr_betweenChordBrackets]
+	description = "internal method that creates a function that can create a Parser that parses ;something' between chord brackets"
+	[classmethod.pr_betweenChordBrackets.returns]
+	what = "a function that makes a parser for 'something' between chord brackets if you call it with a Parser that parses 'something'"
+	*/
 	*pr_betweenChordBrackets {
 		^ParserFactory.makeBetween(
 			SequenceOf([StrParser("<"), ParserFactory.makeWs]),
 			StrParser(">"));
 	}
 
+	/*
+	[classmethod.pr_notelistParser]
+	description = "internal method that creates a Parser that parses a list of notes"
+	[classmethod.pr_notelistParser.returns]
+	what = "a Parser"
+	*/
 	*pr_notelistParser {
 		^ManyOne(Choice([
 			SequenceOf([this.pr_chordParser, ParserFactory.makeWs]).map({|result| result[0]}), // eat whitespace
@@ -270,19 +449,37 @@ MitolaParser : Parser {
 		]));
 	}
 
+	/*
+	[classmethod.pr_betweenRepeatBrackets]
+	description = "internal method that creates a function that can create a Parser that parses a list of notes"
+	[classmethod.pr_betweenRepeatBrackets.returns]
+	what = "a function"
+	*/
 	*pr_betweenRepeatBrackets {
 		^ParserFactory.makeBetween(
-			SequenceOf([StrParser("("), ParserFactory.makeWs]),
-			StrParser(")");
+			SequenceOf([StrParser("|:"), ParserFactory.makeWs]),
+			StrParser(":|");
 		);
 	}
 
+	/*
+	[classmethod.pr_mixedNotelist]
+	description = "internal method that creates a (recursive) Parser for a list of chords and notes with nested repeat brackets"
+	[classmethod.pr_mixedNotelist.returns]
+	what = "a Parser"
+	*/
 	*pr_mixedNotelist {
 		^ParserFactory.forwardRef(Thunk({
 			ManyOne(Choice([this.pr_repeatedNotelist, this.pr_notelistParser])).map({|result| result.flatten(1); });
 		}));
 	}
 
+	/*
+	[classmethod.pr_repeatedNotelist]
+	description = "internal method that creates Parser to parse chords and notes between repeat brackets e.g. |: 1 2 3 4 :|*2"
+	[classmethod.pr_repeatedNotelist.returns]
+	what = "a Parser"
+	*/
 	*pr_repeatedNotelist {
 		^SequenceOf([
 			this.pr_betweenRepeatBrackets.(this.pr_mixedNotelist),
@@ -304,4 +501,3 @@ MitolaParser : Parser {
 		})
 	}
 }
-
