@@ -1,3 +1,13 @@
+/*
+[general]
+title = "RootFrequencyCalculatorTests"
+summary = "tests for the RootFrequencyCalculator class"
+categories = "Microtonal utils"
+related = "Classes/ScalaParser, Classes/Mitola"
+description = '''
+unit tests
+'''
+*/
 RootFrequencyCalculatorTests : UnitTest {
 	*new {
 		^super.new.init();

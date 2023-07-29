@@ -1,3 +1,13 @@
+/*
+[general]
+title = "MitolaTests"
+summary = "tests for the MitolaParser class"
+categories = "Microtonal utils"
+related = "Classes/ScalaParser, Classes/Mitola"
+description = '''
+unit tests
+'''
+*/
 MitolaTests : UnitTest {
 	*new {
 		^super.new.init();
