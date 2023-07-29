@@ -1,4 +1,5 @@
 (
+// example recording on https://voca.ro/1be3vPzTFfqP
 s.waitForBoot({
 	var patterns = ();
 	var drumpatterns = ();
@@ -177,6 +178,8 @@ s.waitForBoot({
 
 		(thisThread.clock.elapsedBeats - thisThread.clock.beats).wait;
 
+		//s.record("~/documents/music/supercollider/mitola/HelpSource/examples/example.wav");
+
 		player = Ppar([
 			Pseq([patterns[\m1_2], patterns[\m3_4], patterns[\m5_6], patterns[\m7_8]], 2),
 			Pn(patterns[\drums], 16),
@@ -185,3 +188,6 @@ s.waitForBoot({
 	}
 });
 )
+
+
+//s.stopRecording;
