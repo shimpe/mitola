@@ -27,7 +27,7 @@ The second way is to specify a ratio. E.g. 5{+2/3} will modify the pitch so that
 
 ```smalltalk
 (
-var modified_notes = "7{+50.0} 4{-34.0} 6{+1/4} 10{-3/4}";
+var modified_notes = "7{+50.0} 4{-34.0} 6{+1/4} 10{-3/4} 3{+|1/2 -3/2 2/7>}";
 )
 ```
 
@@ -66,21 +66,27 @@ var triplet_of_eighths = "1[4]_8*2/3 4 7";
 Notes can also optionally be decorated with properties (anything you like really). These properties by default are included in the supercollider patterns that are derived from the score, where they can be used to drive synth arguments or control behavior of the patterns. The properties can be animated between notes (see example code below).
 
 ```smalltalk
+(
 var animated_prop_crescendo = "1[4]@amp{0.2} 2 3 4 5 6 7@amp{0.9}";
 var static_prop_two_staccato_one_legato = "1[4]@legato[0.1] 5 1[5]@legato[1.0];
+)
 ```
 
 Notes can be grouped in angular brackets < > to make chords. Limitation: the properties of the first note iin the chord are used for the complete chord. "< 1[4]_8 4 1{+25.0}[5]>" is a chord consisting of degrees 1[4] 4[4] and 1{+25.0}[5].
 
 ```smalltalk
+(
 var chord = "<1[4]_2 4 7>";
+)
 ```
 
 Lastly, notes can be put between repeat brackets and the number of repeats can be indicated, e.g.
 |: 1[4]_8 2 3 :|*5 repeats notes 1[4]_8 2 3 five times.
 
 ```smalltalk
+(
 var repeats = "|: 1[4]_8 2 3 :| * 5";
+)
 ```
 
 To convert Mitola scores to frequencies it is necessary to know in which tuning the score has to be interpreted. Tuning is indicated in the form of a scala definition and a root frequency. In order to pin a given degree in your scala definition to a fixed frequency (e.g. ensure that A4 is 440Hz in a 12EDO tuning), a suitable root_frequency can be calculated using the RootFrequencyCalculator class.
