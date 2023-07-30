@@ -237,8 +237,8 @@ s.waitForBoot({
 		" | 6/7 >",
 		" 2/1"
 	].join("\n");
-    var score = Mitola("1[4]_16@amp{0.2} 2 3_32 4 5_16 6 7 1[5]_4@amp{0.6}", scala_contents: tuning);
-var score2 = Mitola("1[3]_16@amp[0.3] 5 1 5 1 5 1 5 1@amp[0.6]", scala_contents:tuning);
+	var score = Mitola("1[4]_16@amp{0.2} 2 3_32 4 5_16 6 7 1[5]_4@amp{0.6}", scala_contents: tuning);
+	var score2 = Mitola("1[3]_16@amp[0.3] 5 1 5 1 5 1 5 1@amp[0.6]", scala_contents:tuning);
 	// find out which root frequency to use to get degree 4 in octave 4 to map to 432Hz.
 	var r = RootFrequencyCalculator(tuning);
 	var root_freq = r.get_root_frequency("4[4]", 432);
