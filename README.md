@@ -96,7 +96,7 @@ To convert Mitola scores to frequencies it is necessary to know in which tuning 
 ```smalltalk
 // Let's start with the "Hello world" of Mitola: a simple scale.
 // In microtonal music, we need to define the scale degrees first. I'm here inlining the scala contents,
-// but you can also load them from file using parse_file.
+// but you can also load them from file by passing a scala_filename instead scala_contents.
 (
 s.waitForBoot({
 	var tuning = [
