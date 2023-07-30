@@ -770,7 +770,7 @@ Quarks.install("https://github.com/shimpe/mitola"); // mitola implementation
 
 // Let's start with the "Hello world" of Mitola: a simple scale.
 // In microtonal music, we need to define the scale degrees first. I'm here inlining the scala contents,
-// but you can also load them from file using parse_file.
+// but you can also load them from file by passing a scala_filename instead of scala_contents.
 (
 s.waitForBoot({
 	var tuning = [
@@ -929,8 +929,8 @@ s.waitForBoot({
 		" | 6/7 >",
 		" 2/1"
 	].join("\n");
-    var score = Mitola("1[4]_16@amp{0.2} 2 3_32 4 5_16 6 7 1[5]_4@amp{0.6}", scala_contents: tuning);
-var score2 = Mitola("1[3]_16@amp[0.3] 5 1 5 1 5 1 5 1@amp[0.6]", scala_contents:tuning);
+	var score = Mitola("1[4]_16@amp{0.2} 2 3_32 4 5_16 6 7 1[5]_4@amp{0.6}", scala_contents: tuning);
+	var score2 = Mitola("1[3]_16@amp[0.3] 5 1 5 1 5 1 5 1@amp[0.6]", scala_contents:tuning);
 	// find out which root frequency to use to get degree 4 in octave 4 to map to 432Hz.
 	var r = RootFrequencyCalculator(tuning);
 	var root_freq = r.get_root_frequency("4[4]", 432);
