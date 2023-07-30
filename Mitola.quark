@@ -1,6 +1,6 @@
 (
   name: "Mitola",
-  summary: "Microtonal counterpart to Panola"
+  summary: "Microtonal counterpart to Panola",
   version: "0.0.1",
   schelp: "Mitola.schelp",
   license: "GPL",
