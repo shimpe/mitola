@@ -531,7 +531,7 @@ ScalaCalculator {
 			^0;
 		};
 		if (info_note_pitch_parse_tree[\what] == \rest){
-			^0;
+			^1; // don't return 0 as this can cause a lot of problems in filters e.g.
 		};
 		degree = info_note_pitch_parse_tree[\notename];
 		if (degree > this.max_degree) {
