@@ -659,7 +659,7 @@ Mitola {
 	as_pmono {
 		| instrument=\default, root_frequency=nil, include_custom_properties=true, custom_property_defaults=nil, include_tempo=true|
 		var result = Pmono(instrument);
-		result.patternpairs_(this.as_pbind(instrument, root_frequency, include_custom_properties, custom_property_defaults, translate_std_keys, include_tempo).patternpairs);
+		result.patternpairs_(this.as_pbind(instrument, root_frequency, include_custom_properties, custom_property_defaults, include_tempo).patternpairs);
 		^result;
 	}
 
@@ -678,7 +678,7 @@ Mitola {
 	as_pmonoartic {
 		| instrument=\default, root_frequency=nil, include_custom_properties=true, custom_property_defaults=nil, include_tempo=true|
 		var result = PmonoArtic(instrument);
-		result.patternpairs_(this.as_pbind(instrument, root_frequency, include_custom_properties, custom_property_defaults, translate_std_keys, include_tempo).patternpairs);
+		result.patternpairs_(this.as_pbind(instrument, root_frequency, include_custom_properties, custom_property_defaults, include_tempo).patternpairs);
 		^result;
 	}
 
