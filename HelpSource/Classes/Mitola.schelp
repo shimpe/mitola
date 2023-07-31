@@ -373,6 +373,44 @@ ARGUMENT:: include_tempo
 boolean to indicate if tempo should be part of extracted pattern (default: false). By extracting tempo from the pattern, you lose the ability to play the pattern against a different TempoClock.
 
 returns:: a pattern
+METHOD:: as_pmono
+method to return a pattern generating all the properties in the mitola string; intended for using with supercollider synths
+
+ARGUMENT:: instrument
+name of the synthdef to use in the pattern's \instrument key
+
+ARGUMENT:: root_frequency
+root frequency
+
+ARGUMENT:: include_custom_properties
+boolean to indicate if the pattern should contain user defined properties as well; if set to false only properties \instrument, \midinote, \dur, \lag, \legato, \amp and optionally \tempo are extracted
+
+ARGUMENT:: custom_property_defaults
+a Dictionary specifying default values for used defined properties
+
+ARGUMENT:: include_tempo
+a boolean to indicate if tempo should be part of the Pbind. Note that the tempo key modifies the TempoClock and therefore influences all voices playing on that same TempoClock in the system (which may not be desired...)
+
+returns:: a pattern (Pmono) realizing the mitola string
+METHOD:: as_pmonoartic
+method to return a pattern generating all the properties in the mitola string; intended for using with supercollider synths
+
+ARGUMENT:: instrument
+name of the synthdef to use in the pattern's \instrument key
+
+ARGUMENT:: root_frequency
+root frequency
+
+ARGUMENT:: include_custom_properties
+boolean to indicate if the pattern should contain user defined properties as well; if set to false only properties \instrument, \midinote, \dur, \lag, \legato, \amp and optionally \tempo are extracted
+
+ARGUMENT:: custom_property_defaults
+a Dictionary specifying default values for used defined properties
+
+ARGUMENT:: include_tempo
+a boolean to indicate if tempo should be part of the Pbind. Note that the tempo key modifies the TempoClock and therefore influences all voices playing on that same TempoClock in the system (which may not be desired...)
+
+returns:: a pattern (Pmono) realizing the mitola string
 METHOD:: pr_extract_all_properties
 	internal method to extract a list of all properties that occur in a score
 	

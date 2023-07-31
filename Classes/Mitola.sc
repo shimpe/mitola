@@ -643,6 +643,45 @@ Mitola {
 		}
 	}
 
+
+    /*
+	[method.as_pmono]
+	description = "method to return a pattern generating all the properties in the mitola string; intended for using with supercollider synths"
+	[method.as_pmono.args]
+	instrument = "name of the synthdef to use in the pattern's \\instrument key"
+	root_frequency = "root frequency"
+	include_custom_properties = "boolean to indicate if the pattern should contain user defined properties as well; if set to false only properties \\instrument, \\midinote, \\dur, \\lag, \\legato, \\amp and optionally \\tempo are extracted"
+	custom_property_defaults = "a Dictionary specifying default values for used defined properties"
+	include_tempo = "a boolean to indicate if tempo should be part of the Pbind. Note that the tempo key modifies the TempoClock and therefore influences all voices playing on that same TempoClock in the system (which may not be desired...)"
+	[method.as_pmono.returns]
+	what = "a pattern (Pmono) realizing the mitola string"
+	*/
+	as_pmono {
+		| instrument=\default, root_frequency=nil, include_custom_properties=true, custom_property_defaults=nil, include_tempo=true|
+		var result = Pmono(instrument);
+		result.patternpairs_(this.as_pbind(instrument, root_frequency, include_custom_properties, custom_property_defaults, translate_std_keys, include_tempo).patternpairs);
+		^result;
+	}
+
+    /*
+	[method.as_pmonoartic]
+	description = "method to return a pattern generating all the properties in the mitola string; intended for using with supercollider synths"
+	[method.as_pmonoartic.args]
+	instrument = "name of the synthdef to use in the pattern's \\instrument key"
+	root_frequency = "root frequency"
+	include_custom_properties = "boolean to indicate if the pattern should contain user defined properties as well; if set to false only properties \\instrument, \\midinote, \\dur, \\lag, \\legato, \\amp and optionally \\tempo are extracted"
+	custom_property_defaults = "a Dictionary specifying default values for used defined properties"
+	include_tempo = "a boolean to indicate if tempo should be part of the Pbind. Note that the tempo key modifies the TempoClock and therefore influences all voices playing on that same TempoClock in the system (which may not be desired...)"
+	[method.as_pmonoartic.returns]
+	what = "a pattern (Pmono) realizing the mitola string"
+	*/
+	as_pmonoartic {
+		| instrument=\default, root_frequency=nil, include_custom_properties=true, custom_property_defaults=nil, include_tempo=true|
+		var result = PmonoArtic(instrument);
+		result.patternpairs_(this.as_pbind(instrument, root_frequency, include_custom_properties, custom_property_defaults, translate_std_keys, include_tempo).patternpairs);
+		^result;
+	}
+
 	/*
 	[method.pr_extract_all_properties]
 	description='''
