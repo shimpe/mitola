@@ -82,8 +82,7 @@ METHOD:: printOn
 ARGUMENT:: stream
 stream on which to print
 
-returns:: this instance of Degree
-
+returns:: the updated stream
 
 EXAMPLES::
 

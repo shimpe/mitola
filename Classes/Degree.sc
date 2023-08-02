@@ -193,7 +193,7 @@ Degree {
 	'''
 	[method.printOn.args]
 	stream = "stream on which to print"
-	[metehod.printOn.returns]
+	[method.printOn.returns]
 	what = "the updated stream"
 	*/
 	printOn {

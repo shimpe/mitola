@@ -76,8 +76,7 @@ METHOD:: printOn
 ARGUMENT:: stream
 stream on which to print
 
-returns:: this instance of DegreeMapper
-
+returns:: the updated stream
 METHOD:: scala_to_score
 	maps a Degree of kind \scala to a degree of kind \score. This method will warn if the argument is not a Degree of type \score.
 	Note that such lookup will fail for scala degrees that have no corresponding score degree. Then it returns nil.
