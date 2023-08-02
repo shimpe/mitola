@@ -19,6 +19,9 @@ a string containing a scala definition
 ARGUMENT:: scala_filename
 a string containing a path to a scala definition file
 
+ARGUMENT:: degree_mapper
+an optional DegreeMapper
+
 returns:: a new RootFrequencyCalculator
 METHOD:: initClass
 initializes the class variable epsilon to 0.001
@@ -41,6 +44,9 @@ a string containing a valid scala definition
 ARGUMENT:: scala_filename
 a string containing a path to a scala file
 
+ARGUMENT:: degree_mapper
+an optional DegreeMapper
+
 returns:: initialized RootFrequencyCalculator
 METHOD:: parse
 parses a scala definition specified in a string
@@ -48,12 +54,18 @@ parses a scala definition specified in a string
 ARGUMENT:: scala_contents
 a string containing a valid scala definition
 
+ARGUMENT:: degree_mapper
+an option DegreeMapper
+
 returns:: a ScalaCalculator initialized with the information from the string
 METHOD:: parse_file
 parses a scala definition specified in a file
 
 ARGUMENT:: filename
 a filename containing a valid scala definition
+
+ARGUMENT:: degree_mapper
+an option DegreeMapper
 
 returns:: a ScalaCalculator initialized with the information from the file
 METHOD:: pr_bisect

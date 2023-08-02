@@ -4,6 +4,8 @@
 Mitola provides notation and utilities to write microtonal music in supercollider using a text based notation. Mitola is modeled after its sister quark Panola, which provides text based notation for "conventional" music.
 Mitola shares many ideas and syntax with Panola, but differs in some aspects where I thought Panola could be improved, or where things cannot be reused as-is.
 
+## installation
+
 Mitola depends on another quark called scparco which is a library to generate parsers in supercollider. Both need to be installed:
 
 ```smalltalk
@@ -13,6 +15,8 @@ Quarks.install("https://github.com/shimpe/mitola"); // mitola implementation
 )
 ```
 
+## degrees
+
 A Mitola score consists of a list of notes and/or chords. Mitola does not use note names. Instead it uses integer scale degrees 1,2,...N, where N is determined by the tuning in use. Suppose you have a 12EDO tuning, then N can be at most 12.
 
 ```smalltalk
@@ -20,6 +24,8 @@ A Mitola score consists of a list of notes and/or chords. Mitola does not use no
 var valid_notes_12_edo = "1 2 3 4 5 6 7 8 9 10 11 12"; // 1-based degree names
 )
 ```
+
+## degree modifiers
 
 Degrees can be modified with modifiers (in conventional music these would be accidentals, like sharps and flats). Modifiers in Mitola can be specified in two ways. First way: absolute modification by a number of cents. E.g. 1{+100.0} modifies degree 1 by adding 100.0 cents. Note that you must include a decimal point for the number to be interpreted as cents. Similarly 4{-53.0} would lower the pitch represented by degree 4 by 53.0 cents. 
 
@@ -38,6 +44,8 @@ In addition to modifiers, degrees also have an equivalence interval (aka equave)
 var same_note_in_different_equaves = "3[2] 3[4] 3[5]";
 )
 ```
+
+## rhythm
 
 To indicate rhythm, a note can be decorated with an underscore (_) followed by a number, e.g. 1_4 indicates degree one as a quarter note, whereas 1_8 is the first degree as an eighth note. If you do not specify a duration value, the last specified one is reused.
 
@@ -80,6 +88,8 @@ var chord = "<1[4]_2 4 7>";
 )
 ```
 
+## repeats 
+
 Lastly, notes can be put between repeat brackets and the number of repeats can be indicated, e.g.
 |: 1[4]_8 2 3 :|*5 repeats notes 1[4]_8 2 3 five times.
 
@@ -89,7 +99,17 @@ var repeats = "|: 1[4]_8 2 3 :| * 5";
 )
 ```
 
+## tuning
+
 To convert Mitola scores to frequencies it is necessary to know in which tuning the score has to be interpreted. Tuning is indicated in the form of a scala definition and a root frequency. In order to pin a given degree in your scala definition to a fixed frequency (e.g. ensure that A4 is 440Hz in a 12EDO tuning), a suitable root_frequency can be calculated using the RootFrequencyCalculator class.
+
+## score degrees vs scala degrees
+
+What do to if the scala file defines more degrees than you want to use in your composition? (E.g. you want to select 12 out of 17) In such cases you have the choice to:
+1. either make sure only to use the correct degree numbers, or
+2. set up a degree mapping from score degreees to scala degrees
+
+To set up a degree mapping, you can pass to Mitola a ```note_mapping``` argument. This ```note_mapping``` should be a ```Dictionary``` containing a mapping from score degree (1-based Integer) to scala degree (1-based integer). 
 
 
 # Examples
@@ -123,6 +143,40 @@ s.waitForBoot({
 	var r = RootFrequencyCalculator(tuning);
 	var root_freq = r.get_root_frequency("10[4]", 440);
 	var player = score.as_pbind(root_frequency:root_freq).play; // listen to the score with the default instrument
+});
+)
+```
+
+Then a diatonic major scale selected from a 12EDO tuning by using note mapping.
+```smalltalk
+(
+s.waitForBoot({
+	var scala = [
+		"! 12EDO.scl",
+		"!",
+		"12 EDO",
+		" 12",
+		"!",
+		" | 1/12 >",
+		" | 2/12 >",
+		" | 3/12 >",
+		" | 4/12 >",
+		" | 5/12 >",
+		" | 6/12 >",
+		" | 7/12 >",
+		" | 8/12 >",
+		" | 9/12 >",
+		" | 10/12 >",
+		" | 11/12 >",
+		" 2/1"
+	].join("\n");
+	var m = Mitola("1[4]_16 2 3 4 5 6 7 1[5]",
+		scala_contents:scala,
+		note_mapping:Dictionary[1->1, 2->3, 3->5, 4->6, 5->8, 6->10, 7->12]);
+	var r = RootFrequencyCalculator(scala_contents:scala, degree_mapper:m.degree_mapper);
+	var root_freq = r.get_root_frequency("6[4]", 440); // a4 to 440Hz (6 is a one-based score degree, not a scala degree!)
+	var pattern = m.as_pbind(root_frequency:root_freq);
+	var player = pattern.play;
 });
 )
 ```
