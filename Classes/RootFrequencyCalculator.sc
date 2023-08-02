@@ -27,12 +27,13 @@ RootFrequencyCalculator {
 	[classmethod.new.args]
 	scala_contents = "a string containing a scala definition"
 	scala_filename = "a string containing a path to a scala definition file"
+	degree_mapper = "an optional DegreeMapper"
 	[classmethod.new.returns]
 	what = "a new RootFrequencyCalculator"
 	*/
 	*new {
-		| scala_contents=nil, scala_filename=nil |
-		^super.new.init(scala_contents, scala_filename);
+		| scala_contents=nil, scala_filename=nil, degree_mapper=nil |
+		^super.new.init(scala_contents, scala_filename, degree_mapper);
 	}
 
 	/*
@@ -51,16 +52,17 @@ RootFrequencyCalculator {
 	[method.init.args]
 	scala_contents = "a string containing a valid scala definition"
 	scala_filename= "a string containing a path to a scala file"
+	degree_mapper = "an optional DegreeMapper"
 	[method.init.returns]
 	what = "initialized RootFrequencyCalculator"
 	*/
 	init {
-		|scala_contents, scala_filename|
+		|scala_contents, scala_filename, degree_mapper|
 		if (scala_contents.notNil) {
-			this.parse(scala_contents);
+			this.parse(scala_contents, degree_mapper);
 		} {
 			if (scala_filename.notNil) {
-				this.parse_file(scala_filename);
+				this.parse_file(scala_filename, degree_mapper);
 			}
 		}
 		^this;
@@ -71,12 +73,13 @@ RootFrequencyCalculator {
 	description = "parses a scala definition specified in a string"
 	[method.parse.args]
 	scala_contents = "a string containing a valid scala definition"
+	degree_mapper = "an option DegreeMapper"
 	[method.parse.returns]
 	what = "a ScalaCalculator initialized with the information from the string"
 	*/
 	parse {
-		| scala_contents |
-		this.scala_calculator = ScalaCalculator();
+		| scala_contents, degree_mapper=nil |
+		this.scala_calculator = ScalaCalculator(degree_mapper);
 		this.scala_calculator.parse(scala_contents);
 		^this.scala_calculator;
 	}
@@ -86,14 +89,15 @@ RootFrequencyCalculator {
 	description = "parses a scala definition specified in a file"
 	[method.parse_file.args]
 	filename = "a filename containing a valid scala definition"
+	degree_mapper = "an option DegreeMapper"
 	[method.parse_file.returns]
 	what = "a ScalaCalculator initialized with the information from the file"
 	*/
 	parse_file {
-		| filename |
+		| filename, degree_mapper=nil |
 		var contents = FileReader.read(filename);
 		if (contents.notNil) {
-			^this.parse(contents.join("\n"));
+			^this.parse(contents.join("\n"), degree_mapper);
 		} {
 			("Error! Couldn't open file '" ++ filename ++ "' for reading.").postln;
 		};

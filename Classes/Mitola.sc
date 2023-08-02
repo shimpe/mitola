@@ -284,6 +284,7 @@ Mitola {
 	notation = "Mitola string containing score"
 	scala_contents = "string containing scala definition (you have to specify either this or scala_filename)"
 	scala_filename = "string containing path to scala definition file (you have to specify either this or a scala_contents string)"
+	note_mapping = "optional Dictionary contain map from score degree (one-based Integer) to scala degree (one-based Integer)"
 	note_equivalenceinterval_default= "default equave for a note if none was ever specified"
 	dur_default = "default duration for note if none was ever specified"
 	modifier_default = "default note modifier if none was ever specified"
@@ -298,12 +299,12 @@ Mitola {
 	*/
 	*new {
 		|  notation=nil, scala_contents=nil, scala_filename=nil,
-		note_equivalenceinterval_default=4, dur_default=4, modifier_default="",
+		note_mapping = nil, note_equivalenceinterval_default=4, dur_default=4, modifier_default="",
 		mult_default=1, div_default=1, amp_default=0.5,
 		legato_default=0.9, lag_default=0, tempo_default=80 |
 
 		^super.new.init(notation, scala_contents, scala_filename,
-			note_equivalenceinterval_default=4, dur_default=4, modifier_default="",
+			note_mapping, note_equivalenceinterval_default=4, dur_default=4, modifier_default="",
 			mult_default=1, div_default=1, amp_default=0.5,
 			legato_default=0.9, lag_default=0, tempo_default=80);
 	}
@@ -317,6 +318,7 @@ Mitola {
 	notation = "Mitola string containing score"
 	scala_contents = "string containing scala definition (you have to specify either this or scala_filename)"
 	scala_filename = "string containing path to scala definition file (you have to specify either this or a scala_contents string)"
+	note_mapping = "optional Dictionary contain map from score degree (one-based Integer) to scala degree (one-based Integer)"
 	note_equivalenceinterval_default= "default equave for a note if none was ever specified"
 	dur_default = "default duration for note if none was ever specified"
 	modifier_default = "default note modifier if none was ever specified"
@@ -331,7 +333,7 @@ Mitola {
 	*/
 	init {
 		| notation, scala_contents, scala_filename,
-		note_equivalenceinterval_default, dur_default, modifier_default,
+		note_mapping, note_equivalenceinterval_default, dur_default, modifier_default,
 		mult_default, div_default, amp_default,
 		legato_default, lag_default, tempo_default |
 
@@ -361,16 +363,34 @@ Mitola {
 		if (scala_contents.notNil) {
 			this.scala_calculator = ScalaCalculator();
 			this.scala_calculator.parse(scala_contents);
+			scala_calculator.max_scala_degree.debug("max scala degree");
+			this.scala_calculator.degree_mapper = DegreeMapper(scala_calculator.max_scala_degree+1, note_mapping);
 		} {
 			if (scala_filename.notNil) {
 				this.scala_calculator = ScalaCalculator();
 				this.scala_calculator.parse_file(scala_filename);
+				scala_calculator.max_scala_degree.debug("max scala degree");
+				this.scala_calculator.degree_mapper = DegreeMapper(scala_calculator.max_scala_degree+1, note_mapping);
 			} {
 				"Error. Pass either a scala string or a scala file name into the constructor.".postln;
 				^nil;
 			}
 		};
 	}
+
+
+	/*
+	[method.degree_mapper]
+	description='''
+	An object that knows how to map between \score and \scala degrees.
+	'''
+	[method.degree_mapper.returns]
+	what="a DegreeMapper, or nil if no mapping is needed (meaning \\score and \\scala degrees are the same)"
+	*/
+	degree_mapper {
+		^this.scala_calculator.degree_mapper;
+	}
+
 
 	/*
 	[method.frequency_pattern]

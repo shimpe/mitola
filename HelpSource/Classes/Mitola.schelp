@@ -113,6 +113,9 @@ string containing scala definition (you have to specify either this or scala_fil
 ARGUMENT:: scala_filename
 string containing path to scala definition file (you have to specify either this or a scala_contents string)
 
+ARGUMENT:: note_mapping
+optional Dictionary contain map from score degree (one-based Integer) to scala degree (one-based Integer)
+
 ARGUMENT:: note_equivalenceinterval_default
 default equave for a note if none was ever specified
 
@@ -264,6 +267,9 @@ string containing scala definition (you have to specify either this or scala_fil
 ARGUMENT:: scala_filename
 string containing path to scala definition file (you have to specify either this or a scala_contents string)
 
+ARGUMENT:: note_mapping
+optional Dictionary contain map from score degree (one-based Integer) to scala degree (one-based Integer)
+
 ARGUMENT:: note_equivalenceinterval_default
 default equave for a note if none was ever specified
 
@@ -292,6 +298,11 @@ ARGUMENT:: tempo_default
 default tempo if none was every specified (note: to extract tempo fro the score needs to be explicitly requested)
 
 returns:: new Mitola object
+METHOD:: degree_mapper
+	An object that knows how to map between \score and \scala degrees.
+	
+
+returns:: a DegreeMapper, or nil if no mapping is needed (meaning \score and \scala degrees are the same)
 METHOD:: frequency_pattern
 	Extracts from the Mitola score only the frequency information in the form of a supercollider pattern that generates the frequencies.
 	To make this possible a root_frequency needs to be passed in (and a valid scala definition must have been parsed).
