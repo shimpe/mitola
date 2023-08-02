@@ -1,5 +1,5 @@
-TITLE:: ScalaCalculatorTests
-summary:: tests for the ScalaCalculator class
+TITLE:: DegreeMapperTests
+summary:: tests for the DegreeMapper class
 categories:: Microtonal utils
 related:: Classes/ScalaParser, Classes/Mitola
 

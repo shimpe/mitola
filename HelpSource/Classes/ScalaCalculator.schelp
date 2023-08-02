@@ -18,6 +18,9 @@ returns:: a list of primes
 METHOD:: new
 New creates a new ScalaCalculator
 
+ARGUMENT:: degree_mapper
+mapping between score degrees and scala degrees; if nil there's a one-to-one correspondence
+
 returns:: a new ScalaCalculator
 METHOD:: initClass
 initializes the prime factor table (which is shared by all ScalaCalculator instances)
@@ -51,8 +54,16 @@ METHOD:: previous_equivalence_interval
 	
 
 returns:: a equivalence interval value
+METHOD:: degree_mapper
+	an object that maps between score degrees and scala degrees - this allows to use only a subset of degrees defined in a scala tuning, e.g. have score degrees 1 2 3 4 5 6 7 for a diatonic scale from a scala file that defines 12EDO tuning.
+	
+
+returns:: a equivalence interval value
 METHOD:: init
 initializes the ScalaCalculator class
+
+ARGUMENT:: degree_mapper
+mapping between score degrees and scala degrees; if nil there's a one-to-one correspondence
 
 returns:: an initialized ScalaCalculator
 METHOD:: parse
@@ -76,12 +87,20 @@ ARGUMENT:: root_frequency
 the base frequency, i.e. the frequency for degree 1[0] in the given scala definition. For calculating such frequency, you can use the RootFrequenceCalculator class.
 
 returns:: the frequency of the given mitola degree, given the current scala definition and root frequency
-METHOD:: no_of_degrees
+METHOD:: no_of_scala_degrees
 returns the number of degrees that are defined in the scala definition
 
 returns:: an integer
-METHOD:: max_degree
-returns the maximum degree number for the given scala definition. Note that this method replies a 0-based answer, whereas the mitola degrees are specified using 1-based degree numbers. So if max_degree return 3, the valid mitola degrees are 1,2,3 and 4.
+METHOD:: no_of_score_degrees
+returns the number of degrees that are allowed in this score
+
+returns:: an integer
+METHOD:: max_scala_degree
+returns the maximum degree number for the given scala definition. Note that this method replies a 0-based answer, whereas the mitola degrees are specified using 1-based degree numbers. So if max_scala_degree return 3, the valid mitola degrees are 1,2,3 and 4.
+
+returns:: an integer
+METHOD:: max_score_degree
+returns the maximum score degree number for the given degree mapping
 
 returns:: an integer
 METHOD:: pr_degree_to_cents
@@ -122,10 +141,7 @@ METHOD:: pr_info_note_pitch_modifier_parse_tree_to_cents
 	
 
 ARGUMENT:: degree
-an integer representing a 0-based mitola degree
-
-ARGUMENT:: equivalence_interval
-an integer representing the note equivalence interval (equivalent of 'octave' in traditional notation)
+a Degree representing a score degree with correctly initialized equave
 
 ARGUMENT:: info_note_pitch_modifier
 parse tree of the note modifier part of the mitola specification
@@ -168,8 +184,10 @@ var scala = [
 ].join("\n");
 var calc = ScalaCalculator();
 calc.parse(scala);
-calc.no_of_degrees.debug("no of degrees"); // expected: 12
-calc.max_degree.debug("max degree"); // expected: 11
+calc.no_of_scala_degrees.debug("no of degrees"); // expected: 12
+calc.no_of_score_degrees.debug("no of degrees"); // expected: 12
+calc.max_scala_degree.debug("max degree"); // expected: 11
+calc.max_score_degree.debug("max degree"); // expected: 11, since no mapping defined
 calc.note_to_freq("1[0]", 27.5).debug("frequency of note 1[0] if root_freq=27.5"); // expected: 27.5
 calc.note_to_freq("1[1]", 27.5).debug("frequency of note 1[1] if root_freq=27.5"); // expected: 55
 calc.note_to_freq("1{+100.0}[1]", 27.5).debug("frequency of note 1{+100.0}[1] if root_freq=27.5"); // expected: 58.27

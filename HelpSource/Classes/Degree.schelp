@@ -1,0 +1,95 @@
+TITLE:: Degree
+summary:: models a Degree (can be a \score degree or a \scala degree)
+categories:: Microtonal utils
+related:: Classes/Mitola, Classes/ScalaCalculator
+
+DESCRIPTION::
+a class that holds a single Degree
+
+
+
+CLASSMETHODS::
+
+METHOD:: new
+	creates a new Degree
+	
+
+ARGUMENT:: value
+numerical value of degree Integer
+
+ARGUMENT:: equave
+numerical value of equave Integer
+
+ARGUMENT:: score_or_scala
+one of \score or \scala
+
+ARGUMENT:: one_or_zero_based
+one of \zerobased or \onebased
+
+returns:: a new Degree
+
+INSTANCEMETHODS::
+
+METHOD:: value
+	the numerical value of the degree (0-based)
+	
+
+returns:: an Integer
+METHOD:: equave
+	the numerical value of the degree's equave
+	
+
+returns:: an Integer
+METHOD:: score_or_scala
+	a symbol indicating if this is a \score degree or a \scala degree
+	
+
+returns:: a symbol \score or \scala
+METHOD:: init
+	initializes a new Degree
+	
+
+ARGUMENT:: value
+numerical value Integer
+
+ARGUMENT:: equave
+numerical value of equave Integer
+
+ARGUMENT:: score_or_scala
+one of \score or \scala
+
+ARGUMENT:: one_or_zero_based
+one of \zerobased or \onebased
+
+returns:: an initialized Degree
+METHOD:: degree_value
+	gets the numerical value of the degree
+	
+
+ARGUMENT:: one_or_zero_based
+one of \zerobased or \onebased; determines which numerical value you get back. Interaction with the user should be \onebased, internal usage should be \zerobased
+
+returns:: a numerical value for a degree according to the desired counting scheme
+METHOD:: degree_kind
+	gets the kind of degree
+	
+
+returns:: one of \score or \scala
+METHOD:: printOn
+	override of Object.printOn to make sure a Degree prints something useful when called with .postln
+	
+
+ARGUMENT:: stream
+stream on which to print
+
+returns:: this instance of Degree
+
+
+EXAMPLES::
+
+code::
+(
+var d1 = Degree(5, 3, \score, \zerobased); // make a score degree
+)
+
+::

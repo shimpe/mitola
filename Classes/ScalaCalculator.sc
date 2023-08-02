@@ -38,15 +38,27 @@ ScalaCalculator {
 	what= "a equivalence interval value"
 	*/
 	var <>previous_equivalence_interval;
+	/*
+	[method.degree_mapper]
+	description='''
+	an object that maps between score degrees and scala degrees - this allows to use only a subset of degrees defined in a scala tuning, e.g. have score degrees 1 2 3 4 5 6 7 for a diatonic scale from a scala file that defines 12EDO tuning.
+	'''
+	[method.degree_mapper.returns]
+	what= "a equivalence interval value"
+	*/
+	var<>degree_mapper;
 
 	/*
 	[classmethod.new]
 	description = "New creates a new ScalaCalculator"
+	[classmethod.new.args]
+	degree_mapper = "mapping between score degrees and scala degrees; if nil there's a one-to-one correspondence"
 	[classmethod.new.returns]
 	what = "a new ScalaCalculator"
 	*/
 	*new {
-		^super.new.init();
+		| degree_mapper=nil |
+		^super.new.init(degree_mapper);
 	}
 
 	/*
@@ -119,11 +131,16 @@ ScalaCalculator {
 	/*
 	[method.init]
 	description = "initializes the ScalaCalculator class"
+	[method.init.args]
+	degree_mapper = "mapping between score degrees and scala degrees; if nil there's a one-to-one correspondence"
 	[method.init.returns]
 	what = "an initialized ScalaCalculator"
 	*/
 	init {
+		|degree_mapper|
 		this.previous_equivalence_interval = 4; // a default value
+		this.degree_mapper = degree_mapper;
+		^this;
 	}
 
 	/*
@@ -139,6 +156,9 @@ ScalaCalculator {
 		this.scala_parse_result = ScalaParser.parse(scala_contents);
 		if (this.scala_parse_result.isNil) {
 			"Failed to parse scala contents".postln;
+		};
+		if (this.degree_mapper.isNil) {
+			this.degree_mapper = DegreeMapper(this.max_scala_degree+1, nil);
 		};
 		^this.scala_parse_result;
 	}
@@ -182,23 +202,43 @@ ScalaCalculator {
 	}
 
 	/*
-	[method.no_of_degrees]
+	[method.no_of_scala_degrees]
 	description = "returns the number of degrees that are defined in the scala definition"
-	[method.no_of_degrees.returns]
+	[method.no_of_scala_degrees.returns]
 	what = "an integer"
 	*/
-	no_of_degrees {
-		^this.scala_parse_result.[\degrees].size;
+	no_of_scala_degrees {
+		^(this.scala_parse_result[\degrees].size);
 	}
 
 	/*
-	[method.max_degree]
-	description = "returns the maximum degree number for the given scala definition. Note that this method replies a 0-based answer, whereas the mitola degrees are specified using 1-based degree numbers. So if max_degree return 3, the valid mitola degrees are 1,2,3 and 4."
-	[method.max_degree.returns]
+	[method.no_of_score_degrees]
+	description = "returns the number of degrees that are allowed in this score"
+	[method.no_of_score_degrees.returns]
 	what = "an integer"
 	*/
-	max_degree {
-		^(this.scala_parse_result.[\degrees].size - 1);
+	no_of_score_degrees {
+		^(this.degree_mapper.max_score_degree);
+	}
+
+	/*
+	[method.max_scala_degree]
+	description = "returns the maximum degree number for the given scala definition. Note that this method replies a 0-based answer, whereas the mitola degrees are specified using 1-based degree numbers. So if max_scala_degree return 3, the valid mitola degrees are 1,2,3 and 4."
+	[method.max_scala_degree.returns]
+	what = "an integer"
+	*/
+	max_scala_degree {
+		^(this.scala_parse_result[\degrees].size - 1);
+	}
+
+	/*
+	[method.max_score_degree]
+	description = "returns the maximum score degree number for the given degree mapping"
+	[method.max_score_degree.returns]
+	what = "an integer"
+	*/
+	max_score_degree {
+		^(this.degree_mapper.max_score_degree-1);
 	}
 
 	/*
@@ -240,10 +280,13 @@ ScalaCalculator {
 	what= "a Float"
 	*/
 	pr_degree_to_cents {
-		| degree, note_equivalence_interval |
-		var scala_info = this.scala_parse_result[\degrees][degree]; // ('kind': 'cents', 'what': 'pitch', 'numerator': 0,'denominator': 1)
-		var cents = 0;
-		var scale_equivalence_interval_factor;
+		| degree |
+		var scala_info, cents, note_equivalence_interval, scala_equivalence_interval_factor;
+		var numerical_scala_degree;
+		numerical_scala_degree = this.degree_mapper.to_scala(degree).degree_value(\zerobased);
+		scala_info = this.scala_parse_result[\degrees][numerical_scala_degree]; // ('kind': 'cents', 'what': 'pitch', 'numerator': 0,'denominator': 1)
+		cents = 0;
+		note_equivalence_interval = degree.equave;
 
 		if (scala_info[\kind] == \cents) {
 			cents = scala_info[\numerator]
@@ -281,8 +324,8 @@ ScalaCalculator {
 				}
 			}
 		};
-		scale_equivalence_interval_factor = this.scala_parse_result[\equivalenceinterval][\numerator] / this.scala_parse_result[\equivalenceinterval][\denominator];
-		cents = cents + (note_equivalence_interval*ScalaCalculator.pr_ratio_to_cents(scale_equivalence_interval_factor));
+		scala_equivalence_interval_factor = this.scala_parse_result[\equivalenceinterval][\numerator] / this.scala_parse_result[\equivalenceinterval][\denominator];
+		cents = cents + (note_equivalence_interval*ScalaCalculator.pr_ratio_to_cents(scala_equivalence_interval_factor));
 		^cents;
 	}
 
@@ -299,13 +342,8 @@ ScalaCalculator {
 	what= "a Float"
 	*/
 	pr_previous_degree {
-		| degree, equivalence_interval |
-		var next_degree = degree - 1;
-		if (next_degree < 0) { // wrap
-			next_degree = this.max_degree;
-			equivalence_interval = equivalence_interval - 1;
-		};
-		^(\degree: next_degree, \equivalenceinterval: equivalence_interval);
+		| degree |
+		^this.degree_mapper.previous_degree(degree);
 	}
 
 
@@ -321,13 +359,8 @@ ScalaCalculator {
 	what= "a Float"
 	*/
 	pr_next_degree {
-		| degree, equivalence_interval |
-		var next_degree = degree + 1;
-		if (next_degree > this.max_degree) { // wrap
-			next_degree = 0;
-			equivalence_interval = equivalence_interval + 1;
-		};
-		^(\degree: next_degree, \equivalenceinterval: equivalence_interval);
+		| degree |
+		^this.degree_mapper.next_degree(degree);
 	}
 
 	/*
@@ -336,14 +369,13 @@ ScalaCalculator {
 	function that calculates the influence of the pitch modifier on the frequency. Modifiers specified in cents are applied as absolute modifiers. Modifiers specified as ratios are interpreted as relative degree modifiers, e.g. {+3/2} is interpreted as 2/2+1/2, i.e. raising to the next degree (+2/2=+1) and then raising to halfway between the 2nd next and 3rd next degree (+1/2). This distinction is important to understand the behavior in case of scales with different gaps between the pitches.
 	'''
 	[method.pr_info_note_pitch_modifier_parse_tree_to_cents.args]
-	degree = "an integer representing a 0-based mitola degree"
-	equivalence_interval = "an integer representing the note equivalence interval (equivalent of 'octave' in traditional notation)"
+	degree = "a Degree representing a score degree with correctly initialized equave"
 	info_note_pitch_modifier = "parse tree of the note modifier part of the mitola specification"
 	[method.pr_info_note_pitch_modifier_parse_tree_to_cents.returns]
 	what= "a Float"
 	*/
 	pr_info_note_pitch_modifier_parse_tree_to_cents {
-		| degree, equivalence_interval, info_note_pitch_modifier |
+		| degree, info_note_pitch_modifier |
 		/* Example:
 		(
 		'kind': 'cents',
@@ -358,7 +390,11 @@ ScalaCalculator {
 		var cents = 0;
 		var kind;
 		if (info_note_pitch_modifier.class != Event) {
-			"Error. pr_info_note_pitch_modifier_parse_tree_to_cents called with wrong argument types".postln;
+			"Error. pr_info_note_pitch_modifier_parse_tree_to_cents called with wrong argument types (info_note_pitch_modifier must be Event)".postln;
+			cents = 0;
+		};
+		if (degree.class != Degree) {
+			"Error. pr_info_note_pitch_modifier_parse_tree_to_cents called with wrong argument types (degree must be Degree)".postln;
 			cents = 0;
 		};
 		if (info_note_pitch_modifier[\direction] == \none) {
@@ -378,40 +414,38 @@ ScalaCalculator {
 					if (info_note_pitch_modifier[\direction] == \lower) {
 						var previous_cents, diff, current_cents;
 						var ratio = info_note_pitch_modifier[\value][\numerator]/info_note_pitch_modifier[\value][\denominator];
-						var previous_degree = this.pr_previous_degree(degree, equivalence_interval);
+						var previous_degree = this.pr_previous_degree(degree);
 						var cents_compensation = 0;
 						while({ratio > 1}) {
-							var current_cents = this.pr_degree_to_cents(degree, equivalence_interval);
-							var previous_cents = this.pr_degree_to_cents(previous_degree[\degree], previous_degree[\equivalenceinterval]);
+							var current_cents = this.pr_degree_to_cents(degree);
+							var previous_cents = this.pr_degree_to_cents(previous_degree);
 							cents_compensation = cents_compensation + (previous_cents - current_cents);
 							ratio = ratio - 1;
 
-							degree = previous_degree[\degree];
-							equivalence_interval = previous_degree[\equivalenceinterval];
-							previous_degree = this.pr_previous_degree(degree, equivalence_interval);
+							degree = previous_degree;
+							previous_degree = this.pr_previous_degree(degree);
 						};
-						current_cents = this.pr_degree_to_cents(degree, equivalence_interval);
-						previous_cents = this.pr_degree_to_cents(previous_degree[\degree], previous_degree[\equivalenceinterval]);
+						current_cents = this.pr_degree_to_cents(degree);
+						previous_cents = this.pr_degree_to_cents(previous_degree);
 						diff = current_cents - previous_cents;
 						cents = cents_compensation + (diff * ratio).neg;
 					} {
 						if (info_note_pitch_modifier[\direction] == \raise) {
 							var next_cents, diff, current_cents;
-							var next_degree = this.pr_next_degree(degree, equivalence_interval);
+							var next_degree = this.pr_next_degree(degree);
 							var ratio = info_note_pitch_modifier[\value][\numerator]/info_note_pitch_modifier[\value][\denominator];
 							var cents_compensation = 0;
-							this.pr_degree_to_cents(degree, equivalence_interval);
+							this.pr_degree_to_cents(degree);
 							while({ratio > 1}) {
-								var current_cents = this.pr_degree_to_cents(degree, equivalence_interval);
-								var next_cents = this.pr_degree_to_cents(next_degree[\degree], next_degree[\equivalenceinterval]);
+								var current_cents = this.pr_degree_to_cents(degree);
+								var next_cents = this.pr_degree_to_cents(next_degree);
 								cents_compensation = cents_compensation + (next_cents - current_cents);
 								ratio = ratio - 1;
-								degree = next_degree[\degree];
-								equivalence_interval = next_degree[\equivalenceinterval];
-								next_degree = this.pr_next_degree(degree, equivalence_interval);
+								degree = next_degree;
+								next_degree = this.pr_next_degree(degree);
 							};
-							current_cents = this.pr_degree_to_cents(degree, equivalence_interval);
-							next_cents = this.pr_degree_to_cents(next_degree[\degree], next_degree[\equivalenceinterval]);
+							current_cents = this.pr_degree_to_cents(degree);
+							next_cents = this.pr_degree_to_cents(next_degree);
 							diff = next_cents - current_cents;
 							cents = cents_compensation + (diff * ratio);
 						}
@@ -442,39 +476,37 @@ ScalaCalculator {
 						});
 						if (info_note_pitch_modifier[\direction] == \lower) {
 							var previous_cents, diff, current_cents;
-							var previous_degree = this.pr_previous_degree(degree, equivalence_interval);
+							var previous_degree = this.pr_previous_degree(degree);
 							var ratio = overall_num/overall_den;
 							var cents_compensation = 0;
 							while({ratio > 1}) {
-								var current_cents = this.pr_degree_to_cents(degree, equivalence_interval);
-								var previous_cents = this.pre_degree_to_cents(previous_degree[\degree], previous_degree[\equivalenceinterval]);
+								var current_cents = this.pr_degree_to_cents(degree);
+								var previous_cents = this.pre_degree_to_cents(previous_degree);
 								cents_compensation = cents_compensation + (previous_cents - current_cents);
 								ratio = ratio - 1;
-								degree = previous_degree[\degree];
-								equivalence_interval = previous_degree[\equivalenceinterval];
-								previous_degree = this.pr_previous_degree(degree, equivalence_interval);
+								degree = previous_degree;
+								previous_degree = this.pr_previous_degree(degree);
 							};
-							current_cents = this.pr_degree_to_cents(degree, equivalence_interval);
-							previous_cents = this.pr_degree_to_cents(previous_degree[\degree], previous_degree[\equivalenceinterval]);
+							current_cents = this.pr_degree_to_cents(degree);
+							previous_cents = this.pr_degree_to_cents(previous_degree);
 							diff = current_cents - previous_cents;
 							cents = cents_compensation + (diff * ratio).neg;
 						} {
 							if (info_note_pitch_modifier[\direction] == \raise) {
 								var next_cents, diff, current_cents;
-								var next_degree = this.pr_next_degree(degree, equivalence_interval);
+								var next_degree = this.pr_next_degree(degree);
 								var ratio = overall_num/overall_den;
 								var cents_compensation = 0;
 								while({ratio > 1}) {
-									var current_cents = this.pr_degree_to_cents(degree, equivalence_interval);
-									var next_cents = this.pr_degree_to_cents(next_degree[\degree], next_degree[\equivalenceinterval]);
+									var current_cents = this.pr_degree_to_cents(degree);
+									var next_cents = this.pr_degree_to_cents(next_degree);
 									cents_compensation = cents_compensation + (next_cents - current_cents);
 									ratio = ratio - 1;
-									degree = next_degree[\degree];
-									equivalence_interval = next_degree[\equivalenceinterval];
-									next_degree = this.pr_next_degree(degree, equivalence_interval);
+									degree = next_degree;
+									next_degree = this.pr_next_degree(degree);
 								};
-								current_cents = this.pr_degree_to_cents(degree, equivalence_interval);
-								next_cents = this.pr_degree_to_cents(next_degree[\degree], next_degree[\equivalenceinterval]);
+								current_cents = this.pr_degree_to_cents(degree);
+								next_cents = this.pr_degree_to_cents(next_degree);
 								diff = next_cents - current_cents;
 								cents = cents_compensation + (diff * ratio);
 							}
@@ -520,6 +552,7 @@ ScalaCalculator {
 		'direction': 'lower' ))
 		*/
 		var degree;
+		var d;
 		var equivalenceinterval;
 		var cents, ratio;
 		if (this.scala_parse_result.isNil) {
@@ -534,9 +567,9 @@ ScalaCalculator {
 			^1; // don't return 0 as this can cause a lot of problems in filters e.g.
 		};
 		degree = info_note_pitch_parse_tree[\notename];
-		if (degree > this.max_degree) {
-			("Warning: degree" + (degree+1) + "is higher than number of degrees (" ++ this.no_of_degrees ++ ") defined in scala definition. Degree will be clipped to" + this.max_degree).postln;
-			degree = this.max_degree;
+		if (degree > this.max_score_degree) {
+			("Warning: degree" + (degree+1) + "is higher than number of degrees (" ++ this.no_of_score_degrees ++ "). Degree will be clipped to" + this.max_score_degree).postln;
+			degree = this.max_score_degree;
 		};
 		equivalenceinterval = info_note_pitch_parse_tree[\equivalenceinterval];
 		if (equivalenceinterval == \previous) {
@@ -544,7 +577,8 @@ ScalaCalculator {
 		} {
 			this.previous_equivalence_interval = equivalenceinterval; // update with current value
 		};
-		cents = this.pr_degree_to_cents(degree, equivalenceinterval) + this.pr_info_note_pitch_modifier_parse_tree_to_cents(degree, equivalenceinterval, info_note_pitch_parse_tree[\notemodifier]);
+		d = Degree(degree, equivalenceinterval, \score, \zerobased);
+		cents = this.pr_degree_to_cents(d) + this.pr_info_note_pitch_modifier_parse_tree_to_cents(d, info_note_pitch_parse_tree[\notemodifier]);
 		ratio = ScalaCalculator.pr_cents_to_ratio(cents);
 		^(root_frequency * ratio);
 	}
@@ -575,8 +609,10 @@ var scala = [
 ].join("\n");
 var calc = ScalaCalculator();
 calc.parse(scala);
-calc.no_of_degrees.debug("no of degrees"); // expected: 12
-calc.max_degree.debug("max degree"); // expected: 11
+calc.no_of_scala_degrees.debug("no of degrees"); // expected: 12
+calc.no_of_score_degrees.debug("no of degrees"); // expected: 12
+calc.max_scala_degree.debug("max degree"); // expected: 11
+calc.max_score_degree.debug("max degree"); // expected: 11, since no mapping defined
 calc.note_to_freq("1[0]", 27.5).debug("frequency of note 1[0] if root_freq=27.5"); // expected: 27.5
 calc.note_to_freq("1[1]", 27.5).debug("frequency of note 1[1] if root_freq=27.5"); // expected: 55
 calc.note_to_freq("1{+100.0}[1]", 27.5).debug("frequency of note 1{+100.0}[1] if root_freq=27.5"); // expected: 58.27

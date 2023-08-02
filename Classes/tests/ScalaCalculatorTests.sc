@@ -1,7 +1,7 @@
 /*
 [general]
 title = "ScalaCalculatorTests"
-summary = "tests for the MitolaParser class"
+summary = "tests for the ScalaCalculator class"
 categories = "Microtonal utils"
 related = "Classes/ScalaParser, Classes/Mitola"
 description = '''
@@ -39,8 +39,10 @@ ScalaCalculatorTests : UnitTest {
 		].join("\n");
 		var calc = ScalaCalculator();
 		calc.parse(scala);
-		this.assertEquals(calc.no_of_degrees, 12, "no_of_degrees");
-		this.assertEquals(calc.max_degree, 11, "max_degree");
+		this.assertEquals(calc.no_of_scala_degrees, 12, "no_of_scala_degrees");
+		this.assertEquals(calc.no_of_score_degrees, 12, "no_of_score_degrees");
+		this.assertEquals(calc.max_scala_degree, 11, "max_scala_degree");
+		this.assertEquals(calc.max_score_degree, 11, "max_score_degree");
 		this.assertEquals(calc.note_to_freq("1[0]", 27.5), 27.5, "note_to_freq_1[0]"); // note a0
 		this.assertFloatEquals(calc.note_to_freq("9[0]", 27.5), 43.65, "note_to_freq_9[0]", 0.005); // note f1
 		this.assertEquals(calc.note_to_freq("1[1]", 27.5), 55, "note_to_freq_1[1]");
@@ -106,8 +108,10 @@ ScalaCalculatorTests : UnitTest {
 		].join("\n");
 		var calc = ScalaCalculator();
 		calc.parse(scala);
-		this.assertEquals(calc.no_of_degrees, 12, "no_of_degrees");
-		this.assertEquals(calc.max_degree, 11, "max_degree");
+		this.assertEquals(calc.no_of_scala_degrees, 12, "no_of_scala_degrees");
+		this.assertEquals(calc.no_of_score_degrees, 12, "no_of_score_degrees");
+		this.assertEquals(calc.max_scala_degree, 11, "max_scala_degree");
+		this.assertEquals(calc.max_score_degree, 11, "max_scala_degree");
 		this.assertEquals(calc.note_to_freq("1[0]", 27.5), 27.5, "note_to_freq_1[0]"); // note a0
 		this.assertFloatEquals(calc.note_to_freq("9[0]", 27.5), 43.65, "note_to_freq_9[0]", 0.005); // note f1
 		this.assertEquals(calc.note_to_freq("1[1]", 27.5), 55, "note_to_freq_1[1]");
@@ -118,5 +122,36 @@ ScalaCalculatorTests : UnitTest {
 		this.assertFloatEquals(calc.note_to_freq("1{-1/1}[4]", 27.5), 415.30, "note_to_freq_1{-1/1}[4]", 0.005); // descend one degree
 		this.assertFloatEquals(calc.note_to_freq("1{-1/2}[4]", 27.5), 427.47, "note_to_freq_1{-1/1}[4]", 0.005); // descend half degree = quarter tone
 		this.assertFloatEquals(calc.note_to_freq("1{+|-1>}[4]", 27.5), 452.89, "note_to_freq_1{+1/2}[0]", 0.005); // modify to half
+	}
+
+	test_scala_degree_mapping {
+		var scala = [
+			"! 12edo.scl",
+			"!",
+			"12 edo",
+			" 12",
+			"!",
+			" | 1/12 >",
+			" | 2/12 >",
+			" | 3/12 >",
+			" | 4/12 >",
+			" | 5/12 >",
+			" | 6/12 >",
+			" | 7/12 >",
+			" | 8/12 >",
+			" | 9/12 >",
+			" | 10/12 >",
+			" | 11/12 >",
+			" 2/1"
+		].join("\n");
+		var mapper = DegreeMapper(12, Dictionary[1->1,2->3,3->5,4->6,5->8,6->10,7->12]);
+		var calc = ScalaCalculator(mapper);
+		calc.parse(scala);
+
+		this.assertEquals(calc.no_of_scala_degrees, 12, "no_of_scala_degrees");
+		this.assertEquals(calc.no_of_score_degrees, 7, "no_of_score_degrees");
+		this.assertEquals(calc.max_scala_degree, 11, "max_scala_degree");
+		this.assertEquals(calc.max_score_degree, 6, "max_score_degree");
+		this.assertFloatEquals(calc.note_to_freq("2[0]", 27.5), 30.87, "note_to_freq_2[0]", 0.005); // score degree 2 = scala degree 3 => note b0
 	}
 }
