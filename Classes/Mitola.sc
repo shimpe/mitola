@@ -385,13 +385,11 @@ Mitola {
 		if (scala_contents.notNil) {
 			this.scala_calculator = ScalaCalculator();
 			this.scala_calculator.parse(scala_contents);
-			scala_calculator.max_scala_degree.debug("max scala degree");
 			this.scala_calculator.degree_mapper = DegreeMapper(scala_calculator.max_scala_degree+1, degree_mapping);
 		} {
 			if (scala_filename.notNil) {
 				this.scala_calculator = ScalaCalculator();
 				this.scala_calculator.parse_file(scala_filename);
-				scala_calculator.max_scala_degree.debug("max scala degree");
 				this.scala_calculator.degree_mapper = DegreeMapper(scala_calculator.max_scala_degree+1, degree_mapping);
 			} {
 				"Error. Pass either a scala string or a scala file name into the constructor.".postln;
