@@ -21,7 +21,7 @@ s.waitForBoot({
 	].join("\n");
 	var m = Mitola("1[4]_16 2 3 4 5 6 7 1[5]",
 		scala_contents:scala,
-		note_mapping:Dictionary[1->1, 2->3, 3->5, 4->6, 5->8, 6->10, 7->12]);
+		degree_mapping:Dictionary[1->1, 2->3, 3->5, 4->6, 5->8, 6->10, 7->12]);
 	var r = RootFrequencyCalculator(scala_contents:scala, degree_mapper:m.degree_mapper);
 	var root_freq = r.get_root_frequency("6[4]", 440); // a4 to 440Hz (6 is a one-based score degree, not a scala degree!)
 	var pattern = m.as_pbind(root_frequency:root_freq);

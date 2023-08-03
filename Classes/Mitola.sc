@@ -36,7 +36,7 @@ What do to if the scala file defines more degrees than you want to use in your c
 1. either make sure only to use the correct degree numbers, or
 2. set up a degree mapping from score degrees to scala degrees
 
-To set up a degree mapping, you can pass to Mitola a CODE::note_mapping:: argument. This CODE::note_mapping:: should be a CODE::Dictionary:: containing a mapping from score degree (1-based Integer) to scala degree (1-based integer).
+To set up a degree mapping, you can pass to Mitola a CODE::degree_mapping:: argument. This CODE::degree_mapping:: should be a CODE::Dictionary:: containing a mapping from score degree (1-based Integer) to scala degree (1-based integer).
 
 Note that pitch modifiers (see next) calculate with score degrees, not with scala degrees. This may be important to understand the behavior in cases where the distance between different score degrees is different.
 
@@ -306,7 +306,7 @@ Mitola {
 	notation = "Mitola string containing score"
 	scala_contents = "string containing scala definition (you have to specify either this or scala_filename)"
 	scala_filename = "string containing path to scala definition file (you have to specify either this or a scala_contents string)"
-	note_mapping = "optional Dictionary contain map from score degree (one-based Integer) to scala degree (one-based Integer)"
+	degree_mapping = "optional Dictionary contain map from score degree (one-based Integer) to scala degree (one-based Integer)"
 	note_equivalenceinterval_default= "default equave for a note if none was ever specified"
 	dur_default = "default duration for note if none was ever specified"
 	modifier_default = "default note modifier if none was ever specified"
@@ -321,12 +321,12 @@ Mitola {
 	*/
 	*new {
 		|  notation=nil, scala_contents=nil, scala_filename=nil,
-		note_mapping = nil, note_equivalenceinterval_default=4, dur_default=4, modifier_default="",
+		degree_mapping = nil, note_equivalenceinterval_default=4, dur_default=4, modifier_default="",
 		mult_default=1, div_default=1, amp_default=0.5,
 		legato_default=0.9, lag_default=0, tempo_default=80 |
 
 		^super.new.init(notation, scala_contents, scala_filename,
-			note_mapping, note_equivalenceinterval_default=4, dur_default=4, modifier_default="",
+			degree_mapping, note_equivalenceinterval_default=4, dur_default=4, modifier_default="",
 			mult_default=1, div_default=1, amp_default=0.5,
 			legato_default=0.9, lag_default=0, tempo_default=80);
 	}
@@ -340,7 +340,7 @@ Mitola {
 	notation = "Mitola string containing score"
 	scala_contents = "string containing scala definition (you have to specify either this or scala_filename)"
 	scala_filename = "string containing path to scala definition file (you have to specify either this or a scala_contents string)"
-	note_mapping = "optional Dictionary contain map from score degree (one-based Integer) to scala degree (one-based Integer)"
+	degree_mapping = "optional Dictionary contain map from score degree (one-based Integer) to scala degree (one-based Integer)"
 	note_equivalenceinterval_default= "default equave for a note if none was ever specified"
 	dur_default = "default duration for note if none was ever specified"
 	modifier_default = "default note modifier if none was ever specified"
@@ -355,7 +355,7 @@ Mitola {
 	*/
 	init {
 		| notation, scala_contents, scala_filename,
-		note_mapping, note_equivalenceinterval_default, dur_default, modifier_default,
+		degree_mapping, note_equivalenceinterval_default, dur_default, modifier_default,
 		mult_default, div_default, amp_default,
 		legato_default, lag_default, tempo_default |
 
@@ -386,13 +386,13 @@ Mitola {
 			this.scala_calculator = ScalaCalculator();
 			this.scala_calculator.parse(scala_contents);
 			scala_calculator.max_scala_degree.debug("max scala degree");
-			this.scala_calculator.degree_mapper = DegreeMapper(scala_calculator.max_scala_degree+1, note_mapping);
+			this.scala_calculator.degree_mapper = DegreeMapper(scala_calculator.max_scala_degree+1, degree_mapping);
 		} {
 			if (scala_filename.notNil) {
 				this.scala_calculator = ScalaCalculator();
 				this.scala_calculator.parse_file(scala_filename);
 				scala_calculator.max_scala_degree.debug("max scala degree");
-				this.scala_calculator.degree_mapper = DegreeMapper(scala_calculator.max_scala_degree+1, note_mapping);
+				this.scala_calculator.degree_mapper = DegreeMapper(scala_calculator.max_scala_degree+1, degree_mapping);
 			} {
 				"Error. Pass either a scala string or a scala file name into the constructor.".postln;
 				^nil;
@@ -884,7 +884,7 @@ s.waitForBoot({
 // Then a diatonic major scale selected from a 12EDO tuning by using note mapping:
 (
 s.waitForBoot({
-	var scala = [
+	var tuning = [
 		"! 12EDO.scl",
 		"!",
 		"12 EDO",
@@ -904,9 +904,9 @@ s.waitForBoot({
 		" 2/1"
 	].join("\n");
 	var m = Mitola("1[4]_16 2 3 4 5 6 7 1[5]",
-		scala_contents:scala,
-		note_mapping:Dictionary[1->1, 2->3, 3->5, 4->6, 5->8, 6->10, 7->12]);
-	var r = RootFrequencyCalculator(scala_contents:scala, degree_mapper:m.degree_mapper);
+		scala_contents:tuning,
+		degree_mapping:Dictionary[1->1, 2->3, 3->5, 4->6, 5->8, 6->10, 7->12]);
+	var r = RootFrequencyCalculator(scala_contents:tuning, degree_mapper:m.degree_mapper);
 	var root_freq = r.get_root_frequency("6[4]", 440); // a4 to 440Hz (6 is a one-based score degree, not a scala degree!)
 	var pattern = m.as_pbind(root_frequency:root_freq);
 	var player = pattern.play;
