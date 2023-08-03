@@ -17,13 +17,24 @@ Quarks.install("https://github.com/shimpe/mitola"); // mitola implementation
 
 ## degrees
 
-A Mitola score consists of a list of notes and/or chords. Mitola does not use note names. Instead it uses integer scale degrees 1,2,...N, where N is determined by the tuning in use. Suppose you have a 12EDO tuning, then N can be at most 12.
+A Mitola score consists of a list of notes and/or chords. Mitola does not use note names. Instead it uses integer degrees 1,2,...N, where N is determined by the tuning in use. Suppose you have a 12EDO tuning, then N can be at most 12.
 
 ```smalltalk
 (
 var valid_notes_12_edo = "1 2 3 4 5 6 7 8 9 10 11 12"; // 1-based degree names
 )
 ```
+
+## score degrees vs scala degrees
+
+What do to if the scala file defines more degrees than you want to use in your composition? (E.g. you want to select 12 out of 17) In such cases you have the choice to:
+1. either make sure only to use the correct degree numbers, or
+2. set up a degree mapping from score degreees to scala degrees
+
+To set up a degree mapping, you can pass to Mitola a ```note_mapping``` argument. This ```note_mapping``` should be a ```Dictionary``` containing a mapping from score degree (1-based Integer) to scala degree (1-based integer). 
+
+Note that pitch modifiers (see next) calculate with score degrees, not with scala degrees. This may be important to understand the behavior in cases where the distance between different score degrees is different.
+
 
 ## degree modifiers
 
@@ -102,14 +113,6 @@ var repeats = "|: 1[4]_8 2 3 :| * 5";
 ## tuning
 
 To convert Mitola scores to frequencies it is necessary to know in which tuning the score has to be interpreted. Tuning is indicated in the form of a scala definition and a root frequency. In order to pin a given degree in your scala definition to a fixed frequency (e.g. ensure that A4 is 440Hz in a 12EDO tuning), a suitable root_frequency can be calculated using the RootFrequencyCalculator class.
-
-## score degrees vs scala degrees
-
-What do to if the scala file defines more degrees than you want to use in your composition? (E.g. you want to select 12 out of 17) In such cases you have the choice to:
-1. either make sure only to use the correct degree numbers, or
-2. set up a degree mapping from score degreees to scala degrees
-
-To set up a degree mapping, you can pass to Mitola a ```note_mapping``` argument. This ```note_mapping``` should be a ```Dictionary``` containing a mapping from score degree (1-based Integer) to scala degree (1-based integer). 
 
 
 # Examples
