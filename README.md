@@ -29,7 +29,7 @@ var valid_notes_12_edo = "1 2 3 4 5 6 7 8 9 10 11 12"; // 1-based degree names
 
 What do to if the scala file defines more degrees than you want to use in your composition? (E.g. you want to select 12 out of 17) In such cases you have the choice to:
 1. either make sure only to use the correct degree numbers, or
-2. set up a degree mapping from score degreees to scala degrees
+2. set up a degree mapping from score degrees to scala degrees
 
 To set up a degree mapping, you can pass to Mitola a ```note_mapping``` argument. This ```note_mapping``` should be a ```Dictionary``` containing a mapping from score degree (1-based Integer) to scala degree (1-based integer). 
 
