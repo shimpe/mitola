@@ -50,7 +50,7 @@ var same_note_in_different_equaves = "3[2] 3[4] 3[5]";
 
 STRONG::rhythm::
 
-To indicate rhythm, a note can be decorated with an underscore (_) followed by a number, e.g. 1_4 indicates degree one as a quarter note, whereas 1_8 is the first degree as an eighth note. If you do not specify a duration value, the last specified one is reused.
+To indicate rhythm, a note can be decorated with an underscore (_) followed by a number, e.g. 1_4 indicates degree one as a quarter note (crotchet), whereas 1_8 is the first degree as an eighth note (quaver). If you do not specify a duration value, the last specified one is reused.
 
 code::
 (
@@ -58,7 +58,7 @@ var quarter_note_followed_by_two_eighths = "1_4 5_8 5";
 )
 ::
 
-The duration value optionally can be extended with one or more dots. Similar to traditional notation, 1_4 lasts one quarter note; 1_4. lasts 1+0.5 quarter notes (= 3 eighths) and 1_4.. lasts 1+0.5+0.25 quarter notes (=7 sixteenths).
+The duration value optionally can be extended with one or more dots. Similar to traditional notation, 1_4 lasts one quarter note; 1_4. lasts 1+0.5 quarter notes (= 3 eighths) and 1_4.. lasts 1+0.5+0.25 quarter notes (=7 sixteenths (semi quavers)).
 
 code::
 (
