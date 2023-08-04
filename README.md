@@ -1,3 +1,5 @@
+![logo](https://github.com/shimpe/mitola/blob/main/HelpSource/logo/mitola.png?raw=true)
+
 # mitola 
 **MI**cro **TO**nal **LA**nguage for supercollider; microtonal counterpart to Panola
  
