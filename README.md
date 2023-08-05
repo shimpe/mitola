@@ -84,7 +84,7 @@ var triplet_of_eighths = "1[4]_8*2/3 4 7";
 )
 ```
 
-Notes can also optionally be decorated with properties (anything you like really). These properties by default are included in the supercollider patterns that are derived from the score, where they can be used to drive synth arguments or control behavior of the patterns. The properties can be animated between notes (see example code below).
+Notes can also optionally be decorated with properties (anything you like really). These properties by default are included in the supercollider patterns that are derived from the score, where they can be used to drive synth arguments or control behavior of the patterns. The properties can be animated between notes (see example code below). A property's value written in curly brackets ```{ }``` will cause the value to linearly interpolate to the next occurrence of that property's value. If the value is written in square brackets ```[ ]```  instead, the value remains constant until the next occurrence of that property's value.
 
 ```smalltalk
 (
