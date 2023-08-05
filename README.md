@@ -93,6 +93,8 @@ var static_prop_two_staccato_one_legato = "1[4]@legato[0.1] 5 1[5]@legato[1.0];
 )
 ```
 
+## making chords
+
 Notes can be grouped in angular brackets < > to make chords. Limitation: the properties of the first note iin the chord are used for the complete chord. "< 1[4]_8 4 1{+25.0}[5]>" is a chord consisting of degrees 1[4] 4[4] and 1{+25.0}[5].
 
 ```smalltalk
