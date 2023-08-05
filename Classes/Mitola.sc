@@ -84,7 +84,7 @@ var triplet_of_eighths = "1[4]_8*2/3 4 7";
 )
 ::
 
-Notes can also optionally be decorated with properties (anything you like really). These properties by default are included in the supercollider patterns that are derived from the score, where they can be used to drive synth arguments or control behavior of the patterns. The properties can be animated between notes (see example code below).
+Notes can also optionally be decorated with properties (anything you like really). These properties by default are included in the supercollider patterns that are derived from the score, where they can be used to drive synth arguments or control behavior of the patterns. The properties can be animated between notes (see example code below). A property's value written in curly brackets code::{ }:: will cause the value to be linearly interpolated to the next occurrence of the property. A property's value written in square brackets code::[]:: will keep the value constant until the next occurrence of the property.
 
 code::
 (
@@ -93,7 +93,9 @@ var static_prop_two_staccato_one_legato = "1[4]@legato[0.1] 5 1[5]@legato[1.0];
 )
 ::
 
-Notes can be grouped in angular brackets < > to make chords. Limitation: the properties of the first note iin the chord are used for the complete chord. "< 1[4]_8 4 1{+25.0}[5]>" is a chord consisting of score degrees 1[4] 4[4] and 1{+25.0}[5].
+STRONG::making chords::
+
+Notes can be grouped in angular brackets < > to make chords. Limitation: the properties of the first note in the chord are used for the complete chord. "< 1[4]_8 4 1{+25.0}[5]>" is a chord consisting of score degrees 1[4] 4[4] and 1{+25.0}[5].
 
 code::
 (
