@@ -33,7 +33,7 @@ What do to if the scala file defines more degrees than you want to use in your c
 1. either make sure only to use the correct degree numbers, or
 2. set up a degree mapping from score degrees to scala degrees
 
-To set up a degree mapping, you can pass to Mitola a ```note_mapping``` argument. This ```note_mapping``` should be a ```Dictionary``` containing a mapping from score degree (1-based Integer) to scala degree (1-based integer). 
+To set up a degree mapping, you can pass to Mitola a ```degree_mapping``` argument. This ```degree_mapping``` should be a ```Dictionary``` containing a mapping from score degree (1-based Integer) to scala degree (1-based integer). 
 
 Note that pitch modifiers (see next) calculate with score degrees, not with scala degrees. This may be important to understand the behavior in cases where the distance between different score degrees is different.
 
@@ -177,7 +177,7 @@ s.waitForBoot({
 	].join("\n");
 	var m = Mitola("1[4]_16 2 3 4 5 6 7 1[5]",
 		scala_contents:scala,
-		note_mapping:Dictionary[1->1, 2->3, 3->5, 4->6, 5->8, 6->10, 7->12]);
+		degree_mapping:Dictionary[1->1, 2->3, 3->5, 4->6, 5->8, 6->10, 7->12]);
 	var r = RootFrequencyCalculator(scala_contents:scala, degree_mapper:m.degree_mapper);
 	var root_freq = r.get_root_frequency("6[4]", 440); // a4 to 440Hz (6 is a one-based score degree, not a scala degree!)
 	var pattern = m.as_pbind(root_frequency:root_freq);
