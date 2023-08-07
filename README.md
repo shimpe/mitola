@@ -40,7 +40,7 @@ Note that pitch modifiers (see next) calculate with score degrees, not with scal
 
 ## degree modifiers
 
-MtlDegrees can be modified with modifiers (in conventional music these would be accidentals, like sharps and flats). Modifiers in Mitola can be specified in two ways. First way: absolute modification by a number of cents. E.g. 1{+100.0} modifies degree 1 by adding 100.0 cents. Note that you must include a decimal point for the number to be interpreted as cents. Similarly 4{-53.0} would lower the pitch represented by degree 4 by 53.0 cents. 
+Degrees can be modified with modifiers (in conventional music these would be accidentals, like sharps and flats). Modifiers in Mitola can be specified in two ways. First way: absolute modification by a number of cents. E.g. 1{+100.0} modifies degree 1 by adding 100.0 cents. Note that you must include a decimal point for the number to be interpreted as cents. Similarly 4{-53.0} would lower the pitch represented by degree 4 by 53.0 cents. 
 
 The second way is to specify a ratio. E.g. 5{+2/3} will modify the pitch so that it sounds 2/3 between degree 5 and degree 6. Ratios with an abs value larger than 1 are reduced: 5{-4/3} is interpreted as 4{-1/3}. This is important to understand the behavior in case of tunings with different gaps between the different degrees. An alternative way to specify ratios is using prime vector notation. In prime vector notation, a ratio is defined as a multiplication of prime factors. The exponents of the prime factors are between | and >. So this is a valid note: 3{+|1/12>}. It will raise degree 3 with 2^(1/12).
 
