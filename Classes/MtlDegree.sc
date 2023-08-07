@@ -1,14 +1,14 @@
 /*
 [general]
-title = "Degree"
-summary = "models a Degree (can be a \\score degree or a \\scala degree)"
+title = "MtlDegree"
+summary = "models a MtlDegree (can be a \\score degree or a \\scala degree)"
 categories = "Microtonal utils"
-related = "Classes/Mitola, Classes/ScalaCalculator"
+related = "Classes/MtlMitola, Classes/MtlScalaCalculator"
 description = '''
-a class that holds a single Degree
+a class that holds a single MtlDegree
 '''
 */
-Degree {
+MtlDegree {
 	/*
 	[method.value]
 	description='''
@@ -40,7 +40,7 @@ Degree {
 	/*
 	[classmethod.new]
 	description='''
-	creates a new Degree
+	creates a new MtlDegree
 	'''
 	[classmethod.new.args]
 	value = "numerical value of degree Integer"
@@ -48,7 +48,7 @@ Degree {
 	score_or_scala = "one of \\score or \\scala"
 	one_or_zero_based = "one of \\zerobased or \\onebased"
 	[classmethod.new.returns]
-	what = "a new Degree"
+	what = "a new MtlDegree"
 	*/
 	*new {
 		| value, equave, score_or_scala, one_or_zero_based |
@@ -58,7 +58,7 @@ Degree {
 	/*
 	[method.init]
 	description='''
-	initializes a new Degree
+	initializes a new MtlDegree
 	'''
 	[method.init.args]
 	value = "numerical value Integer"
@@ -66,7 +66,7 @@ Degree {
 	score_or_scala = "one of \\score or \\scala"
 	one_or_zero_based = "one of \\zerobased or \\onebased"
 	[method.init.returns]
-	what = "an initialized Degree"
+	what = "an initialized MtlDegree"
 	*/
 	init {
 		| value, equave, score_or_scala, one_or_zero_based |
@@ -91,7 +91,7 @@ Degree {
 	degree_value {
 		| one_or_zero_based=nil |
 		if (one_or_zero_based.isNil) {
-			"Error. Must pass one of \onebased or \zerobased to Degree.value".postln;
+			"Error. Must pass one of \onebased or \zerobased to MtlDegree.value".postln;
 		};
 		if (one_or_zero_based == \zerobased) {
 			^this.value;
@@ -120,7 +120,7 @@ Degree {
 	equave is ignored for this purpose
 	'''
 	["method.==.args"]
-	otherdegree = "another Degree to compare this one with"
+	otherdegree = "another MtlDegree to compare this one with"
 	["method.==.returns"]
 	what = "boolean indicating of two degrees are the same or not (ignoring equave)"
 	*/
@@ -137,9 +137,9 @@ Degree {
 	overrides the < operator for degrees so they can be compared
 	'''
 	["method.<.args"]
-	otherdegree = "another Degree to compare this one with"
+	otherdegree = "another MtlDegree to compare this one with"
 	["method.<.returns"]
-	what = "boolean indicating of this Degree < otherdegree"
+	what = "boolean indicating of this MtlDegree < otherdegree"
 	*/
 	< {
 		| otherdegree |
@@ -164,9 +164,9 @@ Degree {
 	overrides the > operator for degrees so they can be compared
 	'''
 	["method.>.args"]
-	otherdegree = "another Degree to compare this one with"
+	otherdegree = "another MtlDegree to compare this one with"
 	["method.>.returns"]
-	what = "boolean indicating of this Degree > otherdegree"
+	what = "boolean indicating of this MtlDegree > otherdegree"
 	*/
 	> {
 		| otherdegree |
@@ -189,7 +189,7 @@ Degree {
 	/*
 	[method.printOn]
 	description='''
-	override of Object.printOn to make sure a Degree prints something useful when called with .postln
+	override of Object.printOn to make sure a MtlDegree prints something useful when called with .postln
 	'''
 	[method.printOn.args]
 	stream = "stream on which to print"
@@ -198,7 +198,7 @@ Degree {
 	*/
 	printOn {
 		| stream |
-		stream << "Degree(" << (value+1) << ", " << equave << ", \\" << score_or_scala << ", \\onebased)";
+		stream << "MtlDegree(" << (value+1) << ", " << equave << ", \\" << score_or_scala << ", \\onebased)";
 	}
 }
 
@@ -206,7 +206,7 @@ Degree {
 [examples]
 what = '''
 (
-var d1 = Degree(5, 3, \score, \zerobased); // make a score degree
+var d1 = MtlDegree(5, 3, \score, \zerobased); // make a score degree
 )
 '''
 */

@@ -132,7 +132,7 @@ s.waitForBoot({
 		" 2/1"
 	].join("\n");
 
-	tuner = RootFrequencyCalculator(scala_contents:tuning);
+	tuner = MtlRootFrequencyCalculator(scala_contents:tuning);
 	root_frequency = tuner.get_root_frequency("6[4]", 432);
 
 	seq = {
@@ -148,29 +148,29 @@ s.waitForBoot({
 
 	patterns[\m1_2] = seq.(
 		Dictionary[
-			Mitola("1[4]_16 4 7 6 2_32 7 2 6 5 4 3 6", tuning) -> \pulse,
-			Mitola("1[2]_8 5 1 6", tuning) -> \triangle],
+			MtlMitola("1[4]_16 4 7 6 2_32 7 2 6 5 4 3 6", tuning) -> \pulse,
+			MtlMitola("1[2]_8 5 1 6", tuning) -> \triangle],
 		root_frequency,
 		2);
 
 	patterns[\m3_4] = seq.(
 		Dictionary[
-			Mitola("1[4]_32 8 9 3 4_16 5 6 7 5_32 4 3 6", tuning) -> \pulse,
-			Mitola("1[2]_8 4 1 2", tuning) -> \triangle],
+			MtlMitola("1[4]_32 8 9 3 4_16 5 6 7 5_32 4 3 6", tuning) -> \pulse,
+			MtlMitola("1[2]_8 4 1 2", tuning) -> \triangle],
 		root_frequency,
 		2);
 
 	patterns[\m5_6] = seq.(
 		Dictionary[
-			Mitola("1[4]_64@amp{0.4} 8 9 3 4_32 5 6 7 5_64 4 3 6 1[5]_64@amp{0.2} 8 9 3 4_32 5 6 7 5_64 4 3 6@amp{0.4}", tuning) -> \pulse,
-			Mitola("1[3]_8 4 1 2", tuning) -> \triangle],
+			MtlMitola("1[4]_64@amp{0.4} 8 9 3 4_32 5 6 7 5_64 4 3 6 1[5]_64@amp{0.2} 8 9 3 4_32 5 6 7 5_64 4 3 6@amp{0.4}", tuning) -> \pulse,
+			MtlMitola("1[3]_8 4 1 2", tuning) -> \triangle],
 		root_frequency,
 		2);
 
 	patterns[\m7_8] = seq.(
 		Dictionary[
-			Mitola("1[4]_64@pan{-0.9}@amp{0.5}@legato{0.2}@attack{0.05}@width{0.1} 8 9 3 1[5]_64 8 9 3 1[3]_64 8 9 3 1[6]_64@width{0.5} 8 9 3 1[5]_64 8 9 3 1[3]_64 8 9 3@width{0.1} 1[3]_64 8 9 3 1[4]_64 8 9 3@amp{0.1}@legato{1.0}@attack{0.01}@width{0.5}@pan{+0.9}", tuning) -> \pulse,
-			Mitola("1[4]_8 4 1_16 2 4 5", tuning) -> \triangle],
+			MtlMitola("1[4]_64@pan{-0.9}@amp{0.5}@legato{0.2}@attack{0.05}@width{0.1} 8 9 3 1[5]_64 8 9 3 1[3]_64 8 9 3 1[6]_64@width{0.5} 8 9 3 1[5]_64 8 9 3 1[3]_64 8 9 3@width{0.1} 1[3]_64 8 9 3 1[4]_64 8 9 3@amp{0.1}@legato{1.0}@attack{0.01}@width{0.5}@pan{+0.9}", tuning) -> \pulse,
+			MtlMitola("1[4]_8 4 1_16 2 4 5", tuning) -> \triangle],
 		root_frequency,
 		2);
 

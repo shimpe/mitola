@@ -1,27 +1,27 @@
 /*
 [general]
-title = "ScalaParserTests"
-summary = "tests for the ScalaParser class"
+title = "MtlScalaParserTests"
+summary = "tests for the MtlScalaParser class"
 categories = "Microtonal utils"
-related = "Classes/ScalaParser, Classes/Mitola"
+related = "Classes/MtlScalaParser, Classes/MtlMitola"
 description = '''
 unit tests
 '''
 */
-ScalaParserTests : UnitTest {
+MtlScalaParserTests : UnitTest {
 	*new {
 		^super.new.init();
 	}
 
 	test_parse_comment {
-		var p = ScalaParser.pr_comment;
+		var p = MtlScalaParser.pr_comment;
 		var state = p.run("! blblHBLAHBLA.SCL  \n");
 		this.assertEquals(state.isError, false);
 		this.assertEquals(state.result, (\what : \comment, \value : " blblHBLAHBLA.SCL  "));
 	}
 
 	test_parse_comment_line {
-		var p = ScalaParser.pr_commentLine;
+		var p = MtlScalaParser.pr_commentLine;
 		var state = p.run("! blblHBLAHBLA.SCL  \n");
 		this.assertEquals(state.isError, false);
 		this.assertEquals(state.result, (\what : \comment, \value : " blblHBLAHBLA.SCL  "));
@@ -29,7 +29,7 @@ ScalaParserTests : UnitTest {
 
 	test_parse_pitch_ratio {
 		var state, state2, state3, state4, state5, state6, state7, state8;
-		var p = ScalaParser.pr_pitchRatio;
+		var p = MtlScalaParser.pr_pitchRatio;
 
 		state = p.run("23/123");
 		this.assertEquals(state.isError, false, "state_error");
@@ -79,7 +79,7 @@ ScalaParserTests : UnitTest {
 
 	test_parse_pitch_cents {
 		var state, state2;
-		var p = ScalaParser.pr_pitchCents;
+		var p = MtlScalaParser.pr_pitchCents;
 		state = p.run("   100.0 blaj;ldajb");
 		this.assertEquals(state.isError, false, "state_error");
 		this.assertEquals(state.result[\what], \pitch, "state_what");
@@ -97,7 +97,7 @@ ScalaParserTests : UnitTest {
 
 	test_parse_prime_vector {
 		var state, state2;
-		var p = ScalaParser.pr_pitchPrimeVector;
+		var p = MtlScalaParser.pr_pitchPrimeVector;
 		state = p.run("|-2 2 3/2>");
 		this.assertEquals(state.isError, false, "state_isError");
 		this.assertEquals(state.result[\kind], \primevector, "state_result0_kind");
@@ -134,7 +134,7 @@ ScalaParserTests : UnitTest {
 
 	test_parse_pitch {
 		var state, state2, state3, state4, state5, state6, state7;
-		var p = ScalaParser.pr_pitchParser;
+		var p = MtlScalaParser.pr_pitchParser;
 		state = p.run("  234.231 comments to be ignored");
 		this.assertEquals(state.isError, false, "state_isError");
 		this.assertEquals(state.result, (\what: \pitch, \kind: \cents, \numerator: 234.231, \denominator:1), "state_result");
@@ -168,7 +168,7 @@ ScalaParserTests : UnitTest {
 
 	test_parse_scala {
 		var state, result2;
-		var p = ScalaParser.pr_scalaParser;
+		var p = MtlScalaParser.pr_scalaParser;
 		var scala_txt = [
 			"! meanquar.scl",
 			"!",
@@ -206,7 +206,7 @@ ScalaParserTests : UnitTest {
 		this.assertEquals(state.result[\degrees][10], ('numerator': 1006.84314, 'kind': 'cents', 'what': 'pitch', 'denominator': 1), "result_deg10");
 		this.assertEquals(state.result[\degrees][11], ('numerator': 1082.89214, 'kind': 'cents', 'what': 'pitch', 'denominator': 1), "result_deg11");
 
-		result2 = ScalaParser.parse(scala_txt);
+		result2 = MtlScalaParser.parse(scala_txt);
 		this.assertEquals(result2.isNil, false);
 		this.assert(result2[\description].compare("1/4-comma meantone scale. Pietro Aaron's temperament (1523)") == 0, "2_result_description");
 		this.assertEquals(result2[\equivalenceinterval], ('what': 'equivalenceinterval', 'numerator': 2, 'denominator': 1), "2_result_equivalenceinterval");
@@ -246,7 +246,7 @@ ScalaParserTests : UnitTest {
 			" 2/1"
 		].join("\n");
 		var state;
-		var p = ScalaParser.pr_scalaParser;
+		var p = MtlScalaParser.pr_scalaParser;
 		state = p.run(scala_txt);
 		this.assertEquals(state.isError, false);
 	}

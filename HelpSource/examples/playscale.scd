@@ -19,8 +19,8 @@ s.waitForBoot({
 		" | 11/12 >",
 		" 2/1"
 	].join("\n");
-	var m = Mitola("1[4]_16 2 3 4 5 6 7 8 9 10 11 12 r 1[5]", scala_contents:scala);
-	var r = RootFrequencyCalculator(scala_contents:scala);
+	var m = MtlMitola("1[4]_16 2 3 4 5 6 7 8 9 10 11 12 r 1[5]", scala_contents:scala);
+	var r = MtlRootFrequencyCalculator(scala_contents:scala);
 	var root_freq = r.get_root_frequency("10[4]", 440);
 	var pattern = m.as_pbind(root_frequency:root_freq);
 	var scala2 = [
@@ -43,8 +43,8 @@ s.waitForBoot({
 		" | 12/13 >",
 		" 2/1"
 	].join("\n");
-	var m2 = Mitola("1[4]_16 2 3 4 5 6 7 8 9 10 11 12 13 1[5]", scala_contents:scala2);
-	var r2 = RootFrequencyCalculator(scala_contents:scala2);
+	var m2 = MtlMitola("1[4]_16 2 3 4 5 6 7 8 9 10 11 12 13 1[5]", scala_contents:scala2);
+	var r2 = MtlRootFrequencyCalculator(scala_contents:scala2);
 	var root_freq2 = r2.get_root_frequency("10[4]", 440);
 	var pattern2 = m2.as_pbind(root_frequency:root_freq);
 	var player = Pseq([

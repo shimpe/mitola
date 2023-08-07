@@ -1,19 +1,19 @@
 /*
 [general]
-title = "MitolaParser"
-summary = "a parser for mitola scores - not for end users, use Mitola instead."
+title = "MtlMitolaParser"
+summary = "a parser for mitola scores - not for end users, use MtlMitola instead."
 categories = "Microtonal utils"
-related = "Classes/ScalaParser, Classes/Mitola"
+related = "Classes/MtlScalaParser, Classes/MtlMitola"
 description = '''
-Mitola parser can parse a string or a file containing a valid Mitola score and convert it to a parse tree.
+MtlMitola parser can parse a string or a file containing a valid MtlMitola score and convert it to a parse tree.
 '''
 */
-MitolaParser : Parser {
+MtlMitolaParser : Parser {
 	/*
 	[classmethod.new]
-	description = "New creates a new MitolaParser"
+	description = "New creates a new MtlMitolaParser"
 	[classmethod.new.returns]
-	what = "a new MitolaParser"
+	what = "a new MtlMitolaParser"
 	*/
 	*new {
 		^super.new.init();
@@ -21,9 +21,9 @@ MitolaParser : Parser {
 
 	/*
 	[method.init]
-	description = "initializes a new MitolaParser"
+	description = "initializes a new MtlMitolaParser"
 	[method.init.returns]
-	what = "an initialized MitolaParser object"
+	what = "an initialized MtlMitolaParser object"
 	*/
 	init {
 
@@ -31,7 +31,7 @@ MitolaParser : Parser {
 
 	/*
 	[method.parse]
-	description = "parses a Mitola score; upon failure displays an error msg and returns nil"
+	description = "parses a MtlMitola score; upon failure displays an error msg and returns nil"
 	[method.parse.args]
 	mitolastring = "a string containing a valid mitola score"
 	[method.parse.returns]
@@ -42,7 +42,7 @@ MitolaParser : Parser {
 	*/
 	parse {
 		| mitolastring |
-		var state = MitolaParser.pr_mixedNotelist.run(mitolastring);
+		var state = MtlMitolaParser.pr_mixedNotelist.run(mitolastring);
 		if (state.isError) {
 			state.prettyprint; // show error message and return nil
 			^nil
@@ -53,7 +53,7 @@ MitolaParser : Parser {
 
 	/*
 	[method.parse_file]
-	description = "parses a Mitola score from file; upon failure displays an error msg and returns nil"
+	description = "parses a MtlMitola score from file; upon failure displays an error msg and returns nil"
 	[method.parse_file.args]
 	filename = "a filename of a file containing a valid mitola score"
 	[method.parse_file.returns]
@@ -243,7 +243,7 @@ MitolaParser : Parser {
 
 	/*
 	[classmethod.pr_restParser]
-	description = "internal method that creates a Parser that can parse a rest in a Mitola string"
+	description = "internal method that creates a Parser that can parse a rest in a MtlMitola string"
 	[classmethod.pr_restParser.returns]
 	what = "a Parser that parses a rest and marks up the result"
 	*/
@@ -368,7 +368,7 @@ MitolaParser : Parser {
 
 	/*
 	[classmethod.pr_propertyNameParser]
-	description = "internal method that creates a Parser that matches a property name. Properties can be attached to Mitola degrees and end up as keys in the pbind."
+	description = "internal method that creates a Parser that matches a property name. Properties can be attached to MtlMitola degrees and end up as keys in the pbind."
 	[classmethod.pr_propertyNameParser.returns]
 	what = "a Parser"
 	*/
@@ -509,7 +509,7 @@ MitolaParser : Parser {
 what = '''
 (
 var score = "1 |: 4 |: 6 7{+50.0} :|*2 :|*3 8{-20.0}>}";
-var result = MitolaParser.pr_mixedNotelist.run(score);
+var result = MtlMitolaParser.pr_mixedNotelist.run(score);
 // should be true:
 result.result == [
 			( 'info': (

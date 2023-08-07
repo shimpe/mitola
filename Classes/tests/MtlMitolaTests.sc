@@ -1,14 +1,14 @@
 /*
 [general]
-title = "MitolaTests"
-summary = "tests for the MitolaParser class"
+title = "MtlMitolaTests"
+summary = "tests for the MtlMitolaParser class"
 categories = "Microtonal utils"
-related = "Classes/ScalaParser, Classes/Mitola"
+related = "Classes/MtlScalaParser, Classes/MtlMitola"
 description = '''
 unit tests
 '''
 */
-MitolaTests : UnitTest {
+MtlMitolaTests : UnitTest {
 	*new {
 		^super.new.init();
 	}
@@ -37,8 +37,8 @@ MitolaTests : UnitTest {
 			" | 11/12 >",
 			" 2/1"
 		].join("\n");
-		var m = Mitola("1[4]_8@vol[0.3]@legato{0.1} <2@vol[0.7] 3> 1[5]_2@legato[0.9]", scala_contents: scala_text);
-		var r = RootFrequencyCalculator();
+		var m = MtlMitola("1[4]_8@vol[0.3]@legato{0.1} <2@vol[0.7] 3> 1[5]_2@legato[0.9]", scala_contents: scala_text);
+		var r = MtlRootFrequencyCalculator();
 		var root_freq, freqs, durs, vol_props, rez_props, legato_props;
 		r.parse(scala_text);
 		// in C 12edo (= c chromatic), degree 10 in octave 4 (i.e. A4) should map to 440Hz

@@ -1,17 +1,17 @@
-TITLE:: Degree
-summary:: models a Degree (can be a \score degree or a \scala degree)
+TITLE:: MtlDegree
+summary:: models a MtlDegree (can be a \score degree or a \scala degree)
 categories:: Microtonal utils
-related:: Classes/Mitola, Classes/ScalaCalculator
+related:: Classes/MtlMitola, Classes/MtlScalaCalculator
 
 DESCRIPTION::
-a class that holds a single Degree
+a class that holds a single MtlDegree
 
 
 
 CLASSMETHODS::
 
 METHOD:: new
-	creates a new Degree
+	creates a new MtlDegree
 	
 
 ARGUMENT:: value
@@ -26,7 +26,7 @@ one of \score or \scala
 ARGUMENT:: one_or_zero_based
 one of \zerobased or \onebased
 
-returns:: a new Degree
+returns:: a new MtlDegree
 
 INSTANCEMETHODS::
 
@@ -46,7 +46,7 @@ METHOD:: score_or_scala
 
 returns:: a symbol \score or \scala
 METHOD:: init
-	initializes a new Degree
+	initializes a new MtlDegree
 	
 
 ARGUMENT:: value
@@ -61,7 +61,7 @@ one of \score or \scala
 ARGUMENT:: one_or_zero_based
 one of \zerobased or \onebased
 
-returns:: an initialized Degree
+returns:: an initialized MtlDegree
 METHOD:: degree_value
 	gets the numerical value of the degree
 	
@@ -76,7 +76,7 @@ METHOD:: degree_kind
 
 returns:: one of \score or \scala
 METHOD:: printOn
-	override of Object.printOn to make sure a Degree prints something useful when called with .postln
+	override of Object.printOn to make sure a MtlDegree prints something useful when called with .postln
 	
 
 ARGUMENT:: stream
@@ -88,7 +88,7 @@ EXAMPLES::
 
 code::
 (
-var d1 = Degree(5, 3, \score, \zerobased); // make a score degree
+var d1 = MtlDegree(5, 3, \score, \zerobased); // make a score degree
 )
 
 ::

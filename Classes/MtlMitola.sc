@@ -1,9 +1,9 @@
 /*
 [general]
-title = "Mitola"
+title = "MtlMitola"
 summary = "a class to render MIcroTOnal LAnguage scores"
 categories = "Microtonal utils"
-related = "Classes/ScalaParser, Classes/MitolaParser, Classes/RootFrequencyCalculator"
+related = "Classes/MtlScalaParser, Classes/MtlMitolaParser, Classes/MtlRootFrequencyCalculator"
 description = '''
 Mitola provides notation and utilities to write microtonal music in supercollider using a text based notation. Mitola is modeled after its sister quark Panola, which provides text based notation for "conventional" music. Mitola shares many ideas and syntax with Panola, but differs in some aspects where I thought Panola could be improved, or where things cannot be reused as-is.
 
@@ -42,7 +42,7 @@ Note that pitch modifiers (see next) calculate with score degrees, not with scal
 
 STRONG::degree modifiers::
 
-Degrees can be modified with modifiers (in conventional music these would be sharps and flats). Modifiers in Mitola can be specified in two ways. First way: absolute modification by a number of cents. E.g. 1{+100.0} modifies score degree 1 by adding 100.0 cents. Note that you must include a decimal point for the number to be interpreted as cents. Similarly 4{-53.0} would lower the pitch represented by score degree 4 by 53.0 cents. The second way is to specify a ratio. E.g. 5{+2/3} will modify the pitch so that it sounds 2/3 between score degree 5 and score degree 6. Ratios with an abs value larger than 1 are reduced: 5{-4/3} is interpreted as 4{-1/3}. This is important to understand the behavior in case of tunings with different gaps between the different score degrees. An alternative way to specify ratios is using prime vector notation. In prime vector notation, a ratio is defined as a multiplication of prime factors. The exponents of the prime factors are between | and >. So this is a valid note: 3{+|1/12>}. It will raise score degree 3 with 2^(1/12).
+MtlDegrees can be modified with modifiers (in conventional music these would be sharps and flats). Modifiers in Mitola can be specified in two ways. First way: absolute modification by a number of cents. E.g. 1{+100.0} modifies score degree 1 by adding 100.0 cents. Note that you must include a decimal point for the number to be interpreted as cents. Similarly 4{-53.0} would lower the pitch represented by score degree 4 by 53.0 cents. The second way is to specify a ratio. E.g. 5{+2/3} will modify the pitch so that it sounds 2/3 between score degree 5 and score degree 6. Ratios with an abs value larger than 1 are reduced: 5{-4/3} is interpreted as 4{-1/3}. This is important to understand the behavior in case of tunings with different gaps between the different score degrees. An alternative way to specify ratios is using prime vector notation. In prime vector notation, a ratio is defined as a multiplication of prime factors. The exponents of the prime factors are between | and >. So this is a valid note: 3{+|1/12>}. It will raise score degree 3 with 2^(1/12).
 
 code::
 (
@@ -116,18 +116,18 @@ var repeats = "|: 1[4]_8 2 3 :| * 5";
 
 STRONG::tuning::
 
-To convert Mitola scores to frequencies it is necessary to know in which tuning the score has to be interpreted. Tuning is indicated in the form of a scala definition and a root frequency. In order to pin a given score degree in your scala definition to a fixed frequency (e.g. ensure that A4 is 440Hz in a 12EDO tuning), a suitable root_frequency can be calculated using the RootFrequencyCalculator class.
+To convert Mitola scores to frequencies it is necessary to know in which tuning the score has to be interpreted. Tuning is indicated in the form of a scala definition and a root frequency. In order to pin a given score degree in your scala definition to a fixed frequency (e.g. ensure that A4 is 440Hz in a 12EDO tuning), a suitable root_frequency can be calculated using the MtlRootFrequencyCalculator class.
 
 From a Mitola score, one can get extract all kinds of information in the form of supercollider patterns.
 See example code.
 '''
 */
 
-Mitola {
+MtlMitola {
 	/*
 	[method.notation]
 	description='''
-	the notation as passed into the Mitola class constructor
+	the notation as passed into the MtlMitola class constructor
 	[method.notation.returns]
 	what="a string"
 	'''
@@ -136,7 +136,7 @@ Mitola {
 	/*
 	[method.mitola_parser]
 	description='''
-	A Parser for Mitola strings; initialized in the init method
+	A Parser for MtlMitola strings; initialized in the init method
 	[method.mitola_parser.returns]
 	what="a Parser"
 	'''
@@ -147,7 +147,7 @@ Mitola {
 	description='''
 	A calculator object for doing tuning calculations based on scala information
 	[method.scala_calculator.returns]
-	what="a ScalaCalculator"
+	what="a MtlScalaCalculator"
 	'''
 	*/
 	var <>scala_calculator;
@@ -155,7 +155,7 @@ Mitola {
 	/*
 	[method.mitola_parse_result]
 	description='''
-	The parse tree that results from parsing the Mitola string
+	The parse tree that results from parsing the MtlMitola string
 	[method.mitola_parse_result.returns]
 	what="a parse tree"
 	'''
@@ -255,7 +255,7 @@ Mitola {
 	/*
 	[method.customProperties]
 	description='''
-	a lookup table containing all properties specified in the Mitola input string
+	a lookup table containing all properties specified in the MtlMitola input string
 	'''
 	[method.customProperties.returns]
 	what = "a Dictionary"
@@ -302,10 +302,10 @@ Mitola {
 	/*
 	[classmethod.new]
 	description='''
-	new creates a new Mitola object
+	new creates a new MtlMitola object
 	'''
 	[classmethod.new.args]
-	notation = "Mitola string containing score"
+	notation = "MtlMitola string containing score"
 	scala_contents = "string containing scala definition (you have to specify either this or scala_filename)"
 	scala_filename = "string containing path to scala definition file (you have to specify either this or a scala_contents string)"
 	degree_mapping = "optional Dictionary contain map from score degree (one-based Integer) to scala degree (one-based Integer)"
@@ -319,7 +319,7 @@ Mitola {
 	lag_default = "default note lag if none was every specified"
 	tempo_default = "default tempo if none was every specified (note: to extract tempo fro the score needs to be explicitly requested)"
 	[classmethod.new.returns]
-	what="new Mitola object"
+	what="new MtlMitola object"
 	*/
 	*new {
 		|  notation=nil, scala_contents=nil, scala_filename=nil,
@@ -336,10 +336,10 @@ Mitola {
 	/*
 	[method.init]
 	description='''
-	new creates a new Mitola object
+	new creates a new MtlMitola object
 	'''
 	[method.init.args]
-	notation = "Mitola string containing score"
+	notation = "MtlMitola string containing score"
 	scala_contents = "string containing scala definition (you have to specify either this or scala_filename)"
 	scala_filename = "string containing path to scala definition file (you have to specify either this or a scala_contents string)"
 	degree_mapping = "optional Dictionary contain map from score degree (one-based Integer) to scala degree (one-based Integer)"
@@ -353,7 +353,7 @@ Mitola {
 	lag_default = "default note lag if none was every specified"
 	tempo_default = "default tempo if none was every specified (note: to extract tempo fro the score needs to be explicitly requested)"
 	[method.init.returns]
-	what="new Mitola object"
+	what="new MtlMitola object"
 	*/
 	init {
 		| notation, scala_contents, scala_filename,
@@ -381,18 +381,18 @@ Mitola {
 			"Error. Pass a notation string into the constructor.".postln;
 			^nil;
 		};
-		this.mitola_parser = MitolaParser();
+		this.mitola_parser = MtlMitolaParser();
 		this.mitola_parse_result = this.mitola_parser.parse(this.notation);
 
 		if (scala_contents.notNil) {
-			this.scala_calculator = ScalaCalculator();
+			this.scala_calculator = MtlScalaCalculator();
 			this.scala_calculator.parse(scala_contents);
-			this.scala_calculator.degree_mapper = DegreeMapper(scala_calculator.max_scala_degree+1, degree_mapping);
+			this.scala_calculator.degree_mapper = MtlDegreeMapper(scala_calculator.max_scala_degree+1, degree_mapping);
 		} {
 			if (scala_filename.notNil) {
-				this.scala_calculator = ScalaCalculator();
+				this.scala_calculator = MtlScalaCalculator();
 				this.scala_calculator.parse_file(scala_filename);
-				this.scala_calculator.degree_mapper = DegreeMapper(scala_calculator.max_scala_degree+1, degree_mapping);
+				this.scala_calculator.degree_mapper = MtlDegreeMapper(scala_calculator.max_scala_degree+1, degree_mapping);
 			} {
 				"Error. Pass either a scala string or a scala file name into the constructor.".postln;
 				^nil;
@@ -407,7 +407,7 @@ Mitola {
 	An object that knows how to map between \score and \scala degrees.
 	'''
 	[method.degree_mapper.returns]
-	what="a DegreeMapper, or nil if no mapping is needed (meaning \\score and \\scala degrees are the same)"
+	what="a MtlDegreeMapper, or nil if no mapping is needed (meaning \\score and \\scala degrees are the same)"
 	*/
 	degree_mapper {
 		^this.scala_calculator.degree_mapper;
@@ -417,11 +417,11 @@ Mitola {
 	/*
 	[method.frequency_pattern]
 	description='''
-	Extracts from the Mitola score only the frequency information in the form of a supercollider pattern that generates the frequencies.
+	Extracts from the MtlMitola score only the frequency information in the form of a supercollider pattern that generates the frequencies.
 	To make this possible a root_frequency needs to be passed in (and a valid scala definition must have been parsed).
 
 	To calculate a root frequency that pins a given note in your scale to a desired frequency
-	(e.g. to ensure that in 12EDO, A4 maps to 440Hz, you can use the RootFrequencyCalculator class.
+	(e.g. to ensure that in 12EDO, A4 maps to 440Hz, you can use the MtlRootFrequencyCalculator class.
 
 	If you call .asStream.all on the result of this method, you get the frequencies from the score as a list of numbers.
 	'''
@@ -443,7 +443,7 @@ Mitola {
 						this.scala_calculator.pr_note_pitch_parse_tree_to_freq(note[\info][\note][\pitch], root_frequency);
 					});
 				} {
-					"Mitola.freq_pattern internal error. This shouldn't happen.".postln;
+					"MtlMitola.freq_pattern internal error. This shouldn't happen.".postln;
 				}
 			}
 		});
@@ -453,11 +453,11 @@ Mitola {
 	/*
 	[method.midi_note_pattern]
 	description='''
-	Extracts from the Mitola score only the frequency information in the form of a supercollider pattern that generates fractional midi note numbers as they would appear if the tuning was 12EDO.
+	Extracts from the MtlMitola score only the frequency information in the form of a supercollider pattern that generates fractional midi note numbers as they would appear if the tuning was 12EDO.
 	To make this possible a root_frequency needs to be passed in (and a valid scala definition must have been parsed).
 
 	To calculate a root frequency that pins a given note in your scale to a desired frequency
-	(e.g. to ensure that in 12EDO, A4 maps to 440Hz, you can use the RootFrequencyCalculator class.
+	(e.g. to ensure that in 12EDO, A4 maps to 440Hz, you can use the MtlRootFrequencyCalculator class.
 
 	If you call .asStream.all on the result of this method, you get the frequencies from the score as a list of numbers.
 	'''
@@ -480,7 +480,7 @@ Mitola {
 						this.scala_calculator.pr_note_pitch_parse_tree_to_freq(note[\info][\note][\pitch], root_frequency).cpsmidi;
 					});
 				} {
-					"Mitola.freq_pattern internal error. This shouldn't happen.".postln;
+					"MtlMitola.freq_pattern internal error. This shouldn't happen.".postln;
 				}
 			}
 		});
@@ -489,7 +489,7 @@ Mitola {
 
 	/*
 	[method.duration_pattern]
-	description = "extracts from the current Mitola string a Pseq pattern containing only the midi note durations in the form of numbers corresponding to the durations in beats of the notes in the Mitola string"
+	description = "extracts from the current MtlMitola string a Pseq pattern containing only the midi note durations in the form of numbers corresponding to the durations in beats of the notes in the MtlMitola string"
 	[method.duration_pattern.returns]
 	what = "a pattern (Pseq)"
 	*/
@@ -534,7 +534,7 @@ Mitola {
 
 	/*
 	[method.total_duration]
-	description = "calculates the total duration in beats of this Mitola string"
+	description = "calculates the total duration in beats of this MtlMitola string"
 	[method.total_duration.returns]
 	what = "a Float"
 	*/
@@ -544,7 +544,7 @@ Mitola {
 
 	/*
 	[method.amplitude_pattern]
-	description = "calculates a pattern realizing the amplitudes in the Mitola score"
+	description = "calculates a pattern realizing the amplitudes in the MtlMitola score"
 	[method.amplitude_pattern.returns]
 	what = "a pattern"
 	*/
@@ -554,7 +554,7 @@ Mitola {
 
 	/*
 	[method.lag_pattern]
-	description = "calculates a pattern realizing the lag values in the Mitola score"
+	description = "calculates a pattern realizing the lag values in the MtlMitola score"
 	[method.lag_pattern.returns]
 	what = "a pattern"
 	*/
@@ -564,7 +564,7 @@ Mitola {
 
 	/*
 	[method.legato_pattern]
-	description = "calculates a pattern realizing the lag values in the Mitola score"
+	description = "calculates a pattern realizing the lag values in the MtlMitola score"
 	[method.legato_pattern.returns]
 	what = "a pattern"
 	*/
@@ -574,7 +574,7 @@ Mitola {
 
 	/*
 	[method.tempo_pattern]
-	description = "calculates a pattern realizing the tempo values in the Mitola score; the tempo values are divided by 60 so they can be passed to a tempo clock"
+	description = "calculates a pattern realizing the tempo values in the MtlMitola score; the tempo values are divided by 60 so they can be passed to a tempo clock"
 	[method.tempo_pattern.returns]
 	what = "a pattern"
 	*/
@@ -584,7 +584,7 @@ Mitola {
 
 	/*
 	[method.custom_property_pattern]
-	description = "calculates a pattern realizing the tempo values in the Mitola score; the tempo values are divided by 60 so they can be passed to a tempo clock"
+	description = "calculates a pattern realizing the tempo values in the MtlMitola score; the tempo values are divided by 60 so they can be passed to a tempo clock"
 	[method.custom_property_pattern.args]
 	custom_string = "name of the property to extract from the score"
 	default_value  = "default value for the property if it has never been specified before"
@@ -601,7 +601,7 @@ Mitola {
 	description = "calculates a pattern containing all desired properties in the score"
 	[method.as_pbind.args]
 	instrument= "instrument that will play the pattern; should be a symbol that is used as name in a SynthDef (default=\\default)"
-	root_frequency= "root frequency, required to map scala degrees to actual frequencies. Use RootFrequencyCalculator if you want to pin a given note to a desired frequency"
+	root_frequency= "root frequency, required to map scala degrees to actual frequencies. Use MtlRootFrequencyCalculator if you want to pin a given note to a desired frequency"
 	include_custom_properties= "boolean, indicating if the pbind should just contain a few standard properties, or all properties specified in teh score"
 	custom_property_defaults="Dictionary (may be nil) to define default values for custom properties"
 	include_tempo="boolean to indicate if tempo should be part of extracted pattern (default: false). By extracting tempo from the pattern, you lose the ability to play the pattern against a different TempoClock."
@@ -769,7 +769,7 @@ Mitola {
 
 	/*
 	[method.pr_animated_pattern]
-	description = "internal method to return a pattern generating the values of a Mitola property, also taking into account the defined automations - this is a generic method that is used by practically all other pattern extraction functions"
+	description = "internal method to return a pattern generating the values of a MtlMitola property, also taking into account the defined automations - this is a generic method that is used by practically all other pattern extraction functions"
 	[method.pr_animated_pattern.returns]
 	what = "a pattern (Pseq)"
 	*/
@@ -843,13 +843,13 @@ Mitola {
 /*
 [examples]
 what = '''
-// Mitola is a way to extract Pbind keys from a concise specification for microtonal music.
-// First things first. To install Mitola (you need to do this only once) we need two quarks:
+// MtlMitola is a way to extract Pbind keys from a concise specification for microtonal music.
+// First things first. To install MtlMitola (you need to do this only once) we need two quarks:
 
 Quarks.install("https://github.com/shimpe/scparco"); // parser combinator library
 Quarks.install("https://github.com/shimpe/mitola"); // mitola implementation
 
-// Let's start with the "Hello world" of Mitola: a simple scale.
+// Let's start with the "Hello world" of MtlMitola: a simple scale.
 // In microtonal music, we need to define the scale degrees first. I'm here inlining the scala contents,
 // but you can also load them from file by passing a scala_filename instead of scala_contents.
 (
@@ -873,9 +873,9 @@ s.waitForBoot({
 		" | 11/12 >",
 		" 2/1"
 	].join("\n");
-	var score = Mitola("1[4]_16@amp[0.6] 2 3 4 5 6 7 8 9 10 11 12 1[5]", scala_contents: tuning);
+	var score = MtlMitola("1[4]_16@amp[0.6] 2 3 4 5 6 7 8 9 10 11 12 1[5]", scala_contents: tuning);
 	// find out which root frequency to use to get degree 10 in octave 4 (A4) to map to 440Hz.
-	var r = RootFrequencyCalculator(tuning);
+	var r = MtlRootFrequencyCalculator(tuning);
 	var root_freq = r.get_root_frequency("10[4]", 440);
 	var player = score.as_pbind(root_frequency:root_freq).play; // listen to the score with the default instrument
 });
@@ -903,10 +903,10 @@ s.waitForBoot({
 		" | 11/12 >",
 		" 2/1"
 	].join("\n");
-	var m = Mitola("1[4]_16 2 3 4 5 6 7 1[5]",
+	var m = MtlMitola("1[4]_16 2 3 4 5 6 7 1[5]",
 		scala_contents:tuning,
 		degree_mapping:Dictionary[1->1, 2->3, 3->5, 4->6, 5->8, 6->10, 7->12]);
-	var r = RootFrequencyCalculator(scala_contents:tuning, degree_mapper:m.degree_mapper);
+	var r = MtlRootFrequencyCalculator(scala_contents:tuning, degree_mapper:m.degree_mapper);
 	var root_freq = r.get_root_frequency("6[4]", 440); // a4 to 440Hz (6 is a one-based score degree, not a scala degree!)
 	var pattern = m.as_pbind(root_frequency:root_freq);
 	var player = pattern.play;
@@ -931,10 +931,10 @@ s.waitForBoot({
 		" | 6/7 >",
 		" 2/1"
 	].join("\n");
-	var score = Mitola("1[4]_16@amp[0.6] 2 3_32 4 5_16 6 7 1[5]_4", scala_contents: tuning);
-	var score2 = Mitola("1[3]_16@amp[0.6] 5 1 5 1 5 1 5 1", scala_contents:tuning);
+	var score = MtlMitola("1[4]_16@amp[0.6] 2 3_32 4 5_16 6 7 1[5]_4", scala_contents: tuning);
+	var score2 = MtlMitola("1[3]_16@amp[0.6] 5 1 5 1 5 1 5 1", scala_contents:tuning);
 	// find out which root frequency to use to get degree 4 in octave 4 to map to 432Hz.
-	var r = RootFrequencyCalculator(tuning);
+	var r = MtlRootFrequencyCalculator(tuning);
 	var root_freq = r.get_root_frequency("4[4]", 432);
 	var player = Ppar([
 		score.as_pbind(root_frequency:root_freq),
@@ -960,10 +960,10 @@ s.waitForBoot({
 		" | 6/7 >",
 		" 2/1"
 	].join("\n");
-	var score = Mitola("1[4]_16@amp[0.6] 2 3_32 4 5_16 6 7 1[5]_4", scala_contents: tuning);
-	var score2 = Mitola("1[3]_16@amp[0.6] 5 1 5 1 5 1 5 1", scala_contents:tuning);
+	var score = MtlMitola("1[4]_16@amp[0.6] 2 3_32 4 5_16 6 7 1[5]_4", scala_contents: tuning);
+	var score2 = MtlMitola("1[3]_16@amp[0.6] 5 1 5 1 5 1 5 1", scala_contents:tuning);
 	// find out which root frequency to use to get degree 4 in octave 4 to map to 432Hz.
-	var r = RootFrequencyCalculator(tuning);
+	var r = MtlRootFrequencyCalculator(tuning);
 	var root_freq = r.get_root_frequency("4[4]", 432);
 	var pattern = Ppar([
 		score.as_pbind(\sawSynth, root_frequency:root_freq),
@@ -997,7 +997,7 @@ s.waitForBoot({
 });
 )
 
-// some other Mitola syntax
+// some other MtlMitola syntax
 (
 var degree = "1"; // a degree without modifier in default equave, default duration, no properties attached
 var degree_modified = "1{+50.0}"; // degree 1 augmented with 50.0 cents
@@ -1042,10 +1042,10 @@ s.waitForBoot({
 		" | 6/7 >",
 		" 2/1"
 	].join("\n");
-	var score = Mitola("1[4]_16@amp{0.2} 2 3_32 4 5_16 6 7 1[5]_4@amp{0.6}", scala_contents: tuning);
-	var score2 = Mitola("1[3]_16@amp[0.3] 5 1 5 1 5 1 5 1@amp[0.6]", scala_contents:tuning);
+	var score = MtlMitola("1[4]_16@amp{0.2} 2 3_32 4 5_16 6 7 1[5]_4@amp{0.6}", scala_contents: tuning);
+	var score2 = MtlMitola("1[3]_16@amp[0.3] 5 1 5 1 5 1 5 1@amp[0.6]", scala_contents:tuning);
 	// find out which root frequency to use to get degree 4 in octave 4 to map to 432Hz.
-	var r = RootFrequencyCalculator(tuning);
+	var r = MtlRootFrequencyCalculator(tuning);
 	var root_freq = r.get_root_frequency("4[4]", 432);
 	var pattern = Ppar([
 		score.as_pbind(\sawSynth, root_frequency:root_freq),

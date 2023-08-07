@@ -1,14 +1,14 @@
 /*
 [general]
-title = "RootFrequencyCalculatorTests"
-summary = "tests for the RootFrequencyCalculator class"
+title = "MtlRootFrequencyCalculatorTests"
+summary = "tests for the MtlRootFrequencyCalculator class"
 categories = "Microtonal utils"
-related = "Classes/ScalaParser, Classes/Mitola"
+related = "Classes/MtlScalaParser, Classes/MtlMitola"
 description = '''
 unit tests
 '''
 */
-RootFrequencyCalculatorTests : UnitTest {
+MtlRootFrequencyCalculatorTests : UnitTest {
 	*new {
 		^super.new.init();
 	}
@@ -18,7 +18,7 @@ RootFrequencyCalculatorTests : UnitTest {
 	}
 
 	test_calculate_root_frequency {
-		var r = RootFrequencyCalculator();
+		var r = MtlRootFrequencyCalculator();
 
 		var scala = [
 			"! major_diatonic.scl",

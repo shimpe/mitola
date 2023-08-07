@@ -1,14 +1,14 @@
 /*
 [general]
-title = "ScalaCalculatorTests"
-summary = "tests for the ScalaCalculator class"
+title = "MtlScalaCalculatorTests"
+summary = "tests for the MtlScalaCalculator class"
 categories = "Microtonal utils"
-related = "Classes/ScalaParser, Classes/Mitola"
+related = "Classes/MtlScalaParser, Classes/MtlMitola"
 description = '''
 unit tests
 '''
 */
-ScalaCalculatorTests : UnitTest {
+MtlScalaCalculatorTests : UnitTest {
 	*new {
 		^super.new.init();
 	}
@@ -37,7 +37,7 @@ ScalaCalculatorTests : UnitTest {
 			" 1100.0",
 			" 2/1"
 		].join("\n");
-		var calc = ScalaCalculator();
+		var calc = MtlScalaCalculator();
 		calc.parse(scala);
 		this.assertEquals(calc.no_of_scala_degrees, 12, "no_of_scala_degrees");
 		this.assertEquals(calc.no_of_score_degrees, 12, "no_of_score_degrees");
@@ -70,7 +70,7 @@ ScalaCalculatorTests : UnitTest {
 			" 1100.0",
 			" 2/1"
 		].join("\n");
-		var calc = ScalaCalculator();
+		var calc = MtlScalaCalculator();
 		calc.parse(scala);
 		this.assertFloatEquals(calc.note_to_freq("1[4]", 27.5), 440, "note_to_freq_1[4]", 0.005); // 1st degree is a4
 		this.assertFloatEquals(calc.note_to_freq("2[4]", 27.5), 493.88, "note_to_freq_2[4]", 0.005); // 2nd degree is b4
@@ -106,7 +106,7 @@ ScalaCalculatorTests : UnitTest {
 			" | 11/12 >",
 			" 2/1"
 		].join("\n");
-		var calc = ScalaCalculator();
+		var calc = MtlScalaCalculator();
 		calc.parse(scala);
 		this.assertEquals(calc.no_of_scala_degrees, 12, "no_of_scala_degrees");
 		this.assertEquals(calc.no_of_score_degrees, 12, "no_of_score_degrees");
@@ -144,8 +144,8 @@ ScalaCalculatorTests : UnitTest {
 			" | 11/12 >",
 			" 2/1"
 		].join("\n");
-		var mapper = DegreeMapper(12, Dictionary[1->1,2->3,3->5,4->6,5->8,6->10,7->12]);
-		var calc = ScalaCalculator(mapper);
+		var mapper = MtlDegreeMapper(12, Dictionary[1->1,2->3,3->5,4->6,5->8,6->10,7->12]);
+		var calc = MtlScalaCalculator(mapper);
 		calc.parse(scala);
 
 		this.assertEquals(calc.no_of_scala_degrees, 12, "no_of_scala_degrees");

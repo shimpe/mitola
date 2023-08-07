@@ -1,9 +1,9 @@
 /*
 [general]
-title = "DegreeMapper"
+title = "MtlDegreeMapper"
 summary = "conversion between score degrees and scala degrees"
 categories = "Microtonal utils"
-related = "Classes/Mitola, Classes/ScalaCalculator"
+related = "Classes/MtlMitola, Classes/MtlScalaCalculator"
 description = '''
 a class that can map between score degrees and scala degrees. The two are different in case of a degree mapping that is set up.
 Using a degree mapping of e.g.
@@ -13,7 +13,7 @@ Dictionary[1->1,2->3, 3->5, 4->6, 5->8, 6->10, 7->12]
 degrees 1,2,3,4,5,6,7 in the score map to degrees 1,3,5,6,8,10,12 in the scala definition. This can be used e.g. to define a diatonic major key based on the 12EDO scala definition.
 '''
 */
-DegreeMapper {
+MtlDegreeMapper {
 	/*
 	[method.max_scala_degree]
 	description='''
@@ -44,12 +44,12 @@ DegreeMapper {
 
 	/*
 	[classmethod.new]
-	description = "New creates a new DegreeMapper"
+	description = "New creates a new MtlDegreeMapper"
 	[classmethod.new.args]
 	max_scala_degree_1based = "max degree number (Integer) as defined in the scala definition"
 	score_to_scala_1based  = "mapping from score degrees to scala degrees (Dictionary[Integer->Integer])"
 	[classmethod.new.returns]
-	what = "a new DegreeMapper"
+	what = "a new MtlDegreeMapper"
 	*/
 	*new {
 		| max_scala_degree_1based =nil, score_to_scala_1based =nil |
@@ -58,12 +58,12 @@ DegreeMapper {
 
 	/*
 	[method.init]
-	description = "init initializes a new DegreeMapper"
+	description = "init initializes a new MtlDegreeMapper"
 	[method.init.args]
 	max_scala_degree_1based = "max degree number (Integer) as defined in the scala definition"
 	score_to_scala_1based  = "mapping from score degrees to scala degrees (Dictionary[Integer->Integer])"
 	[method.init.returns]
-	what = "a new DegreeMapper"
+	what = "a new MtlDegreeMapper"
 	*/
 	init {
 		| max_scala_degree_1based =nil, score_to_scala_1based =nil |
@@ -77,7 +77,7 @@ DegreeMapper {
         if (score_to_scala_1based.isNil) {
 			var map = Dictionary.newFrom(max_scala_degree.collect({
 				| deg |
-				[Degree(deg, 0, \score, \zerobased), Degree(deg, 0, \scala, \zerobased)]
+				[MtlDegree(deg, 0, \score, \zerobased), MtlDegree(deg, 0, \scala, \zerobased)]
 			}).flatten);
 			this.score_to_scala_lookup = map;
 			this.max_score_degree = max_scala_degree;
@@ -89,7 +89,7 @@ DegreeMapper {
 				| key, value |
 				var zerobasedkey = key-1;
 				if (zerobasedkey > max_deg) { max_deg = zerobasedkey; };
-				new_elements = new_elements.add([Degree(zerobasedkey, 0, \score, \zerobased), Degree(value-1, 0, \scala, \zerobased)]);
+				new_elements = new_elements.add([MtlDegree(zerobasedkey, 0, \score, \zerobased), MtlDegree(value-1, 0, \scala, \zerobased)]);
 			});
 			this.max_score_degree = max_deg + 1;
 			this.score_to_scala_lookup = Dictionary.newFrom(new_elements.flatten);
@@ -112,12 +112,12 @@ DegreeMapper {
 	/*
 	[method.score_to_scala]
 	description='''
-	maps a Degree of kind \score to a degree of kind \scala. This method will warn if the argument is not a Degree of type \score
+	maps a MtlDegree of kind \score to a degree of kind \scala. This method will warn if the argument is not a MtlDegree of type \score
 	'''
 	[method.score_to_scala.args]
-	degree = "a Degree"
+	degree = "a MtlDegree"
 	[method.score_to_scala.returns]
-	what = "a Degree of kind \\scala, or nil if the lookup failed"
+	what = "a MtlDegree of kind \\scala, or nil if the lookup failed"
 	*/
 	score_to_scala {
 		| degree |
@@ -137,19 +137,19 @@ DegreeMapper {
 	/*
 	[method.to_scala]
 	description='''
-	maps a Degree to \scala. This method will not warn if the passed in degree is already a \scala degree.
+	maps a MtlDegree to \scala. This method will not warn if the passed in degree is already a \scala degree.
 	'''
 	[method.to_scala.args]
-	degree = "a Degree"
+	degree = "a MtlDegree"
 	[method.to_scala.returns]
-	what = "a Degree of kind \\scala, or nil if the lookup failed"
+	what = "a MtlDegree of kind \\scala, or nil if the lookup failed"
 	*/
 	to_scala {
 		| degree |
 		var scale_degree;
 		if (degree.degree_kind != \score) {
 			if ((degree.degree_value(\onebased) > this.max_scala_degree) || (degree.degree_value(\zerobased) < 0)) {
-				("Error. Scala degree falls outside valid range. Degree = " + degree + "Max scala degree (onebased) = " + this.max_scala_degree).postln;
+				("Error. MtlScala degree falls outside valid range. MtlDegree = " + degree + "Max scala degree (onebased) = " + this.max_scala_degree).postln;
 				^nil;
 			};
 			^degree;
@@ -173,7 +173,7 @@ DegreeMapper {
 	/*
 	[method.printOn]
 	description='''
-	override of Object.printOn to make sure a DegreeMapper prints something useful when called with .postln
+	override of Object.printOn to make sure a MtlDegreeMapper prints something useful when called with .postln
 	'''
 	[method.printOn.args]
 	stream = "stream on which to print"
@@ -193,13 +193,13 @@ DegreeMapper {
 	/*
 	[method.scala_to_score]
 	description='''
-	maps a Degree of kind \scala to a degree of kind \score. This method will warn if the argument is not a Degree of type \score.
+	maps a MtlDegree of kind \scala to a degree of kind \score. This method will warn if the argument is not a MtlDegree of type \score.
 	Note that such lookup will fail for scala degrees that have no corresponding score degree. Then it returns nil.
 	'''
 	[method.scala_to_score.args]
-	degree = "a Degree"
+	degree = "a MtlDegree"
 	[method.scala_to_score.returns]
-	what = "a Degree of kind \\score, or nil if the lookup failed"
+	what = "a MtlDegree of kind \\score, or nil if the lookup failed"
 	*/
 	scala_to_score {
 		| degree |
@@ -213,13 +213,13 @@ DegreeMapper {
 	/*
 	[method.to_score]
 	description='''
-	maps a Degree of kind \scala to a degree of kind \score. This method will not warn if the argument is not a Degree of type \score.
+	maps a MtlDegree of kind \scala to a degree of kind \score. This method will not warn if the argument is not a MtlDegree of type \score.
 	Note that such lookup will fail for scala degrees that have no corresponding score degree. Then it returns nil.
 	'''
 	[method.to_score.args]
-	degree = "a Degree"
+	degree = "a MtlDegree"
 	[method.to_score.returns]
-	what = "a Degree of kind \\score, or nil if the lookup failed"
+	what = "a MtlDegree of kind \\score, or nil if the lookup failed"
 	*/
 	to_score {
 		| degree |
@@ -227,7 +227,7 @@ DegreeMapper {
 		var lookup_degree;
 		if (degree.degree_kind != \scala) {
 			if ((degree.degree_value(\onebased) > this.max_score_degree) || (degree.degree_value(\zerobased) < 0)) {
-				("Error. Score degree falls outside valid range. Degree = " + degree + "Max score degree (onebased) = " + this.max_score_degree).postln;
+				("Error. Score degree falls outside valid range. MtlDegree = " + degree + "Max score degree (onebased) = " + this.max_score_degree).postln;
 				^nil;
 			};
 			^degree;
@@ -246,19 +246,19 @@ DegreeMapper {
 	/*
 	[method.next_degree]
 	description='''
-	next_degree returns the next Degree, taking care of wrapping if needed.
-	for degrees of kind \score, the next \score Degree is returned; for degrees of kind \scala, the next \scala Degree is returned
+	next_degree returns the next MtlDegree, taking care of wrapping if needed.
+	for degrees of kind \score, the next \score MtlDegree is returned; for degrees of kind \scala, the next \scala MtlDegree is returned
 	'''
 	[method.next_degree.args]
-	degree = "a Degree"
+	degree = "a MtlDegree"
 	[method.next_degree.returns]
-	what = "the next Degree of the same kind"
+	what = "the next MtlDegree of the same kind"
 	*/
 	next_degree {
 		| degree |
 		if (degree.degree_kind == \scala) {
 			// scale degree
-			var new_degree = Degree(degree.degree_value(\zerobased) + 1, degree.equave, \scala, \zerobased);
+			var new_degree = MtlDegree(degree.degree_value(\zerobased) + 1, degree.equave, \scala, \zerobased);
 			if (new_degree.degree_value(\onebased) > this.max_scala_degree) {
 				new_degree.value = 0;
 				new_degree.equave = new_degree.equave + 1;
@@ -266,7 +266,7 @@ DegreeMapper {
 			^new_degree;
 		} {
 			// score degree
-			var new_degree = Degree(degree.degree_value(\zerobased) + 1, degree.equave, \score, \zerobased);
+			var new_degree = MtlDegree(degree.degree_value(\zerobased) + 1, degree.equave, \score, \zerobased);
 			if (new_degree.degree_value(\onebased) > this.max_score_degree) {
 				new_degree.value = 0;
 				new_degree.equave = new_degree.equave + 1;
@@ -278,19 +278,19 @@ DegreeMapper {
 	/*
 	[method.previous_degree]
 	description='''
-	previous_degree returns the previous Degree, taking care of wrapping if needed.
-	for degrees of kind \score, the previous \score Degree is returned; for degrees of kind \scala, the previous \scala Degree is returned
+	previous_degree returns the previous MtlDegree, taking care of wrapping if needed.
+	for degrees of kind \score, the previous \score MtlDegree is returned; for degrees of kind \scala, the previous \scala MtlDegree is returned
 	'''
 	[method.previous_degree.args]
-	degree = "a Degree"
+	degree = "a MtlDegree"
 	[method.previous_degree.returns]
-	what = "the previous Degree of the same kind"
+	what = "the previous MtlDegree of the same kind"
 	*/
 	previous_degree {
 		| degree |
 		if (degree.degree_kind == \scala) {
 			// scale degree
-			var new_degree = Degree(degree.degree_value(\zerobased) - 1, degree.equave, \scala, \zerobased);
+			var new_degree = MtlDegree(degree.degree_value(\zerobased) - 1, degree.equave, \scala, \zerobased);
 			if (new_degree.degree_value(\zerobased) < 0) {
 				new_degree.value = this.max_scala_degree - 1; // internally we calculate everything zerobased
 				new_degree.equave = new_degree.equave - 1;
@@ -298,7 +298,7 @@ DegreeMapper {
 			^new_degree;
 		} {
 			// score degree
-			var new_degree = Degree(degree.degree_value(\zerobased) - 1, degree.equave, \score, \zerobased);
+			var new_degree = MtlDegree(degree.degree_value(\zerobased) - 1, degree.equave, \score, \zerobased);
 			if (new_degree.degree_value(\zerobased) < 0) {
 				new_degree.value = this.max_score_degree - 1; // internally we calculate everything zerobased
 				new_degree.equave = new_degree.equave - 1;
@@ -313,11 +313,11 @@ DegreeMapper {
 [examples]
 what = '''
 (
-var m = DegreeMapper(12, Dictionary[1->1, 2->3, 3->5, 4->6, 5->8, 6->10, 7->12]);
-var d1 = Degree(1, 4, \score, \onebased);
-var d2 = Degree(2, 4, \score, \onebased);
-(m.previous_degree(d1) == Degree(7, 3, \score, \onebased)).debug("check"); // expect true
-(m.to_scala(d2) == Degree(3, 4, \scala, \onebased)).debug("check 2"); // expect true
+var m = MtlDegreeMapper(12, Dictionary[1->1, 2->3, 3->5, 4->6, 5->8, 6->10, 7->12]);
+var d1 = MtlDegree(1, 4, \score, \onebased);
+var d2 = MtlDegree(2, 4, \score, \onebased);
+(m.previous_degree(d1) == MtlDegree(7, 3, \score, \onebased)).debug("check"); // expect true
+(m.to_scala(d2) == MtlDegree(3, 4, \scala, \onebased)).debug("check 2"); // expect true
 )
 '''
 */

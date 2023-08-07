@@ -1,14 +1,14 @@
 /*
 [general]
-title = "ScalaCalculator"
+title = "MtlScalaCalculator"
 summary = "a calculator for interpreting mitola degrees in scala definitions"
 categories = "Microtonal utils"
-related = "Classes/ScalaParser, Classes/Mitola"
+related = "Classes/MtlScalaParser, Classes/MtlMitola"
 description = '''
-ScalaCalculator implements calculations required to translate mitola degrees and pitch modifiers into frequencies
+MtlScalaCalculator implements calculations required to translate mitola degrees and pitch modifiers into frequencies
 '''
 */
-ScalaCalculator {
+MtlScalaCalculator {
 	/*
 	[classmethod.prime_factors]
 	description='''
@@ -50,11 +50,11 @@ ScalaCalculator {
 
 	/*
 	[classmethod.new]
-	description = "New creates a new ScalaCalculator"
+	description = "New creates a new MtlScalaCalculator"
 	[classmethod.new.args]
 	degree_mapper = "mapping between score degrees and scala degrees; if nil there's a one-to-one correspondence"
 	[classmethod.new.returns]
-	what = "a new ScalaCalculator"
+	what = "a new MtlScalaCalculator"
 	*/
 	*new {
 		| degree_mapper=nil |
@@ -63,7 +63,7 @@ ScalaCalculator {
 
 	/*
 	[classmethod.initClass]
-	description = "initializes the prime factor table (which is shared by all ScalaCalculator instances)"
+	description = "initializes the prime factor table (which is shared by all MtlScalaCalculator instances)"
 	[classmethod.initClass.returns]
 	what = "the initialized table of primes"
 	*/
@@ -130,11 +130,11 @@ ScalaCalculator {
 
 	/*
 	[method.init]
-	description = "initializes the ScalaCalculator class"
+	description = "initializes the MtlScalaCalculator class"
 	[method.init.args]
 	degree_mapper = "mapping between score degrees and scala degrees; if nil there's a one-to-one correspondence"
 	[method.init.returns]
-	what = "an initialized ScalaCalculator"
+	what = "an initialized MtlScalaCalculator"
 	*/
 	init {
 		|degree_mapper|
@@ -153,12 +153,12 @@ ScalaCalculator {
 	*/
 	parse {
 		| scala_contents |
-		this.scala_parse_result = ScalaParser.parse(scala_contents);
+		this.scala_parse_result = MtlScalaParser.parse(scala_contents);
 		if (this.scala_parse_result.isNil) {
 			"Failed to parse scala contents".postln;
 		};
 		if (this.degree_mapper.isNil) {
-			this.degree_mapper = DegreeMapper(this.max_scala_degree+1, nil);
+			this.degree_mapper = MtlDegreeMapper(this.max_scala_degree+1, nil);
 		};
 		^this.scala_parse_result;
 	}
@@ -193,7 +193,7 @@ ScalaCalculator {
 	*/
 	note_to_freq {
 		| mitola_note_string, root_frequency=nil |
-		var state = MitolaParser.pr_noteAndModAndOctAndDurAndProp.run(mitola_note_string);
+		var state = MtlMitolaParser.pr_noteAndModAndOctAndDurAndProp.run(mitola_note_string);
 		if (state.isError) {
 			state.prettyprint;
 			^0;
@@ -292,7 +292,7 @@ ScalaCalculator {
 			cents = scala_info[\numerator]
 		} {
 			if (scala_info[\kind] == \ratio) {
-				cents = ScalaCalculator.pr_ratio_to_cents(scala_info[\numerator] / scala_info[\denominator]);
+				cents = MtlScalaCalculator.pr_ratio_to_cents(scala_info[\numerator] / scala_info[\denominator]);
 			} {
 				if (scala_info[\kind] == \primevector) {
 					var overall_num = 1;
@@ -317,7 +317,7 @@ ScalaCalculator {
 							cents = 0;
 						}
 					});
-					cents = ScalaCalculator.pr_ratio_to_cents(overall_num / overall_den);
+					cents = MtlScalaCalculator.pr_ratio_to_cents(overall_num / overall_den);
 				} {
 					("Error. pr_degree_to_freq called with unknown scala_info[\kind]" + scala_info[\kind]).postln;
 					cents = 0;
@@ -325,7 +325,7 @@ ScalaCalculator {
 			}
 		};
 		scala_equivalence_interval_factor = this.scala_parse_result[\equivalenceinterval][\numerator] / this.scala_parse_result[\equivalenceinterval][\denominator];
-		cents = cents + (note_equivalence_interval*ScalaCalculator.pr_ratio_to_cents(scala_equivalence_interval_factor));
+		cents = cents + (note_equivalence_interval*MtlScalaCalculator.pr_ratio_to_cents(scala_equivalence_interval_factor));
 		^cents;
 	}
 
@@ -369,7 +369,7 @@ ScalaCalculator {
 	function that calculates the influence of the pitch modifier on the frequency. Modifiers specified in cents are applied as absolute modifiers. Modifiers specified as ratios are interpreted as relative degree modifiers, e.g. {+3/2} is interpreted as 2/2+1/2, i.e. raising to the next degree (+2/2=+1) and then raising to halfway between the 2nd next and 3rd next degree (+1/2). This distinction is important to understand the behavior in case of scales with different gaps between the pitches.
 	'''
 	[method.pr_info_note_pitch_modifier_parse_tree_to_cents.args]
-	degree = "a Degree representing a score degree with correctly initialized equave"
+	degree = "a MtlDegree representing a score degree with correctly initialized equave"
 	info_note_pitch_modifier = "parse tree of the note modifier part of the mitola specification"
 	[method.pr_info_note_pitch_modifier_parse_tree_to_cents.returns]
 	what= "a Float"
@@ -393,8 +393,8 @@ ScalaCalculator {
 			"Error. pr_info_note_pitch_modifier_parse_tree_to_cents called with wrong argument types (info_note_pitch_modifier must be Event)".postln;
 			cents = 0;
 		};
-		if (degree.class != Degree) {
-			"Error. pr_info_note_pitch_modifier_parse_tree_to_cents called with wrong argument types (degree must be Degree)".postln;
+		if (degree.class != MtlDegree) {
+			"Error. pr_info_note_pitch_modifier_parse_tree_to_cents called with wrong argument types (degree must be MtlDegree)".postln;
 			cents = 0;
 		};
 		if (info_note_pitch_modifier[\direction] == \none) {
@@ -568,7 +568,7 @@ ScalaCalculator {
 		};
 		degree = info_note_pitch_parse_tree[\notename];
 		if (degree > this.max_score_degree) {
-			("Warning: degree" + (degree+1) + "is higher than number of degrees (" ++ this.no_of_score_degrees ++ "). Degree will be clipped to" + this.max_score_degree).postln;
+			("Warning: degree" + (degree+1) + "is higher than number of degrees (" ++ this.no_of_score_degrees ++ "). MtlDegree will be clipped to" + this.max_score_degree).postln;
 			degree = this.max_score_degree;
 		};
 		equivalenceinterval = info_note_pitch_parse_tree[\equivalenceinterval];
@@ -577,9 +577,9 @@ ScalaCalculator {
 		} {
 			this.previous_equivalence_interval = equivalenceinterval; // update with current value
 		};
-		d = Degree(degree, equivalenceinterval, \score, \zerobased);
+		d = MtlDegree(degree, equivalenceinterval, \score, \zerobased);
 		cents = this.pr_degree_to_cents(d) + this.pr_info_note_pitch_modifier_parse_tree_to_cents(d, info_note_pitch_parse_tree[\notemodifier]);
-		ratio = ScalaCalculator.pr_cents_to_ratio(cents);
+		ratio = MtlScalaCalculator.pr_cents_to_ratio(cents);
 		^(root_frequency * ratio);
 	}
 }
@@ -607,7 +607,7 @@ var scala = [
 	" | 11/12 >",
 	" 2/1"
 ].join("\n");
-var calc = ScalaCalculator();
+var calc = MtlScalaCalculator();
 calc.parse(scala);
 calc.no_of_scala_degrees.debug("no of degrees"); // expected: 12
 calc.no_of_score_degrees.debug("no of degrees"); // expected: 12

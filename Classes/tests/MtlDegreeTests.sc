@@ -1,14 +1,14 @@
 /*
 [general]
-title = "DegreeTests"
-summary = "tests for the Degree class"
+title = "MtlDegreeTests"
+summary = "tests for the MtlDegree class"
 categories = "Microtonal utils"
-related = "Classes/ScalaParser, Classes/Mitola, Classes/DegreeMapper"
+related = "Classes/MtlScalaParser, Classes/MtlMitola, Classes/MtlDegreeMapper"
 description = '''
 unit tests
 '''
 */
-DegreeTests : UnitTest {
+MtlDegreeTests : UnitTest {
 	*new {
 		^super.new.init();
 	}
@@ -18,9 +18,9 @@ DegreeTests : UnitTest {
 	}
 
 	test_degree {
-		var d1 = Degree(5, 3, \score, \onebased);
-		var d2 = Degree(4, 3, \score, \zerobased);
-		var d3 = Degree(2, 3, \score, \onebased);
+		var d1 = MtlDegree(5, 3, \score, \onebased);
+		var d2 = MtlDegree(4, 3, \score, \zerobased);
+		var d3 = MtlDegree(2, 3, \score, \onebased);
 		this.assertEquals(d1.degree_value(\onebased), 5, "d1_degree_value_onebased");
 		this.assertEquals(d1.degree_value(\zerobased), 4, "d1_degree_value_zerobased");
 		this.assertEquals(d1.degree_kind, \score, "d1_degree_kind");

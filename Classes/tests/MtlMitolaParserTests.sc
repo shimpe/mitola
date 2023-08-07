@@ -1,14 +1,14 @@
 /*
 [general]
-title = "MitolaParserTests"
-summary = "tests for the MitolaParser class"
+title = "MtlMitolaParserTests"
+summary = "tests for the MtlMitolaParser class"
 categories = "Microtonal utils"
-related = "Classes/ScalaParser, Classes/Mitola"
+related = "Classes/MtlScalaParser, Classes/MtlMitola"
 description = '''
 unit tests
 '''
 */
-MitolaParserTests : UnitTest {
+MtlMitolaParserTests : UnitTest {
 	*new {
 		^super.new.init();
 	}
@@ -70,12 +70,12 @@ MitolaParserTests : UnitTest {
 		var result = ();
 
 		text[\1] = "1{+100.0}[4]_4";
-		result[\11] = MitolaParser.pr_noteParser.run(text[\1]);
+		result[\11] = MtlMitolaParser.pr_noteParser.run(text[\1]);
 		// 1 (one-based human degree spec) is translated to 0 (zero-based computer degree spec)
 		this.pr_check(result[\11].result, (\what: \notename, \value: 0 ));
 
 		text[\2] = "{+50.0}";
-		result[\21] = MitolaParser.pr_noteModifier.run(text[\2]);
+		result[\21] = MtlMitolaParser.pr_noteModifier.run(text[\2]);
 		this.assertEquals(result[\21].result, (
 			'kind': 'cents',
 			'what': 'notemodifier',
@@ -84,7 +84,7 @@ MitolaParserTests : UnitTest {
 		"result21_result"
 		);
 
-		result[\22] = MitolaParser.pr_noteModifier.run("{- |-2 2 1> }");
+		result[\22] = MtlMitolaParser.pr_noteModifier.run("{- |-2 2 1> }");
 		this.assertEquals(result[\22].result, (
 			'kind': 'primevector',
 			'what': 'notemodifier',
@@ -96,7 +96,7 @@ MitolaParserTests : UnitTest {
 		"result22_result"
 		);
 
-		result[\23] = MitolaParser.pr_noteModifier.run("{+6/7}");
+		result[\23] = MtlMitolaParser.pr_noteModifier.run("{+6/7}");
 		this.assertEquals(result[\23].result, (
 			'kind': 'ratio',
 			'what': 'notemodifier',
@@ -105,7 +105,7 @@ MitolaParserTests : UnitTest {
 		"result23_result"
 		);
 
-		result[\12] = MitolaParser.pr_noteAndMod.run(text[\1]);
+		result[\12] = MtlMitolaParser.pr_noteAndMod.run(text[\1]);
 		this.assertEquals(result[\12].result[0], (\what: \notename, \value: 0), "result12_result[0]");
 		this.assertEquals(result[\12].result[1], (
 			'kind': 'cents',
@@ -116,10 +116,10 @@ MitolaParserTests : UnitTest {
 		);
 
 		text[\3] = "r_4";
-		result[\31] = MitolaParser.pr_noteAndMod.run(text[\3]);
+		result[\31] = MtlMitolaParser.pr_noteAndMod.run(text[\3]);
 		this.assertEquals(result[\31].result, (\what: \rest), "result31_result");
 
-		result[\13] = MitolaParser.pr_noteAndModAndOct.run(text[\1]);
+		result[\13] = MtlMitolaParser.pr_noteAndModAndOct.run(text[\1]);
 		this.assertEquals(result[\13].result, (
 			'what': 'note',
 			'equivalenceinterval': 4,
@@ -137,7 +137,7 @@ MitolaParserTests : UnitTest {
 		);
 
 		text[\4] = "3{-4/5}_4";
-		result[\41] = MitolaParser.pr_noteAndModAndOct.run(text[\4]);
+		result[\41] = MtlMitolaParser.pr_noteAndModAndOct.run(text[\4]);
 		this.assertEquals(result[\41].result, (
 			'what': 'note',
 			'equivalenceinterval': 'previous',
@@ -154,7 +154,7 @@ MitolaParserTests : UnitTest {
 		"result41_result");
 
 		text[\5] = "5{-70.0}_4*8/3";
-		result[\51] = MitolaParser.pr_noteAndModAndOctAndDur.run(text[\5]);
+		result[\51] = MtlMitolaParser.pr_noteAndModAndOctAndDur.run(text[\5]);
 		this.assertEquals(result[\51].result[\pitch], (
 			'what': 'note',
 			'equivalenceinterval': 'previous',
@@ -178,7 +178,7 @@ MitolaParserTests : UnitTest {
 
 
 		text[\6] = "r_2./3";
-		result[\61] = MitolaParser.pr_noteAndModAndOctAndDur.run(text[\6]);
+		result[\61] = MtlMitolaParser.pr_noteAndModAndOctAndDur.run(text[\6]);
 		this.assertEquals(result[\61].result[\pitch], ( 'what': 'rest' ), "result61_pitch");
 		this.assertEquals(result[\61].result[\duration], (
 			'durmultiplier': 1,
@@ -189,7 +189,7 @@ MitolaParserTests : UnitTest {
 		);
 
 		text[\7] = "18{-45.67}[5]_4@prop[34.4]@vol{5}";
-		result[\71] = MitolaParser.pr_noteAndModAndOctAndDurAndProp.run(text[\7]);
+		result[\71] = MtlMitolaParser.pr_noteAndModAndOctAndDurAndProp.run(text[\7]);
 		this.assertEquals(result[\71].result,
 			( 'info':
 				('props': [
@@ -215,7 +215,7 @@ MitolaParserTests : UnitTest {
 		);
 
 		text[\8] = "5{+2/1}[2]_4..*8";
-		result[\81] = MitolaParser.pr_noteAndModAndOctAndDurAndProp.run(text[\8]);
+		result[\81] = MtlMitolaParser.pr_noteAndModAndOctAndDurAndProp.run(text[\8]);
 		this.assertEquals(result[\81].result, (
 			'info': (
 				'props': [  ],
@@ -242,7 +242,7 @@ MitolaParserTests : UnitTest {
 		"result81_result");
 
 		text[\82] = "9";
-		result[\82] = MitolaParser.pr_noteAndModAndOctAndDurAndProp.run(text[\82]);
+		result[\82] = MtlMitolaParser.pr_noteAndModAndOctAndDurAndProp.run(text[\82]);
 		this.assertEquals(result[\82].result, (
 			'info': (
 				'props': [  ],
@@ -264,7 +264,7 @@ MitolaParserTests : UnitTest {
 		"result82_result");
 
 		text[\9] = "< 9[4]_3@ped{67} 8[5] 3>";
-		result[\91] = MitolaParser.pr_chordParser.run(text[\9]);
+		result[\91] = MtlMitolaParser.pr_chordParser.run(text[\9]);
 		this.assertEquals(result[\91].result, (
 			'what': 'chord',
 			'notes': [
@@ -321,7 +321,7 @@ MitolaParserTests : UnitTest {
 		"result91_result");
 
 		text[\10] = "6[4] 5{-100.0}[3]_2@vol{123} <8[2]_4.*2/3 2 7> 9[5]";
-		result[\10] = MitolaParser.pr_notelistParser.run(text[\10]);
+		result[\10] = MtlMitolaParser.pr_notelistParser.run(text[\10]);
 		this.assertEquals(result[\10].result, [
 			( 'info': (
 				'props': [  ],
@@ -436,7 +436,7 @@ MitolaParserTests : UnitTest {
 		"result10_result");
 
 		text[\11] = "|: 8[4] 4{+6/83}_2@vol{123} :|*3";
-		result[\11] = MitolaParser.pr_repeatedNotelist.run(text[\11]);
+		result[\11] = MtlMitolaParser.pr_repeatedNotelist.run(text[\11]);
 		this.assertEquals(result[\11].result, [
 			( 'info': (
 				'props': [  ],
@@ -549,7 +549,7 @@ MitolaParserTests : UnitTest {
 		"result11_result");
 
 		text[\12] = "1 |: 4 |: 6 7{+50.0} :|*2 :|*3 8{-20.0}>}";
-		result[\12] = MitolaParser.pr_mixedNotelist.run(text[\12]);
+		result[\12] = MtlMitolaParser.pr_mixedNotelist.run(text[\12]);
 		this.assertEquals(result[\12].result, [
 			( 'info': (
 				'props': [  ],

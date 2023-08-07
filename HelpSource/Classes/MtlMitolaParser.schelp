@@ -1,19 +1,19 @@
-TITLE:: MitolaParser
-summary:: a parser for mitola scores - not for end users, use Mitola instead.
+TITLE:: MtlMitolaParser
+summary:: a parser for mitola scores - not for end users, use MtlMitola instead.
 categories:: Microtonal utils
-related:: Classes/ScalaParser, Classes/Mitola
+related:: Classes/MtlScalaParser, Classes/MtlMitola
 
 DESCRIPTION::
-Mitola parser can parse a string or a file containing a valid Mitola score and convert it to a parse tree.
+MtlMitola parser can parse a string or a file containing a valid MtlMitola score and convert it to a parse tree.
 
 
 
 CLASSMETHODS::
 
 METHOD:: new
-New creates a new MitolaParser
+New creates a new MtlMitolaParser
 
-returns:: a new MitolaParser
+returns:: a new MtlMitolaParser
 METHOD:: pr_noteParser
 internal method that creates a parser that can parse a single mitola degree and markup the result
 
@@ -56,7 +56,7 @@ internal method that creates a Parser that can parse a pitch modifier in any for
 
 returns:: a Parser that parses a pitch modifier and marks up the result; pitch modifiers are optional
 METHOD:: pr_restParser
-internal method that creates a Parser that can parse a rest in a Mitola string
+internal method that creates a Parser that can parse a rest in a MtlMitola string
 
 returns:: a Parser that parses a rest and marks up the result
 METHOD:: pr_noteAndMod
@@ -84,7 +84,7 @@ internal method that creates a Parser that matches duration specification (i.e. 
 
 returns:: a Parser
 METHOD:: pr_propertyNameParser
-internal method that creates a Parser that matches a property name. Properties can be attached to Mitola degrees and end up as keys in the pbind.
+internal method that creates a Parser that matches a property name. Properties can be attached to MtlMitola degrees and end up as keys in the pbind.
 
 returns:: a Parser
 METHOD:: pr_propertiesParser
@@ -123,11 +123,11 @@ returns:: a Parser
 INSTANCEMETHODS::
 
 METHOD:: init
-initializes a new MitolaParser
+initializes a new MtlMitolaParser
 
-returns:: an initialized MitolaParser object
+returns:: an initialized MtlMitolaParser object
 METHOD:: parse
-parses a Mitola score; upon failure displays an error msg and returns nil
+parses a MtlMitola score; upon failure displays an error msg and returns nil
 
 ARGUMENT:: mitolastring
 a string containing a valid mitola score
@@ -136,7 +136,7 @@ returns:: 	if successful, parse returns the parse tree
 	if unsuccessful, a message is printed and nil is returned
 	
 METHOD:: parse_file
-parses a Mitola score from file; upon failure displays an error msg and returns nil
+parses a MtlMitola score from file; upon failure displays an error msg and returns nil
 
 ARGUMENT:: filename
 a filename of a file containing a valid mitola score
@@ -150,7 +150,7 @@ EXAMPLES::
 code::
 (
 var score = "1 |: 4 |: 6 7{+50.0} :|*2 :|*3 8{-20.0}>}";
-var result = MitolaParser.pr_mixedNotelist.run(score);
+var result = MtlMitolaParser.pr_mixedNotelist.run(score);
 // should be true:
 result.result == [
 			( 'info': (

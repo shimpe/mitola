@@ -1,14 +1,14 @@
 /*
 [general]
-title = "RootFrequencyCalculator"
+title = "MtlRootFrequencyCalculator"
 summary = "a calculator for determining the root frequency that ensures a given mitola degree has a certain frequency"
 categories = "Microtonal utils"
-related = "Classes/Mitola"
+related = "Classes/MtlMitola"
 description = '''
-RootFrequencyCalculator calculates the root frequency to ensure a given degree in your scala scale is pinned to a desired frequency, e.g. calculate the root frequency so that 10[4] in 12EDO ("a4" in a c chromatic scale is the 10th degree) equals 440Hz.
+MtlRootFrequencyCalculator calculates the root frequency to ensure a given degree in your scala scale is pinned to a desired frequency, e.g. calculate the root frequency so that 10[4] in 12EDO ("a4" in a c chromatic scale is the 10th degree) equals 440Hz.
 '''
 */
-RootFrequencyCalculator {
+MtlRootFrequencyCalculator {
 	classvar epsilon;
 
 	/*
@@ -17,19 +17,19 @@ RootFrequencyCalculator {
 	a variable to store an initialized scala calculator
 	'''
 	[method.scala_calculator.returns]
-	what="a ScalaCalculator"
+	what="a MtlScalaCalculator"
 	*/
 	var <>scala_calculator;
 
 	/*
 	[classmethod.new]
-	description = "New creates a new RootFrequencyCalculator. Either a scala_contents or a scala_filename must be specified."
+	description = "New creates a new MtlRootFrequencyCalculator. Either a scala_contents or a scala_filename must be specified."
 	[classmethod.new.args]
 	scala_contents = "a string containing a scala definition"
 	scala_filename = "a string containing a path to a scala definition file"
-	degree_mapper = "an optional DegreeMapper"
+	degree_mapper = "an optional MtlDegreeMapper"
 	[classmethod.new.returns]
-	what = "a new RootFrequencyCalculator"
+	what = "a new MtlRootFrequencyCalculator"
 	*/
 	*new {
 		| scala_contents=nil, scala_filename=nil, degree_mapper=nil |
@@ -48,13 +48,13 @@ RootFrequencyCalculator {
 
 	/*
 	[method.init]
-	description = "initializes the RootFrequencyCalculator from either a string or a file"
+	description = "initializes the MtlRootFrequencyCalculator from either a string or a file"
 	[method.init.args]
 	scala_contents = "a string containing a valid scala definition"
 	scala_filename= "a string containing a path to a scala file"
-	degree_mapper = "an optional DegreeMapper"
+	degree_mapper = "an optional MtlDegreeMapper"
 	[method.init.returns]
-	what = "initialized RootFrequencyCalculator"
+	what = "initialized MtlRootFrequencyCalculator"
 	*/
 	init {
 		|scala_contents, scala_filename, degree_mapper|
@@ -73,13 +73,13 @@ RootFrequencyCalculator {
 	description = "parses a scala definition specified in a string"
 	[method.parse.args]
 	scala_contents = "a string containing a valid scala definition"
-	degree_mapper = "an option DegreeMapper"
+	degree_mapper = "an option MtlDegreeMapper"
 	[method.parse.returns]
-	what = "a ScalaCalculator initialized with the information from the string"
+	what = "a MtlScalaCalculator initialized with the information from the string"
 	*/
 	parse {
 		| scala_contents, degree_mapper=nil |
-		this.scala_calculator = ScalaCalculator(degree_mapper);
+		this.scala_calculator = MtlScalaCalculator(degree_mapper);
 		this.scala_calculator.parse(scala_contents);
 		^this.scala_calculator;
 	}
@@ -89,9 +89,9 @@ RootFrequencyCalculator {
 	description = "parses a scala definition specified in a file"
 	[method.parse_file.args]
 	filename = "a filename containing a valid scala definition"
-	degree_mapper = "an option DegreeMapper"
+	degree_mapper = "an option MtlDegreeMapper"
 	[method.parse_file.returns]
-	what = "a ScalaCalculator initialized with the information from the file"
+	what = "a MtlScalaCalculator initialized with the information from the file"
 	*/
 	parse_file {
 		| filename, degree_mapper=nil |
@@ -162,7 +162,7 @@ RootFrequencyCalculator {
 [examples]
 what = '''
 (
-var r = RootFrequencyCalculator();
+var r = MtlRootFrequencyCalculator();
 var scala = [
 	"! major_diatonic.scl",
 	"!",

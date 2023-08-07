@@ -40,7 +40,7 @@ Note that pitch modifiers (see next) calculate with score degrees, not with scal
 
 ## degree modifiers
 
-Degrees can be modified with modifiers (in conventional music these would be accidentals, like sharps and flats). Modifiers in Mitola can be specified in two ways. First way: absolute modification by a number of cents. E.g. 1{+100.0} modifies degree 1 by adding 100.0 cents. Note that you must include a decimal point for the number to be interpreted as cents. Similarly 4{-53.0} would lower the pitch represented by degree 4 by 53.0 cents. 
+MtlDegrees can be modified with modifiers (in conventional music these would be accidentals, like sharps and flats). Modifiers in Mitola can be specified in two ways. First way: absolute modification by a number of cents. E.g. 1{+100.0} modifies degree 1 by adding 100.0 cents. Note that you must include a decimal point for the number to be interpreted as cents. Similarly 4{-53.0} would lower the pitch represented by degree 4 by 53.0 cents. 
 
 The second way is to specify a ratio. E.g. 5{+2/3} will modify the pitch so that it sounds 2/3 between degree 5 and degree 6. Ratios with an abs value larger than 1 are reduced: 5{-4/3} is interpreted as 4{-1/3}. This is important to understand the behavior in case of tunings with different gaps between the different degrees. An alternative way to specify ratios is using prime vector notation. In prime vector notation, a ratio is defined as a multiplication of prime factors. The exponents of the prime factors are between | and >. So this is a valid note: 3{+|1/12>}. It will raise degree 3 with 2^(1/12).
 
@@ -116,7 +116,7 @@ var repeats = "|: 1[4]_8 2 3 :| * 5";
 
 ## tuning
 
-To convert Mitola scores to frequencies it is necessary to know in which tuning the score has to be interpreted. Tuning is indicated in the form of a scala definition and a root frequency. In order to pin a given degree in your scala definition to a fixed frequency (e.g. ensure that A4 is 440Hz in a 12EDO tuning), a suitable root_frequency can be calculated using the RootFrequencyCalculator class.
+To convert Mitola scores to frequencies it is necessary to know in which tuning the score has to be interpreted. Tuning is indicated in the form of a scala definition and a root frequency. In order to pin a given degree in your scala definition to a fixed frequency (e.g. ensure that A4 is 440Hz in a 12EDO tuning), a suitable root_frequency can be calculated using the MtlRootFrequencyCalculator class.
 
 
 # Examples
@@ -145,9 +145,9 @@ s.waitForBoot({
 		" | 11/12 >",
 		" 2/1"
 	].join("\n");
-	var score = Mitola("1[4]_16@amp[0.6] 2 3 4 5 6 7 8 9 10 11 12 1[5]", scala_contents: tuning);
+	var score = MtlMitola("1[4]_16@amp[0.6] 2 3 4 5 6 7 8 9 10 11 12 1[5]", scala_contents: tuning);
 	// find out which root frequency to use to get degree 10 in octave 4 (A4) to map to 440Hz.
-	var r = RootFrequencyCalculator(tuning);
+	var r = MtlRootFrequencyCalculator(tuning);
 	var root_freq = r.get_root_frequency("10[4]", 440);
 	var player = score.as_pbind(root_frequency:root_freq).play; // listen to the score with the default instrument
 });
@@ -177,10 +177,10 @@ s.waitForBoot({
 		" | 11/12 >",
 		" 2/1"
 	].join("\n");
-	var m = Mitola("1[4]_16 2 3 4 5 6 7 1[5]",
+	var m = MtlMitola("1[4]_16 2 3 4 5 6 7 1[5]",
 		scala_contents:scala,
 		degree_mapping:Dictionary[1->1, 2->3, 3->5, 4->6, 5->8, 6->10, 7->12]);
-	var r = RootFrequencyCalculator(scala_contents:scala, degree_mapper:m.degree_mapper);
+	var r = MtlRootFrequencyCalculator(scala_contents:scala, degree_mapper:m.degree_mapper);
 	var root_freq = r.get_root_frequency("6[4]", 440); // a4 to 440Hz (6 is a one-based score degree, not a scala degree!)
 	var pattern = m.as_pbind(root_frequency:root_freq);
 	var player = pattern.play;
@@ -208,10 +208,10 @@ s.waitForBoot({
 		" | 6/7 >",
 		" 2/1"
 	].join("\n");
-	var score = Mitola("1[4]_16@amp[0.6] 2 3_32 4 5_16 6 7 1[5]_4", scala_contents: tuning);
-	var score2 = Mitola("1[3]_16@amp[0.6] 5 1 5 1 5 1 5 1", scala_contents:tuning);
+	var score = MtlMitola("1[4]_16@amp[0.6] 2 3_32 4 5_16 6 7 1[5]_4", scala_contents: tuning);
+	var score2 = MtlMitola("1[3]_16@amp[0.6] 5 1 5 1 5 1 5 1", scala_contents:tuning);
 	// find out which root frequency to use to get degree 4 in octave 4 to map to 432Hz.
-	var r = RootFrequencyCalculator(tuning);
+	var r = MtlRootFrequencyCalculator(tuning);
 	var root_freq = r.get_root_frequency("4[4]", 432);
 	var player = Ppar([
 		score.as_pbind(root_frequency:root_freq),
@@ -240,10 +240,10 @@ s.waitForBoot({
 		" | 6/7 >",
 		" 2/1"
 	].join("\n");
-	var score = Mitola("1[4]_16@amp[0.6] 2 3_32 4 5_16 6 7 1[5]_4", scala_contents: tuning);
-	var score2 = Mitola("1[3]_16@amp[0.6] 5 1 5 1 5 1 5 1", scala_contents:tuning);
+	var score = MtlMitola("1[4]_16@amp[0.6] 2 3_32 4 5_16 6 7 1[5]_4", scala_contents: tuning);
+	var score2 = MtlMitola("1[3]_16@amp[0.6] 5 1 5 1 5 1 5 1", scala_contents:tuning);
 	// find out which root frequency to use to get degree 4 in octave 4 to map to 432Hz.
-	var r = RootFrequencyCalculator(tuning);
+	var r = MtlRootFrequencyCalculator(tuning);
 	var root_freq = r.get_root_frequency("4[4]", 432);
 	var pattern = Ppar([
 		score.as_pbind(\sawSynth, root_frequency:root_freq),
@@ -298,10 +298,10 @@ s.waitForBoot({
 		" | 6/7 >",
 		" 2/1"
 	].join("\n");
-	var score = Mitola("1[4]_16@amp{0.2} 2 3_32 4 5_16 6 7 1[5]_4@amp{0.6}", scala_contents: tuning);
-	var score2 = Mitola("1[3]_16@amp[0.3] 5 1 5 1 5 1 5 1@amp[0.6]", scala_contents:tuning);
+	var score = MtlMitola("1[4]_16@amp{0.2} 2 3_32 4 5_16 6 7 1[5]_4@amp{0.6}", scala_contents: tuning);
+	var score2 = MtlMitola("1[3]_16@amp[0.3] 5 1 5 1 5 1 5 1@amp[0.6]", scala_contents:tuning);
 	// find out which root frequency to use to get degree 4 in octave 4 to map to 432Hz.
-	var r = RootFrequencyCalculator(tuning);
+	var r = MtlRootFrequencyCalculator(tuning);
 	var root_freq = r.get_root_frequency("4[4]", 432);
 	var pattern = Ppar([
 		score.as_pbind(\sawSynth, root_frequency:root_freq),

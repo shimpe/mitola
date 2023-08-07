@@ -1,17 +1,17 @@
-TITLE:: RootFrequencyCalculator
+TITLE:: MtlRootFrequencyCalculator
 summary:: a calculator for determining the root frequency that ensures a given mitola degree has a certain frequency
 categories:: Microtonal utils
-related:: Classes/Mitola
+related:: Classes/MtlMitola
 
 DESCRIPTION::
-RootFrequencyCalculator calculates the root frequency to ensure a given degree in your scala scale is pinned to a desired frequency, e.g. calculate the root frequency so that 10[4] in 12EDO ("a4" in a c chromatic scale is the 10th degree) equals 440Hz.
+MtlRootFrequencyCalculator calculates the root frequency to ensure a given degree in your scala scale is pinned to a desired frequency, e.g. calculate the root frequency so that 10[4] in 12EDO ("a4" in a c chromatic scale is the 10th degree) equals 440Hz.
 
 
 
 CLASSMETHODS::
 
 METHOD:: new
-New creates a new RootFrequencyCalculator. Either a scala_contents or a scala_filename must be specified.
+New creates a new MtlRootFrequencyCalculator. Either a scala_contents or a scala_filename must be specified.
 
 ARGUMENT:: scala_contents
 a string containing a scala definition
@@ -20,9 +20,9 @@ ARGUMENT:: scala_filename
 a string containing a path to a scala definition file
 
 ARGUMENT:: degree_mapper
-an optional DegreeMapper
+an optional MtlDegreeMapper
 
-returns:: a new RootFrequencyCalculator
+returns:: a new MtlRootFrequencyCalculator
 METHOD:: initClass
 initializes the class variable epsilon to 0.001
 
@@ -34,9 +34,9 @@ METHOD:: scala_calculator
 	a variable to store an initialized scala calculator
 	
 
-returns:: a ScalaCalculator
+returns:: a MtlScalaCalculator
 METHOD:: init
-initializes the RootFrequencyCalculator from either a string or a file
+initializes the MtlRootFrequencyCalculator from either a string or a file
 
 ARGUMENT:: scala_contents
 a string containing a valid scala definition
@@ -45,9 +45,9 @@ ARGUMENT:: scala_filename
 a string containing a path to a scala file
 
 ARGUMENT:: degree_mapper
-an optional DegreeMapper
+an optional MtlDegreeMapper
 
-returns:: initialized RootFrequencyCalculator
+returns:: initialized MtlRootFrequencyCalculator
 METHOD:: parse
 parses a scala definition specified in a string
 
@@ -55,9 +55,9 @@ ARGUMENT:: scala_contents
 a string containing a valid scala definition
 
 ARGUMENT:: degree_mapper
-an option DegreeMapper
+an option MtlDegreeMapper
 
-returns:: a ScalaCalculator initialized with the information from the string
+returns:: a MtlScalaCalculator initialized with the information from the string
 METHOD:: parse_file
 parses a scala definition specified in a file
 
@@ -65,9 +65,9 @@ ARGUMENT:: filename
 a filename containing a valid scala definition
 
 ARGUMENT:: degree_mapper
-an option DegreeMapper
+an option MtlDegreeMapper
 
-returns:: a ScalaCalculator initialized with the information from the file
+returns:: a MtlScalaCalculator initialized with the information from the file
 METHOD:: pr_bisect
 internal method performing an iterative search for a root_frequency that pins a given degree to a given frequency
 
@@ -99,7 +99,7 @@ EXAMPLES::
 
 code::
 (
-var r = RootFrequencyCalculator();
+var r = MtlRootFrequencyCalculator();
 var scala = [
 	"! major_diatonic.scl",
 	"!",

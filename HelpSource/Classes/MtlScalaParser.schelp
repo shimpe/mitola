@@ -1,20 +1,20 @@
-TITLE:: ScalaParser
+TITLE:: MtlScalaParser
 summary:: a parser for scala files and strings
 categories:: Microtonal utils
-related:: Classes/ScalaCalculator, Classes/Mitola
+related:: Classes/MtlScalaCalculator, Classes/MtlMitola
 
 DESCRIPTION::
-ScalaParser implements a parser for the contents of a scala file
+MtlScalaParser implements a parser for the contents of a scala file
 
 
 
 CLASSMETHODS::
 
 METHOD:: new
-	new creates a new ScalaParser
+	new creates a new MtlScalaParser
 	
 
-returns:: a ScalaParser
+returns:: a MtlScalaParser
 METHOD:: parse
 	parse takes a scala string (= contents of scala file) and parses it to parse tree
 	
@@ -84,17 +84,17 @@ returns:: a Parser
 INSTANCEMETHODS::
 
 METHOD:: init
-	init initializes a new ScalaParser
+	init initializes a new MtlScalaParser
 	
 
-returns:: a ScalaParser ready to do some parsing
+returns:: a MtlScalaParser ready to do some parsing
 
 EXAMPLES::
 
 code::
 (
 var state;
-var p = ScalaParser.pr_scalaParser;
+var p = MtlScalaParser.pr_scalaParser;
 
 var scala_txt = [
 	"! meanquar.scl",

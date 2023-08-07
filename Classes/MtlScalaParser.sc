@@ -1,21 +1,21 @@
 /*
 [general]
-title = "ScalaParser"
+title = "MtlScalaParser"
 summary = "a parser for scala files and strings"
 categories = "Microtonal utils"
-related = "Classes/ScalaCalculator, Classes/Mitola"
+related = "Classes/MtlScalaCalculator, Classes/MtlMitola"
 description = '''
-ScalaParser implements a parser for the contents of a scala file
+MtlScalaParser implements a parser for the contents of a scala file
 '''
 */
-ScalaParser {
+MtlScalaParser {
 	/*
 	[classmethod.new]
 	description='''
-	new creates a new ScalaParser
+	new creates a new MtlScalaParser
 	'''
 	[classmethod.new.returns]
-	what="a ScalaParser"
+	what="a MtlScalaParser"
 	*/
 	*new {
 		^super.new.init();
@@ -24,10 +24,10 @@ ScalaParser {
 	/*
 	[method.init]
 	description='''
-	init initializes a new ScalaParser
+	init initializes a new MtlScalaParser
 	'''
 	[method.init.returns]
-	what="a ScalaParser ready to do some parsing"
+	what="a MtlScalaParser ready to do some parsing"
 	*/
 	init {
 
@@ -288,7 +288,7 @@ ScalaParser {
 what='''
 (
 var state;
-var p = ScalaParser.pr_scalaParser;
+var p = MtlScalaParser.pr_scalaParser;
 
 var scala_txt = [
 	"! meanquar.scl",

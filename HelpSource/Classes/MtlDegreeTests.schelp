@@ -1,0 +1,17 @@
+TITLE:: MtlDegreeTests
+summary:: tests for the MtlDegree class
+categories:: Microtonal utils
+related:: Classes/MtlScalaParser, Classes/MtlMitola, Classes/MtlDegreeMapper
+
+DESCRIPTION::
+unit tests
+
+
+
+
+
+EXAMPLES::
+
+code::
+(FIXME add some example code)
+::

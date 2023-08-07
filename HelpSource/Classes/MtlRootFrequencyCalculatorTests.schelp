@@ -1,0 +1,17 @@
+TITLE:: MtlRootFrequencyCalculatorTests
+summary:: tests for the MtlRootFrequencyCalculator class
+categories:: Microtonal utils
+related:: Classes/MtlScalaParser, Classes/MtlMitola
+
+DESCRIPTION::
+unit tests
+
+
+
+
+
+EXAMPLES::
+
+code::
+(FIXME add some example code)
+::

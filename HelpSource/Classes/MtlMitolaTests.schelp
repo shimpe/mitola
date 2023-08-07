@@ -1,0 +1,17 @@
+TITLE:: MtlMitolaTests
+summary:: tests for the MtlMitolaParser class
+categories:: Microtonal utils
+related:: Classes/MtlScalaParser, Classes/MtlMitola
+
+DESCRIPTION::
+unit tests
+
+
+
+
+
+EXAMPLES::
+
+code::
+(FIXME add some example code)
+::
