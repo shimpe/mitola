@@ -12,8 +12,8 @@ Mitola depends on another quark called scparco which is a library to generate pa
 
 ```smalltalk
 (
-Quarks.install("https://github.com/shimpe/scparco"); // parser combinator library
-Quarks.install("https://github.com/shimpe/mitola"); // mitola implementation
+Quarks.install("https://github.com/shimpe/scparco"); // parser combinator library -> need version 0.0.3 or newer
+Quarks.install("https://github.com/shimpe/mitola"); // mitola implementation -> need version 0.0.4 or newer
 )
 ```
 
