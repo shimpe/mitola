@@ -180,9 +180,9 @@ METHOD:: notation
 returns:: this instance of MtlMitola
 
 METHOD:: mitola_parser
-	A Parser for MtlMitola strings; initialized in the init method
+	A ScpParser for MtlMitola strings; initialized in the init method
 	[method.mitola_parser.returns]
-	what="a Parser"
+	what="a ScpParser"
 	
 
 returns:: this instance of MtlMitola

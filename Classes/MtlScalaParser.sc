@@ -84,71 +84,71 @@ MtlScalaParser {
 	/*
 	[classmethod.pr_restofline]
 	description='''
-	makes a Parser that eats the rest of a line (but not the newline)
+	makes a ScpParser that eats the rest of a line (but not the newline)
 	'''
 	[classmethod.pr_restofline.returns]
-	what = "a Parser"
+	what = "a ScpParser"
 	*/
 	*pr_restofline {
-		^Optional(RegexParser("[^\\r\\n]+"));
+		^ScpOptional(ScpRegexParser("[^\\r\\n]+"));
 	}
 
 	/*
 	[classmethod.pr_nopoint]
 	description='''
-	makes a Parser that fails if the next token is a point
+	makes a ScpParser that fails if the next token is a point
 	'''
 	[classmethod.pr_nopoint.returns]
-	what = "a Parser"
+	what = "a ScpParser"
 	*/
 	*pr_nopoint {
-		^NegativeLookAhead(StrParser("."));
+		^ScpNegativeLookAhead(ScpStrParser("."));
 	}
 
 	/*
 	[classmethod.pr_comment]
 	description='''
-	makes a Parser that matches a comment in a scala file (not the newline)
+	makes a ScpParser that matches a comment in a scala file (not the newline)
 	'''
 	[classmethod.pr_comment.returns]
-	what = "a Parser"
+	what = "a ScpParser"
 	*/
 	*pr_comment {
 		// store comment as an event (\what: \comment, \value: ...)
-		^SequenceOf([StrParser("!"), this.pr_restofline]).map({|result| (\what: \comment, \value: result[1]) });
+		^ScpSequenceOf([ScpStrParser("!"), this.pr_restofline]).map({|result| (\what: \comment, \value: result[1]) });
 	}
 
 	/*
 	[classmethod.pr_commentLine]
 	description='''
-	makes a Parser that matches a comment in a scala file (including the newline)
+	makes a ScpParser that matches a comment in a scala file (including the newline)
 	'''
 	[classmethod.pr_commentLine.returns]
-	what = "a Parser"
+	what = "a ScpParser"
 	*/
 	*pr_commentLine {
 		// throw away the newline
-		^SequenceOf([this.pr_comment, ParserFactory.makeNewlineParser]).map({|result| result[0] });
+		^ScpSequenceOf([this.pr_comment, ScpParserFactory.makeNewlineParser]).map({|result| result[0] });
 	}
 
 	/*
 	[classmethod.pr_pitchRatio]
 	description='''
-	makes a Parser that matches a pitch line specified as a ratio Integer/Integer. No sign is allowed.
+	makes a ScpParser that matches a pitch line specified as a ratio Integer/Integer. No sign is allowed.
 	'''
 	[classmethod.pr_pitchRatio.returns]
-	what = "a Parser"
+	what = "a ScpParser"
 	*/
 	*pr_pitchRatio {
-		^SequenceOf([
-			ParserFactory.makeWs,
-			ParserFactory.makeDigits,
+		^ScpSequenceOf([
+			ScpParserFactory.makeWs,
+			ScpParserFactory.makeDigits,
 			this.pr_nopoint,
-			Optional(SequenceOf([
-				ParserFactory.makeWs,
-				StrParser("/"),
-				ParserFactory.makeWs,
-				ParserFactory.makeDigits,
+			ScpOptional(ScpSequenceOf([
+				ScpParserFactory.makeWs,
+				ScpStrParser("/"),
+				ScpParserFactory.makeWs,
+				ScpParserFactory.makeDigits,
 				this.pr_nopoint
 			])),
 			this.pr_restofline]).map({
@@ -164,39 +164,39 @@ MtlScalaParser {
 	/*
 	[classmethod.pr_pitchPrimeVector]
 	description='''
-	makes a Parser that matches a pitch line specified in prime vector notation | exp1 exp2 ... >.
+	makes a ScpParser that matches a pitch line specified in prime vector notation | exp1 exp2 ... >.
 	'''
 	[classmethod.pr_pitchPrimeVector.returns]
-	what = "a Parser"
+	what = "a ScpParser"
 	*/
 	*pr_pitchPrimeVector {
-		var ratio = SequenceOf([
-			ParserFactory.makeWs,
-			ParserFactory.makeIntegerParser,
-			ParserFactory.makeWs,
-			StrParser("/"),
-			ParserFactory.makeWs,
-			ParserFactory.makeIntegerParser
+		var ratio = ScpSequenceOf([
+			ScpParserFactory.makeWs,
+			ScpParserFactory.makeIntegerParser,
+			ScpParserFactory.makeWs,
+			ScpStrParser("/"),
+			ScpParserFactory.makeWs,
+			ScpParserFactory.makeIntegerParser
 		]);
-		var exp = SequenceOf([
-			ParserFactory.makeWs,
-			Choice([
+		var exp = ScpSequenceOf([
+			ScpParserFactory.makeWs,
+			ScpChoice([
 				ratio.map({
 					|result|
 					(\what: \primeexponent, \kind: \ratio, \numerator: result[1], \denominator: result[5])
 				}),
-				ParserFactory.makeIntegerParser.map({
+				ScpParserFactory.makeIntegerParser.map({
 					| result|
 					(\what : \primeexponent, \kind: \ratio, \numerator: result, \denominator: 1)
 				})
 			])
 		]).map({|result| result[1] });
-		^SequenceOf([
-			ParserFactory.makeWs,
-			StrParser("|"),
-			ManyOne(exp),
-			ParserFactory.makeWs,
-			StrParser(">"),
+		^ScpSequenceOf([
+			ScpParserFactory.makeWs,
+			ScpStrParser("|"),
+			ScpManyOne(exp),
+			ScpParserFactory.makeWs,
+			ScpStrParser(">"),
 			this.pr_restofline
 		]).map({|result| (\kind: \primevector, \exponents: result[2]) });
 	}
@@ -204,17 +204,17 @@ MtlScalaParser {
 	/*
 	[classmethod.pr_pitchCents]
 	description='''
-	makes a Parser that matches a pitch line specified in cents. Such line MUST include a decimal point, otherwise it's interpreted as a ratio.
+	makes a ScpParser that matches a pitch line specified in cents. Such line MUST include a decimal point, otherwise it's interpreted as a ratio.
 	'''
 	[classmethod.pr_pitchCents.returns]
-	what = "a Parser"
+	what = "a ScpParser"
 	*/
 	*pr_pitchCents {
-		var ws = ParserFactory.makeWs;
-		var d = ParserFactory.makePositiveFloatParser;
-		^SequenceOf([
-			ParserFactory.makeWs,
-			ParserFactory.makePositiveFloatParser,
+		var ws = ScpParserFactory.makeWs;
+		var d = ScpParserFactory.makePositiveFloatParser;
+		^ScpSequenceOf([
+			ScpParserFactory.makeWs,
+			ScpParserFactory.makePositiveFloatParser,
 			this.pr_restofline
 		]).map({
 			| result |
@@ -225,13 +225,13 @@ MtlScalaParser {
 	/*
 	[classmethod.pr_pitchParser]
 	description='''
-	makes a Parser that matches a pitch line specified in one of the valid formats: cents, ratio or prime vector.
+	makes a ScpParser that matches a pitch line specified in one of the valid formats: cents, ratio or prime vector.
 	'''
 	[classmethod.pr_pitchParser.returns]
-	what = "a Parser"
+	what = "a ScpParser"
 	*/
 	*pr_pitchParser {
-		^Choice([
+		^ScpChoice([
 			this.pr_pitchPrimeVector,
 			this.pr_pitchRatio,
 			this.pr_pitchCents
@@ -242,37 +242,37 @@ MtlScalaParser {
 	/*
 	[classmethod.pr_scalaParser]
 	description='''
-	makes a Parser that matches the contents of a scala file
+	makes a ScpParser that matches the contents of a scala file
 	'''
 	[classmethod.pr_scalaParser.returns]
-	what = "a Parser"
+	what = "a ScpParser"
 	*/
 	*pr_scalaParser {
-		^SequenceOf([
+		^ScpSequenceOf([
 			// comments followed by description
-			SequenceOf([
-				Many(this.pr_commentLine),
-				SequenceOf([this.pr_restofline, ParserFactory.makeNewlineParser])
+			ScpSequenceOf([
+				ScpMany(this.pr_commentLine),
+				ScpSequenceOf([this.pr_restofline, ScpParserFactory.makeNewlineParser])
 			]).map({ | result | (\what: \description, \value:result[1][0]) }),
 			// number of notes
-			SequenceOf([
-				ParserFactory.makeWs,
-				ParserFactory.makePositiveIntegerParser,
+			ScpSequenceOf([
+				ScpParserFactory.makeWs,
+				ScpParserFactory.makePositiveIntegerParser,
 				this.pr_restofline,
-				ParserFactory.makeNewlineParser
+				ScpParserFactory.makeNewlineParser
 			]).map({ |result| (\what: \numberofnotes, \value: result[1]) }).chain({
 				| result |
 				var no_of_notes = result[\value];
-				var lst_of_parser = [SucceedParser((\what: \pitch, \kind: \cents, \numerator:0, \denominator:1))]; // add implicitly present entry 0
+				var lst_of_parser = [ScpSucceedParser((\what: \pitch, \kind: \cents, \numerator:0, \denominator:1))]; // add implicitly present entry 0
 				(no_of_notes - 1).do {
-					lst_of_parser = lst_of_parser.add(SequenceOf([
-						Many(this.pr_commentLine),
-						SequenceOf([
+					lst_of_parser = lst_of_parser.add(ScpSequenceOf([
+						ScpMany(this.pr_commentLine),
+						ScpSequenceOf([
 							this.pr_pitchParser,
-							ParserFactory.makeNewlineParser])
+							ScpParserFactory.makeNewlineParser])
 					]).map({ | result | result[1][0] }))
 				};
-				SequenceOf(lst_of_parser);
+				ScpSequenceOf(lst_of_parser);
 			}),
 			this.pr_pitchRatio.map({ |result| (\what: \equivalenceinterval, \numerator: result[\numerator], \denominator: result[\denominator])})
 		]).map({ | result |

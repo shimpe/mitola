@@ -136,9 +136,9 @@ MtlMitola {
 	/*
 	[method.mitola_parser]
 	description='''
-	A Parser for MtlMitola strings; initialized in the init method
+	A ScpParser for MtlMitola strings; initialized in the init method
 	[method.mitola_parser.returns]
-	what="a Parser"
+	what="a ScpParser"
 	'''
 	*/
 	var <>mitola_parser;

@@ -17,108 +17,108 @@ returns:: a new MtlMitolaParser
 METHOD:: pr_noteParser
 internal method that creates a parser that can parse a single mitola degree and markup the result
 
-returns:: a Parser
+returns:: a ScpParser
 METHOD:: pr_plusminParser
 internal method that creates a parser that can parse a +/- sign as part of a pitch modifier (similar to a flat or sharp in traditional notation) and markup the result
 
-returns:: a Parser
+returns:: a ScpParser
 METHOD:: pr_betweenCurlyBrackets
 internal method that creates a function that can create a parser to parse 'something' between curly brackets
 
-returns:: a function expecting a Parser for 'something' as argument, to create a Parser that parses 'something' between curly brackets
+returns:: a function expecting a ScpParser for 'something' as argument, to create a ScpParser that parses 'something' between curly brackets
 METHOD:: pr_pitchRatio
-internal method that creates a Parser to parse a pitch modifier numerical value specified as a ratio and markup the result
+internal method that creates a ScpParser to parse a pitch modifier numerical value specified as a ratio and markup the result
 
-returns:: a Parser parsing a pitch modifier numerical value ratio [Integer]/[Integer]
+returns:: a ScpParser parsing a pitch modifier numerical value ratio [Integer]/[Integer]
 METHOD:: pr_nopoint
-internal method that creates a Parser that fails if the next token is a point
+internal method that creates a ScpParser that fails if the next token is a point
 
-returns:: a Parser that fails if the next token is a point
+returns:: a ScpParser that fails if the next token is a point
 METHOD:: pr_pitchPrimeVector
-internal method that creates a Parser that parses a pitch modifier numerical value specified as a prime vector
+internal method that creates a ScpParser that parses a pitch modifier numerical value specified as a prime vector
 
-returns:: 	a Parser that matches a pitch modifier numerical value specified as a prime vector, i.e. | exp1 exp2 ... expN >
+returns:: 	a ScpParser that matches a pitch modifier numerical value specified as a prime vector, i.e. | exp1 exp2 ... expN >
 	The exp things are positive/negative integers or ratios which indicate prime factor exponents, e.g.
 	| 1/2 > is 2^(1/2) and | -1/2 2/3 > is 2^(-1/2)*3^(2/3).
 
 	The result is marked up.
 	
 METHOD:: pr_pitchCents
-internal method that creates a Parser that can parse a pitch modifier numerical value specified in cents
+internal method that creates a ScpParser that can parse a pitch modifier numerical value specified in cents
 
-returns:: a Parser that parses a pitch modifier numerical value specified in cents and marks up the result
+returns:: a ScpParser that parses a pitch modifier numerical value specified in cents and marks up the result
 METHOD:: pr_pitchParser
-internal method that creates a Parser that can parse the pitch part of a pitch modifier in any format (ratio, primevector or cents)
+internal method that creates a ScpParser that can parse the pitch part of a pitch modifier in any format (ratio, primevector or cents)
 
-returns:: a Parser that parses a pitch modifier in any format (ratio, primevector or cents) and marks up the result
+returns:: a ScpParser that parses a pitch modifier in any format (ratio, primevector or cents) and marks up the result
 METHOD:: pr_noteModifier
-internal method that creates a Parser that can parse a pitch modifier in any format (ratio, primevector or cents)
+internal method that creates a ScpParser that can parse a pitch modifier in any format (ratio, primevector or cents)
 
-returns:: a Parser that parses a pitch modifier and marks up the result; pitch modifiers are optional
+returns:: a ScpParser that parses a pitch modifier and marks up the result; pitch modifiers are optional
 METHOD:: pr_restParser
-internal method that creates a Parser that can parse a rest in a MtlMitola string
+internal method that creates a ScpParser that can parse a rest in a MtlMitola string
 
-returns:: a Parser that parses a rest and marks up the result
+returns:: a ScpParser that parses a rest and marks up the result
 METHOD:: pr_noteAndMod
-internal method that creates a Parser that can parse a degree followed by an (optional) pitch modifier or a rest
+internal method that creates a ScpParser that can parse a degree followed by an (optional) pitch modifier or a rest
 
-returns:: a Parser that parses a mitola degree followed by an (optional) pitch modifier or a rest
+returns:: a ScpParser that parses a mitola degree followed by an (optional) pitch modifier or a rest
 METHOD:: pr_noteAndModAndOct
-internal method that creates a Parser that can parse a degree followed by an (optional) pitch modifier or a rest and an (optional) equivalence interval (think: octave)
+internal method that creates a ScpParser that can parse a degree followed by an (optional) pitch modifier or a rest and an (optional) equivalence interval (think: octave)
 
-returns:: a Parser
+returns:: a ScpParser
 METHOD:: pr_betweenSquareBrackets
-internal method that creates a function that can create a Parser when called with a Parser for 'something'. The Parser thus created will parse 'something' between square brackets.
+internal method that creates a function that can create a ScpParser when called with a ScpParser for 'something'. The ScpParser thus created will parse 'something' between square brackets.
 
-returns:: a Parser
+returns:: a ScpParser
 METHOD:: pr_equivalenceintervalParser
-internal method that creates a Parser that matches a equivalence interval (think: octave) between square brackets
+internal method that creates a ScpParser that matches a equivalence interval (think: octave) between square brackets
 
-returns:: a Parser
+returns:: a ScpParser
 METHOD:: pr_noteAndModAndOctAndDur
-internal method that creates a Parser that matches a degree followed by pitch modifier, equivalenceinterval (think: octave) and duration, or a rest and duration
+internal method that creates a ScpParser that matches a degree followed by pitch modifier, equivalenceinterval (think: octave) and duration, or a rest and duration
 
-returns:: a Parser
+returns:: a ScpParser
 METHOD:: pr_durationParser
-internal method that creates a Parser that matches duration specification (i.e. a length and modifiers like dots, muiltiplier and divider)
+internal method that creates a ScpParser that matches duration specification (i.e. a length and modifiers like dots, muiltiplier and divider)
 
-returns:: a Parser
+returns:: a ScpParser
 METHOD:: pr_propertyNameParser
-internal method that creates a Parser that matches a property name. Properties can be attached to MtlMitola degrees and end up as keys in the pbind.
+internal method that creates a ScpParser that matches a property name. Properties can be attached to MtlMitola degrees and end up as keys in the pbind.
 
-returns:: a Parser
+returns:: a ScpParser
 METHOD:: pr_propertiesParser
-internal method that creates a Parser that matches list of property names and values as attached to a mitola degree
+internal method that creates a ScpParser that matches list of property names and values as attached to a mitola degree
 
-returns:: a Parser
+returns:: a ScpParser
 METHOD:: pr_noteAndModAndOctAndDurAndProp
-internal method that creates a Parser that matches a mitola degree with all possible markup (modifiers, equivalenceinterval durations, properties)
+internal method that creates a ScpParser that matches a mitola degree with all possible markup (modifiers, equivalenceinterval durations, properties)
 
-returns:: a Parser
+returns:: a ScpParser
 METHOD:: pr_chordParser
-internal method that creates a Parser that matches a group of degrees grouped into a chord.
+internal method that creates a ScpParser that matches a group of degrees grouped into a chord.
 
-returns:: a Parser
+returns:: a ScpParser
 METHOD:: pr_betweenChordBrackets
-internal method that creates a function that can create a Parser that parses ;something' between chord brackets
+internal method that creates a function that can create a ScpParser that parses ;something' between chord brackets
 
-returns:: a function that makes a parser for 'something' between chord brackets if you call it with a Parser that parses 'something'
+returns:: a function that makes a parser for 'something' between chord brackets if you call it with a ScpParser that parses 'something'
 METHOD:: pr_notelistParser
-internal method that creates a Parser that parses a list of notes
+internal method that creates a ScpParser that parses a list of notes
 
-returns:: a Parser
+returns:: a ScpParser
 METHOD:: pr_betweenRepeatBrackets
-internal method that creates a function that can create a Parser that parses a list of notes
+internal method that creates a function that can create a ScpParser that parses a list of notes
 
 returns:: a function
 METHOD:: pr_mixedNotelist
-internal method that creates a (recursive) Parser for a list of chords and notes with nested repeat brackets
+internal method that creates a (recursive) ScpParser for a list of chords and notes with nested repeat brackets
 
-returns:: a Parser
+returns:: a ScpParser
 METHOD:: pr_repeatedNotelist
-internal method that creates Parser to parse chords and notes between repeat brackets e.g. |: 1 2 3 4 :|*2
+internal method that creates ScpParser to parse chords and notes between repeat brackets e.g. |: 1 2 3 4 :|*2
 
-returns:: a Parser
+returns:: a ScpParser
 
 INSTANCEMETHODS::
 

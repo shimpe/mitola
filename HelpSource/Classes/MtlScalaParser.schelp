@@ -36,50 +36,50 @@ returns:: 	if loading/parsing fails: prints a message and returns nil
 	if parsing succeeds: returns the parse tree
 	
 METHOD:: pr_restofline
-	makes a Parser that eats the rest of a line (but not the newline)
+	makes a ScpParser that eats the rest of a line (but not the newline)
 	
 
-returns:: a Parser
+returns:: a ScpParser
 METHOD:: pr_nopoint
-	makes a Parser that fails if the next token is a point
+	makes a ScpParser that fails if the next token is a point
 	
 
-returns:: a Parser
+returns:: a ScpParser
 METHOD:: pr_comment
-	makes a Parser that matches a comment in a scala file (not the newline)
+	makes a ScpParser that matches a comment in a scala file (not the newline)
 	
 
-returns:: a Parser
+returns:: a ScpParser
 METHOD:: pr_commentLine
-	makes a Parser that matches a comment in a scala file (including the newline)
+	makes a ScpParser that matches a comment in a scala file (including the newline)
 	
 
-returns:: a Parser
+returns:: a ScpParser
 METHOD:: pr_pitchRatio
-	makes a Parser that matches a pitch line specified as a ratio Integer/Integer. No sign is allowed.
+	makes a ScpParser that matches a pitch line specified as a ratio Integer/Integer. No sign is allowed.
 	
 
-returns:: a Parser
+returns:: a ScpParser
 METHOD:: pr_pitchPrimeVector
-	makes a Parser that matches a pitch line specified in prime vector notation | exp1 exp2 ... >.
+	makes a ScpParser that matches a pitch line specified in prime vector notation | exp1 exp2 ... >.
 	
 
-returns:: a Parser
+returns:: a ScpParser
 METHOD:: pr_pitchCents
-	makes a Parser that matches a pitch line specified in cents. Such line MUST include a decimal point, otherwise it's interpreted as a ratio.
+	makes a ScpParser that matches a pitch line specified in cents. Such line MUST include a decimal point, otherwise it's interpreted as a ratio.
 	
 
-returns:: a Parser
+returns:: a ScpParser
 METHOD:: pr_pitchParser
-	makes a Parser that matches a pitch line specified in one of the valid formats: cents, ratio or prime vector.
+	makes a ScpParser that matches a pitch line specified in one of the valid formats: cents, ratio or prime vector.
 	
 
-returns:: a Parser
+returns:: a ScpParser
 METHOD:: pr_scalaParser
-	makes a Parser that matches the contents of a scala file
+	makes a ScpParser that matches the contents of a scala file
 	
 
-returns:: a Parser
+returns:: a ScpParser
 
 INSTANCEMETHODS::
 
