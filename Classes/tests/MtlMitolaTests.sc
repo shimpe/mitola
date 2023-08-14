@@ -60,4 +60,54 @@ MtlMitolaTests : UnitTest {
 		legato_props = m.pr_animated_pattern("legato").asStream.all;
 		this.assertArrayFloatEquals(legato_props, [0.1, 0.5, 0.9], "legato_props", 0.005);
 	}
+
+	test_dur_pattern {
+		var	tuning = [
+			"! homemadeflute.scl",
+			"!",
+			"tuning of an (imaginary) home made flute",
+			" 12",
+			"!",
+			" 1/1",
+			" 156.000 cents",  // deg 2
+			" 240.000 cents",  // deg 3
+			" 276.000 cents",  // deg 4
+			" 312.000 cents",  // deg 5
+			" 480.000 cents",  // deg 6
+			" 678.000 cents",  // deg 7
+			" 720.000 cents",  // deg 8
+			" 777.000 cents",  // deg 9
+			" 834.000 cents",  // deg 10
+			" 960.000 cents",  // deg 11
+			"2/1"].join("\n");
+
+		// to keep the score somewhat editable, separate notes from properties
+		var track = [
+			["2[5]_4",                 "@pan[0]@legato[0.97]@fallofftime[0.25]@falloff[0.1875]@amp{0.5}"],
+			["6_2 5_4 6_2 8_4",        ""],
+			["9_2",                    "@amp{1.0}"],
+			["8_8*2/3 9 8",            ""],
+			["6_2",                    "@legato[0.8]@fallofftime[1.0]@falloff[1]@amp{0.5}"],
+			["4_4",                    "@legato[1.0]@fallofftime[0.25]@falloff[0.1875]"],
+			["5_2 4_4 2_4. 2_8",       "@legato[0.8]@fallofftime[0.3]@falloff[0.2]"],
+			["4_4",                    "@legato[1.0]@fallofftime[0.25]@falloff[0.1875]"],
+			["5_2 4_8*2/3 6 4 2_2",    "@legato[0.8]@fallofftime[1.0]@falloff[1]@amp{0.5}"],
+			["2_4",                    "@legato[1.0]@fallofftime[0.25]@falloff[0.1875]@amp{0.5}"],
+			["6_2 5_4 6_2 8_4 9_2",    "@amp{1.0}"],
+			["8_8*2/3 9 8 6_2",        "@legato[0.8]@fallofftime[1.0]@falloff[1]@amp{0.5}"],
+			["4_4",                    "@legato[1.0]@fallofftime[0.25]@falloff[0.1875]"],
+			["5_2 4_4 2_2",            "@legato[0.5]"],
+			["10[4]_4",                "@legato[1.0]"],
+			["2[5]_2.",                 "@fallofftime[0.7]@falloff[0.5]"],
+		];
+
+		var score = track.collect({
+			| line |
+			line[0].stripWhiteSpace ++ line[1].stripWhiteSpace
+		}).join(" ");
+
+		var durations = MtlMitola(score, scala_contents:tuning).duration_pattern.asStream.all;
+		this.assertArrayFloatEquals(durations, [ 1.0, 2.0, 1.0, 2.0, 1.0, 2.0, 0.33333333333333, 0.33333333333333, 0.33333333333333, 2.0, 1.0, 2.0, 1.0, 1.5, 0.5, 1.0, 2.0, 0.33333333333333, 0.33333333333333, 0.33333333333333, 2.0, 1.0, 2.0, 1.0, 2.0, 1.0, 2.0, 0.33333333333333, 0.33333333333333, 0.33333333333333, 2.0, 1.0, 2.0, 1.0, 2.0, 1.0, 3.0 ], "durations with reset", 0.005);
+
+	}
 }

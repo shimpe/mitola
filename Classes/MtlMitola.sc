@@ -511,6 +511,19 @@ MtlMitola {
 				duration = this.previous_duration;
 			} {
 				this.previous_duration = duration;
+				// reset all other duration related parameters when receiving new duration
+				if (num_of_dots == \previous) {
+					num_of_dots = 0;
+					this.previous_dots = 0;
+				};
+				if (multiplier == \previous) {
+					multiplier = 1;
+					this.previous_multiplier = 1;
+				};
+				if (divider == \previous) {
+					divider = 1;
+					this.previous_divider = 1;
+				};
 			};
 			if (num_of_dots == \previous) {
 				num_of_dots = this.previous_dots;
@@ -521,11 +534,21 @@ MtlMitola {
 				multiplier = this.previous_multiplier;
 			} {
 				this.previous_multiplier = multiplier;
+				// reset divider as well
+				if (divider == \previous) {
+					divider = 1;
+					this.previous_divider = 1;
+				}
 			};
 			if (divider == \previous) {
 				divider = this.previous_divider;
 			} {
 				this.previous_divider = divider;
+				// reset multiplier as well
+				if (multiplier == \previous) {
+					multiplier = 1;
+					this.previous_multiplier = 1;
+				}
 			};
 			(4/duration)*(2-(1/(2.pow(num_of_dots))))*(multiplier/divider);
 		});
