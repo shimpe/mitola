@@ -18,12 +18,16 @@ s.waitForBoot({
 		// add some some small irregularities to the amp
 		var vibamp = amp*(LFCub.kr(5.4).range(0.7, 1) + LFNoise1.kr(1).range(0, 0.1));
 		// shape frequency over time: start slighty below the tone, and allow for a frequency falloff during release
-		var freqenv = EnvGen.kr(Env.new([vibfreq*0.97, vibfreq, (vibfreq.cpsmidi - falloff).midicps], [0.01, fallofftime], [0, -10], 1), gate, doneAction:Done.none);
+		var freqenv = EnvGen.kr(Env.new([vibfreq*0.97, vibfreq, (vibfreq.cpsmidi - falloff).midicps],
+			[0.01, fallofftime],
+			[0, -10],
+			1 /* 2nd entry (counting from 0) in the env only starts after release is triggered */),
+		gate, doneAction:Done.none);
 		// additive synthesis - define some harmonics
 		var sig = DynKlang.ar(`[
 			[freqenv*1, freqenv*2, freqenv*3, freqenv*4, freqenv*5, freqenv*6, freqenv*7, freqenv*8],
 			[37.neg.dbamp, 41.neg.dbamp, 65.neg.dbamp, 69.neg.dbamp, 55.neg.dbamp, 70.neg.dbamp, 60.neg.dbamp, 70.neg.dbamp]*30,
-			[pi.neg.rrand(pi), pi.neg.rrand(pi), pi.neg.rrand(pi), pi.neg.rrand(pi), pi.neg.rrand(pi), pi.neg.rrand(pi), pi.neg.rrand(pi), pi.neg.rrand(pi)]
+			{pi.rrand(pi.neg)}!8 // random initial phase
 		]);
 		// shape the amplitude of the sound over time: relatively short linear attack, exponential decay
 		var env = EnvGen.ar(Env.asr(atk, sus, rel, [\linear, -10]), gate, doneAction:Done.freeSelf);
