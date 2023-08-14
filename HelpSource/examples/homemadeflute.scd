@@ -82,17 +82,17 @@ s.waitForBoot({
 		"tuning of an (imaginary) home made flute",
 		" 12",
 		"!",
-		" 1/1",
-		" 156.000 cents",  // deg 2
-		" 240.000 cents",  // deg 3
-		" 276.000 cents",  // deg 4
-		" 312.000 cents",  // deg 5
-		" 480.000 cents",  // deg 6
-		" 678.000 cents",  // deg 7
-		" 720.000 cents",  // deg 8
-		" 777.000 cents",  // deg 9
-		" 834.000 cents",  // deg 10
-		" 960.000 cents",  // deg 11
+		" 1",              // degree 2
+		" 156.000 cents",  // degree 3
+		" 240.000 cents",  // degree 4
+		" 276.000 cents",  // degree 5
+		" 312.000 cents",  // degree 6
+		" 480.000 cents",  // degree 7
+		" 678.000 cents",  // degree 8
+		" 720.000 cents",  // degree 9
+		" 777.000 cents",  // degree 10
+		" 834.000 cents",  // degree 11
+		" 960.000 cents",  // degree 12
 		"2/1"].join("\n");
 
 	rootfreq = MtlRootFrequencyCalculator(tuning).get_root_frequency("6[4]", 432 /* :-) */);
