@@ -100,12 +100,11 @@ s.waitForBoot({
 	// to keep the score somewhat editable, separate notes from properties
 	track = [
 		["2[5]_4",                 "@pan[0]@legato[0.97]@fallofftime[0.25]@falloff[0.1875]@amp{0.5}"],
-		["6_2 5_4 6_2 8_4",        ""],
-		["9_2",                    "@amp{1.0}"],
-		["8_8*2/3 9 8",            ""],
-		["6_2",                    "@legato[0.8]@fallofftime[1.0]@falloff[1]@amp{0.5}"],
+		["6_2 5_4 6_2 8_4 9_2",    "@amp{1.0}"],
+		["8_8*2/3 9 8 6_2",        "@legato[0.8]@fallofftime[1.0]@falloff[1]@amp{0.5}"],
 		["4_4",                    "@legato[1.0]@fallofftime[0.25]@falloff[0.1875]"],
-		["5_2 4_4 2_4. 2_8",       "@legato[0.8]@fallofftime[0.3]@falloff[0.2]"],
+		["5_2 4_4 2_4.",           "@legato[0.8]"],
+		["2_8",                    "@fallofftime[0.3]@falloff[0.2]"],
 		["4_4",                    "@legato[1.0]@fallofftime[0.25]@falloff[0.1875]"],
 		["5_2 4_8*2/3 6 4 2_2",    "@legato[0.8]@fallofftime[1.0]@falloff[1]@amp{0.5}"],
 		["2_4",                    "@legato[1.0]@fallofftime[0.25]@falloff[0.1875]@amp{0.5}"],
@@ -114,7 +113,7 @@ s.waitForBoot({
 		["4_4",                    "@legato[1.0]@fallofftime[0.25]@falloff[0.1875]"],
 		["5_2 4_4 2_2",            "@legato[0.5]"],
 		["10[4]_4",                "@legato[1.0]"],
-		["2[5]_2.",                 "@fallofftime[0.7]@falloff[0.5]"],
+		["2[5]_2.",                "@fallofftime[0.7]@falloff[0.5]"],
 	];
 
 	score = track.collect({
