@@ -25,8 +25,8 @@ s.waitForBoot({
 		gate, doneAction:Done.none);
 		// additive synthesis - define some harmonics
 		var sig = DynKlang.ar(`[
-			[freqenv*1, freqenv*2, freqenv*3, freqenv*4, freqenv*5, freqenv*6, freqenv*7, freqenv*8],
-			[37.neg.dbamp, 41.neg.dbamp, 65.neg.dbamp, 69.neg.dbamp, 55.neg.dbamp, 70.neg.dbamp, 60.neg.dbamp, 70.neg.dbamp]*30,
+			(1..8)*freqenv,
+			[37, 41, 65, 69, 55, 70, 60, 70].collect({|el| el.neg.dbamp })*30,
 			{pi.rrand(pi.neg)}!8 // random initial phase
 		]);
 		// shape the amplitude of the sound over time: relatively short linear attack, exponential decay
