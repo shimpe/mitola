@@ -1,7 +1,7 @@
 (
   name: "Mitola",
   summary: "Microtonal counterpart to Panola - write microtonal music using a text-based score",
-  version: "0.0.5",
+  version: "0.0.6",
   schelp: "Mitola.schelp",
   license: "GPL",
   dependencies: ["https://github.com/shimpe/scparco@tags0.0.3"],
