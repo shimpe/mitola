@@ -4,6 +4,6 @@
   version: "0.0.6",
   schelp: "Mitola.schelp",
   license: "GPL",
-  dependencies: ["https://github.com/shimpe/scparco@tags0.0.3"],
+  dependencies: ["https://github.com/shimpe/scparco@tags/0.0.3"],
   copyright: "Stefaan Himpe, 2023"
 )
