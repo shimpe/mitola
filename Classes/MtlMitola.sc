@@ -325,12 +325,12 @@ MtlMitola {
 		|  notation=nil, scala_contents=nil, scala_filename=nil,
 		degree_mapping = nil, note_equivalenceinterval_default=4, dur_default=4, modifier_default="",
 		mult_default=1, div_default=1, amp_default=0.5,
-		legato_default=0.9, lag_default=0, tempo_default=80 |
+		legato_default=0.9, lag_default=0, tempo_default=80, dots_default=0 |
 
 		^super.new.init(notation, scala_contents, scala_filename,
 			degree_mapping, note_equivalenceinterval_default=4, dur_default=4, modifier_default="",
 			mult_default=1, div_default=1, amp_default=0.5,
-			legato_default=0.9, lag_default=0, tempo_default=80);
+			legato_default=0.9, lag_default=0, tempo_default=80, dots_default=0);
 	}
 
 	/*
@@ -359,7 +359,7 @@ MtlMitola {
 		| notation, scala_contents, scala_filename,
 		degree_mapping, note_equivalenceinterval_default, dur_default, modifier_default,
 		mult_default, div_default, amp_default,
-		legato_default, lag_default, tempo_default |
+		legato_default, lag_default, tempo_default, dots_default |
 
 		this.gNOTEequivalenceinterval_DEFAULT = note_equivalenceinterval_default;
 		this.gDURATION_DEFAULT = dur_default;
@@ -370,6 +370,7 @@ MtlMitola {
 		this.gLEGATO_DEFAULT = legato_default;
 		this.gLAG_DEFAULT = lag_default;
 		this.gTEMPO_DEFAULT = tempo_default;
+		this.gDOTS_DEFAULT = dots_default;
 
 		this.previous_duration = this.gDURATION_DEFAULT;
 		this.previous_dots = this.gDOTS_DEFAULT;

@@ -107,7 +107,11 @@ MtlMitolaTests : UnitTest {
 		}).join(" ");
 
 		var durations = MtlMitola(score, scala_contents:tuning).duration_pattern.asStream.all;
+		var defaultdurations;
 		this.assertArrayFloatEquals(durations, [ 1.0, 2.0, 1.0, 2.0, 1.0, 2.0, 0.33333333333333, 0.33333333333333, 0.33333333333333, 2.0, 1.0, 2.0, 1.0, 1.5, 0.5, 1.0, 2.0, 0.33333333333333, 0.33333333333333, 0.33333333333333, 2.0, 1.0, 2.0, 1.0, 2.0, 1.0, 2.0, 0.33333333333333, 0.33333333333333, 0.33333333333333, 2.0, 1.0, 2.0, 1.0, 2.0, 1.0, 3.0 ], "durations with reset", 0.005);
+
+		defaultdurations = MtlMitola("1[4]", scala_contents:tuning).duration_pattern.asStream.all;
+		this.assertArrayFloatEquals(defaultdurations, 1.0, "default duration", 0.005);
 
 	}
 }
